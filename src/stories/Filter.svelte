@@ -27,7 +27,7 @@
 
 	import TextField from './forms/TextField.svelte';
 	import PriceRange from './forms/PriceRange.svelte';
-	import Dropdown from './forms/Dropdown.svelte';
+	import DropDown from './forms/DropDown.svelte'; // Updated casing here
 	import Accordion from './Accordion.svelte';
 	import Tabs from './forms/Tabs.svelte';
 	import Tags from './forms/Tags.svelte';
@@ -40,8 +40,8 @@
 <div class="filter-form">
 	<TextField bind:value={filterData.name} />
 
-	<Dropdown bind:value={filterData.county} type="county" />
-	<Dropdown bind:value={filterData.workfield} type="workfield" />
+	<DropDown bind:value={filterData.county} type="county" />
+	<DropDown bind:value={filterData.workfield} type="workfield" />
 	<CheckBox
 		label="Oppdragsgiver"
 		options={['Private', 'Business']}

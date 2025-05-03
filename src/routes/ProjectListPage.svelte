@@ -1,9 +1,30 @@
 <script lang="ts">
+	import '../stories/button.css';
+	import { Fa } from 'svelte-fa';
+	import {
+		faThLarge,
+		faList,
+		faSquare,
+		faGrip,
+		faTableCells,
+		faTh,
+		faMapLocation
+	} from '@fortawesome/free-solid-svg-icons';
+
 	// @ts-ignore
 	import Filter from '../stories/Filter.svelte';
 	import Button from '../stories/Button.svelte';
 	import './ProjectListPage.css';
-	import DropDown from '../stories/forms/Dropdown.svelte';
+	import DropDown from '../stories/forms/DropDown.svelte';
+
+	type ListSettings = {
+		sortBy: string;
+	};
+	const INITIAL_LIST_VALUES: ListSettings = {
+		sortBy: 'Mest relevant'
+	};
+
+	let listSettings = $state({ ...INITIAL_LIST_VALUES });
 
 	type FilterData = {
 		name: string;
@@ -31,6 +52,7 @@
 		job_attributes_exclude: [],
 		job_poster: []
 	};
+	let grid = $state();
 
 	let filterData = $state({ ...INITIAL_VALUES });
 	let displayedData = $state({ ...INITIAL_VALUES });
@@ -125,6 +147,14 @@
 	function saveSearch() {
 		// TEMP PLACEHOLDER
 		// todo make this, when profiles are in order.
+	}
+	function showMapView() {
+		// TEMP PLACEHOLDER
+		// todo make this, when profiles are in order.
+	}
+
+	function handleGrid() {
+		grid = !grid;
 	}
 </script>
 
@@ -254,18 +284,42 @@
 
 			<div class="display-settings-row">
 				<!-- ? should these values be added to filterData or should it be a seperate dataset  -->
-				<Button rounded size="small" label={'[icon]'} />
-				<!-- list / grid display  -->
-				<Button rounded size="small" label={'[icon], Vis på kart'} />
+				<div class="display-settings-row-left">
+					<!-- list / grid display  -->
+					<button
+						class="storybook-button--rounded storybook-button--secondary storybook-button grid-icon-container"
+						onclick={handleGrid}
+					>
+						{#if grid}
+							<Fa size="lg" icon={faList} />
+						{:else}
+							<div class="grid-icon">
+								<Fa size="lg" icon={faSquare} />
+								<Fa size="lg" icon={faSquare} />
+								<Fa size="lg" icon={faSquare} />
+								<Fa size="lg" icon={faSquare} />
+							</div>
+						{/if}
+					</button>
+					<!-- map display -->
+					<button
+						onclick={showMapView}
+						class="storybook-button--rounded storybook-button--secondary storybook-button storybook-button--small"
+					>
+						<Fa size="lg" icon={faMapLocation} />
+						<span class="button-label">Vis på kart</span>
+					</button>
+				</div>
+				<!-- <Button rounded size="small" label={'[icon], Vis på kart'} /> -->
 				<!-- show on map  -->
 				<div>
 					<!-- Sort by.. select  -->
 					Sorter etter
 					<select name="sortBy" id=""></select>
-					<DropDown bind:value={filterData.sortBy} type="Sort by" />
+					<DropDown bind:value={listSettings.sortBy} type="sortby" />
 					<!--  -->
 				</div>
-				<Button rounded size="small" label={'[icon], Vis på kart'} />
+
 				<!--   -->
 			</div>
 		</div>
@@ -273,6 +327,7 @@
 		<!-- FILTER DISPLAY -->
 		{#if showResults}
 			<div class="results">
+				<p>Filter Results:</p>
 				{#each activeFilterTags as key}
 					<div class="">
 						<span>
@@ -288,5 +343,61 @@
 				{/each}
 			</div>
 		{/if}
+		<div class="results">
+			<p>List Settings:</p>
+			{#each Object.entries(listSettings) as [key, value]}
+				<div class="">
+					<span>
+						{key.charAt(0).toUpperCase() + key.slice(1)}: {value}
+					</span>
+				</div>
+			{/each}
+		</div>
 	</div>
 </div>
+
+<style>
+	.display-settings-row-left {
+		display: flex;
+		column-gap: 0.5rem;
+	}
+	@media (max-width: 768px) {
+		.button-label {
+			display: none;
+		}
+	}
+	.display-settings-row {
+		display: flex;
+		flex-direction: row;
+		column-gap: 0.5rem;
+		justify-content: space-between;
+	}
+	.grid-icon-container {
+		padding: 10px;
+		width: 42px; /* Fixed width to accommodate both icons */
+		height: 42px; /* Fixed height to accommodate both icons */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.grid-icon {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-template-rows: repeat(2, 1fr);
+		gap: 10%;
+		width: 22px;
+		height: 22px;
+	}
+
+	/* Add styles for list icon */
+	:global(.grid-icon-container > .fa-list) {
+		width: 22px;
+		height: 22px;
+	}
+
+	.grid-icon :global(svg) {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+</style>

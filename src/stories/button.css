@@ -1,8 +1,11 @@
 
 
 .storybook-button {	
-
-	display: flex;
+	display: flex !important;
+	column-gap: .5rem;
+	align-items: baseline;
+	/* align-items: center; */
+	flex-direction: row;
 	flex-wrap: nowrap;
 	display: inline-block;
 	cursor: pointer;

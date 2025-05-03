@@ -6,8 +6,8 @@
 	// end of edit
 
 	import './button.css';
-	import './neumorphicButton.css';
-	//   import './button.scss';
+	// import './neumorphicButton.css';
+	// import './button.scss';
 
 	/**
    * @typedef {Object} Props
