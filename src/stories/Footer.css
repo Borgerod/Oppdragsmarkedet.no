@@ -1,0 +1,32 @@
+/* @import 'color_scheme.css'; */
+.storybook-footer {
+	color: var(--primary-invert);
+	background-color: var(--tertiary-bg);
+    display: flex;
+    align-items: flex-start;
+    padding: 15px 20px;
+    justify-content: space-between;
+}
+
+
+  .storybook-footer svg {
+	display: inline-block;
+	vertical-align: top;
+  }
+  
+  
+  .storybook-footer h1 {
+	color: var(--accent);
+	display: inline-block;
+	vertical-align: top;
+	margin: 6px 0 6px 10px;
+	font-weight: 700;
+	font-size: 20px;
+	line-height: 1;
+  }
+  .storybook-footer div{
+	padding: 2rem;
+  }
+
+  
+

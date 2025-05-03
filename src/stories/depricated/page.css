@@ -1,0 +1,148 @@
+
+:root{
+	background-color: var(--primary-bg);
+	background-color: var(--secondary-bg);
+}
+.storybook-page {
+	background: linear-gradient(145deg, #fcfcfc, #ecebeb);
+	border-radius: 50px;
+  margin: 0 auto;
+  padding: 48px 20px;
+  max-width: 600px;
+  color: #333;
+  color: #b2b4b2;
+  font-size: 14px;
+  line-height: 24px;
+  font-family: "Manrope";
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  margin: 2rem;
+  padding: 2rem;
+  background-color: var(--secondary-bg);
+  background-color: var(--primary-bg);
+}
+
+.landing .translucent-card{
+	display: flex;
+
+		padding: 2rem;
+		width: 50%;
+		height: 70%;
+		box-shadow: 0 0 1rem 0 var(--shadow);
+		border-radius: 1.5rem;
+		position: relative;
+		z-index: 1;
+		background: inherit;
+		overflow: hidden;
+	  }
+.landing .translucent-card:before {
+	content: "";
+	position: absolute;
+	background: inherit;
+	z-index: -1;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	box-shadow: inset 0 0 2000px var(--shadow-inv);
+	filter: blur(10px);
+	margin: -20px;
+}
+	
+
+
+.landing h2{
+		display: inline-block;
+		vertical-align: top;
+		margin: 0 0 4px;
+		font-weight: 700;
+		font-size: 32px;
+		line-height: 1;
+	  }
+.landing p{  margin: 1em 0;}
+
+.landing{
+	color: var(--shadow);
+	/* color: var(--secondary); */
+	display: flex;
+	padding: 0 3rem;
+	align-items: center;
+	align-content: center;
+
+  /* padding: 100% 100%; */
+   height: 400px;
+   width: 100%;
+   max-width: 100%;
+  background-size: fill;
+  background-attachment: fixed;
+  background-size: 100% ;
+  background-repeat: no-repeat;
+	background-image: url('/src/stories/assets/sitePhotos/jimmy-nilsson-masth-UovTD1dG-lA-unsplash.jpg');
+}
+
+
+.storybook-page{
+	border-radius: 5%;
+	box-shadow: -10px -10px 15px var(--white),
+	10px 10px 15px var(--shadow-inv);
+}
+
+.storybook-page h2 {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 0 4px;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1;
+}
+
+.storybook-page p {
+  margin: 1em 0;
+}
+
+.storybook-page a {
+  color: inherit;
+}
+
+.storybook-page ul {
+  margin: 1em 0;
+  padding-left: 30px;
+}
+
+.storybook-page li {
+  margin-bottom: 8px;
+}
+
+.storybook-page .tip {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 10px;
+  border-radius: 1em;
+  background: #e7fdd8;
+  padding: 4px 12px;
+  color: #357a14;
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 12px;
+}
+
+.storybook-page .tip-wrapper {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.storybook-page .tip-wrapper svg {
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 3px;
+  margin-right: 4px;
+  width: 12px;
+  height: 12px;
+}
+
+.storybook-page .tip-wrapper svg path {
+  fill: #1ea7fd;
+}

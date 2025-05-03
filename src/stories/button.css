@@ -1,0 +1,194 @@
+
+
+.storybook-button {	
+
+	display: flex;
+	flex-wrap: nowrap;
+	display: inline-block;
+	cursor: pointer;
+	border-radius: 3em;
+	font-weight: 700;
+	line-height: 1;
+	font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	--shadow: #3b3b3b21; /* todo; change to var */
+	--highlight: #ffffff; /* todo; change to var */
+	--mild_hightlight: #cecece; /* todo; change to var */
+}
+
+
+.storybook-button--hollow{
+	background-color: transparent;
+	border-width: .1rem;
+	border-color: #cecece; /* todo; change to var */
+	color: #cecece; /* todo; change to var */
+
+}
+
+.storybook-button--hollow:hover{
+	background-color: transparent;
+	border-width: .1rem;
+	border-color: #cecece; /* todo; change to var */
+	color: #cecece;  /* todo; change to var */
+	color: #f1e9d6; /* todo; change to var */
+	color:var(--white); 
+	filter: drop-shadow(0px 0px 2px #fbce66);
+	box-shadow: 0px 0px 2px #fbce66;
+	animation: neonFlicker .05s steps(4, jump-start) infinite;
+ }
+
+
+
+
+@keyframes neonFlicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+	opacity: 1;
+	text-shadow: 0 0 2px #ffe09798, 0 0 1px #d8c08798, 0 0 .5px #c9ad6c98;
+  }
+  20%, 22%, 24%, 55% {
+	opacity: 0.8;
+	text-shadow: none;
+  }
+}
+
+
+
+.storybook-button--primary:hover {
+	background-color: var(--accent-dark);
+}
+.storybook-button--primary {
+	display: flex;
+	flex-wrap: nowrap;
+  background-color: var(--accent-medium);
+  color: var(--primary-bg);
+  text-shadow: 0px 0px 3px var(--shadow);
+}
+.storybook-button--osl{
+	color: #ffffff;
+	--osl-highlight:#f9f4db;
+	color: #f9f4db;
+	--osl-highlight:#ffffff;
+	--text-shadow: #0000006c;
+	text-shadow:0px 0px 3px  var(--osl-shadow), -0px -0px 3px var(--osl-highlight);
+	text-shadow:0px 0px 3px  black, -0px -0px 3px red;
+}
+.storybook-button--green{
+	/* --shadow: #49534452; */
+	--shadow: #0000006c; /* todo; change to var */
+	--highlight: #839b765b; /* todo; change to var */
+}
+
+.storybook-button--secondary {
+	box-shadow:var(--shadow) 0px 0px 0px 1px inset; 
+	background-color: transparent;
+	color: var(--white);
+	color: #5b7051ee;
+	color: #78966ae7;
+	/* color: #ffffffce; */
+	/* color: #ebfde2c2; */
+	/* todo; change to var */
+	color: #989b97be;
+	color: var(--secondary);
+	/* text-shadow: -.5px -.6px 0rem rgba(0, 0, 0, 0.767), 0px 0px 0.0rem  #ffffff8e; */
+	border-color: var(--accent-dark);
+}
+
+.storybook-button--secondary:hover{
+	color: var(--accent-medium);
+	border-color: var(--accent-dark);
+	border-color: var(--accent-deep-shade);
+	border-color: var(--accent-shade);
+
+	background-color: var(--accent-translucent);
+	background-color: var(--secondary-bg);
+	background-color: var(--primary-bg);
+	box-shadow:var(--shadow) 0px 0px 0px 1px inset; 
+	box-shadow:var(--accent) 0px 0px 0px 1px inset; 
+	/* border-width: 1px; */
+	/* border-color: var(--accent-medium); */
+}
+
+
+.storybook-button--neomorphic {
+	/* display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center; */
+	box-shadow: 1px 1px 1px var(--shadow),  -1px -1px 1px var(--white), 5px 5px 10px  var(--shadow), -5px -5px 10px var(--highlight);
+	/* todo; change to var */
+}
+
+.storybook-button--neomorphic:hover {
+	color: var(--accent-medium);
+	/* color: var(--accent-dark);
+	border-color: var(--accent-dark);
+	border-color: var(--accent-deep-shade);
+	border-color: var(--accent-shade);
+
+	background-color: var(--accent-translucent);
+	background-color: var(--secondary-bg);
+	background-color: var(--primary-bg);
+	box-shadow:var(--shadow) 0px 0px 0px 1px inset; 
+	box-shadow:var(--accent-dark) 0px 0px 0px 1px inset;  */
+	box-shadow: .5px.51px .5px var(--shadow),  -.5px -.5px .5px var(--white), 3px 3px 5px  var(--shadow), -3px -3px 5px var(--highlight);
+
+}
+
+.storybook-button--neomorphic:active {
+	color: var(--accent);
+	background-image: linear-gradient(145deg, var(--primary-bg), var(--secondary-bg)); 
+}
+
+.storybook-button--neomorphic-osl{
+	color: #ffffff;/* todo; change to var */
+	--osl-highlight:#f9f4db;/* todo; change to var */
+	--osl-highlight:#fbce66;/* todo; change to var */
+	--osl-shadow: #0000006c;/* todo; change to var */
+
+	text-shadow:1px 1px 3px var(--osl-highlight), -0px -0px 3px  var(--osl-shadow);
+	text-shadow:1px 1px 3px var(--osl-highlight);
+	text-shadow: -1px -1px 3px var(--osl-highlight), 1px 1px 3px var(--osl-shadow);
+}
+
+
+.storybook-button--rounded{
+	border-radius: .5rem;
+
+}
+
+/* ____________________________________________________________________________________________________ */
+
+.storybook-button--neomorphic-osl_off {
+
+	font-family: Lucida Grande;
+	background-color: #666666;
+	-webkit-background-clip: text;
+	-moz-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	text-shadow: rgba(255,255,255,0.5) 0px 0px .02rem; /* todo; change to var */
+	
+}
+/* ____________________________________________________________________________________________________ */
+.storybook-button--small {
+  padding: 10px 16px;
+  font-size: 12px;
+}
+.storybook-button--medium {
+  padding: 11px 20px;
+  font-size: 14px;
+  margin:0 4rem;
+}
+.storybook-button--large {
+  padding: 12px 24px;
+  font-size: 16px;
+  /* font-size: 1.2rem; */
+  /* margin:0 4rem; */
+}
+
+.storybook-button .wide{
+	width: 100%;
+}
+
+#wide{
+	width: 100%;
+}

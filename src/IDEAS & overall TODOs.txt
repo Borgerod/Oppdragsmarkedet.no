@@ -1,0 +1,44 @@
+| BUSINESS IDEAS |------------------------------------------------------------------------------|
+
+ 	descr:	ideas to the platform or business, which needs to be discussed before implemented. 	   	
+
+	1. Implementere betalings forsikring; tredjepart eller noe vi kan tilby selv?
+			Betalingsforsikring er noe en ny bruker som ikke har betaligns-bevis
+			enda men som ønsker å forsikre oppdragstaker at de vil få arbeidet betalt. 
+			Tjenesten er at vi selv (eller tredjeparten) står som ansvarlig for at oppdragsgiver 
+			betaler men hovedsaklig at oppdragstaker får betalt innen planlagt tid, 
+			som kan tilsi i verste tilfelle at vi selv (eller tredjepart) må stå for betalingen 
+			midlertidig frem til inkassosaken er løst,
+			eller permanent i tilfeller som dødsfall eller lignende. 
+			Dette er et tilfelle som vi blir nødt til å forsikre oss mot via; 
+			forsikringsselskap eller eget oppspart budsjett*. 
+			(*utgift vil påløpe oppdragsgiver om de ønsker å velge dette alternativet).
+			Merk: oppdragsgiver må bli informert om at enkelte tilfeller kan 
+			Betalingsforsikringen falle bort; som foreksempel på "src\stories\forms\filter.svelte:15:1" 
+			som kort fortalt sier: "om oppdragsgiver og -taker tar en jobb som er markert med 
+			'vil mulig ikke bli ferdig i tide'-varsel, vil forsikringen ekskluderes" 
+	2.
+	3. 
+	4. 
+	5. 
+	6. 
+	7. 
+
+|----------------------------------------------------------------------------------------------|
+
+
+
+
+| OVERALL TODOS |------------------------------------------------------------------------------|
+
+ 	descr:	todos that are not specific to a component or website-section but;	   	
+		 	bigger todos, todos for the overall website or business. 
+
+	TODO [ ]: 
+	TODO [ ]: 
+	TODO [ ]: 
+	TODO [ ]: 
+	TODO [ ]: 
+	
+|----------------------------------------------------------------------------------------------|
+

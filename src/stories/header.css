@@ -1,0 +1,56 @@
+
+
+.storybook-header .button-container{
+	column-gap: .5rem;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+.storybook-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 15px 20px;
+  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	background-color: var(--tertiary-bg);
+}
+
+.title-card{
+	background-color: #3b4236;
+	/* border-radius: 3rem; */
+	border-radius: 1rem;
+	display: flex;
+	padding: 1rem;
+	box-shadow: inset 7px 7px 5px #232720, inset -1px -1px 5px #2c3129, 1px  1px 2px #6a7561;
+
+}
+
+.storybook-header svg {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.storybook-header span { 
+	color: var(--accent);
+}
+.storybook-header h1 {
+	text-shadow: 0px 0px 3px var(--shadow);
+	color: var(--secondary-invert);
+	display: inline-block;
+	vertical-align: top;
+	margin: 6px 0 6px 10px;
+	font-weight: 700;
+	font-size: 20px;
+	line-height: 1;
+}
+
+.storybook-header button + button {
+  margin-left: 10px;
+}
+
+.storybook-header .welcome {
+  margin-right: 10px;
+  color: #333;
+  font-size: 14px;
+}
