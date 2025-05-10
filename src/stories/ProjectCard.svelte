@@ -316,8 +316,6 @@
 		padding-right: 1.6rem;
 	}
 
-
-
 	.spacer {
 		/* width: 25%;
 		height: 100%; */
