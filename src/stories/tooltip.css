@@ -1,0 +1,51 @@
+.tooltip {
+	position: absolute;
+	background: #333;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-45%) translateY(-170%);
+	color: white;
+	background: var(--accent-deep-shade);
+	color: var(--white);
+	padding: 0.5rem;
+	border-radius: 4px;
+	font-size: 0.875rem;
+	white-space: nowrap;
+
+	margin-bottom: 0.5rem;
+	margin-left: 0.5rem;
+	z-index: 10;
+}
+
+/* Custom theme for Tippy.js tooltips */
+.tippy-box[data-theme~='oppdragsmarkedet'] {
+  background-color: var(--accent-deep-shade);
+  background-color: var(--accent-shade);
+  background-color: var(--accent-darker);
+  /* background-color: var(--accent-dark); */
+  color: var(--primary-bg);
+}
+
+.tippy-box[data-theme~='oppdragsmarkedet'] .tippy-arrow {
+  color: var(--accent-deep-shade);
+  color: var(--accent-shade);
+  color: var(--accent-darker);
+  /* color: var(--accent-dark); */
+}
+
+/* Light/dark mode support if needed */
+@media (prefers-color-scheme: dark) {
+  .tippy-box[data-theme~='oppdragsmarkedet'] {
+	box-shadow:
+	0 1px 6px var(--shadow-bright),
+	0 1px 1px var(--shadow);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .tippy-box[data-theme~='oppdragsmarkedet'] {
+	box-shadow:
+	0 1px 6px var(--shadow-bright),
+	0 1px 1px var(--shadow);
+  }
+}
