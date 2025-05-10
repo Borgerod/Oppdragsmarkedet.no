@@ -379,6 +379,12 @@
 		/* filter: drop-shadow(0px 0px 0px var(--grey));
 		filter: drop-shadow(0px 0px 0px grey); */
 	}
+	.icon.bottom-layer {
+		z-index: -1;
+	}
+	.icon.upper-layer {
+		/* z-index: 1; */
+	}
 
 	.favorite-button {
 		width: 42px;
