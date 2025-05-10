@@ -1,3 +1,5 @@
+<svelte:options runes />
+
 <script lang="ts">
 	let activeTab = $state('inkluder');
 
@@ -64,5 +66,45 @@
 	.tabs-content {
 		padding: 1rem;
 		/* background: white; */
+	}
+
+	/* _____________________________________ */
+
+	.tabs-header button {
+		flex: 1;
+		padding: 0.8rem;
+		border: none;
+		background: none;
+		cursor: pointer;
+		font-weight: 500;
+		transition: all 0.2s ease;
+		color: var(--secondary);
+		border-top-right-radius: 0.5rem;
+		border-top-left-radius: 0.5rem;
+	}
+
+	.tabs-header button.active {
+		background-color: #e7e7e78f;
+		color: inherit;
+		border-bottom: none;
+		/* color: #2e7d32; */
+	}
+
+	.tabs-content {
+		padding: 1rem;
+	}
+
+	.tabs-header {
+		border: none;
+	}
+
+	.tabs-container {
+		border: none;
+	}
+	.tabs-content {
+		border-bottom-left-radius: 0.5rem;
+		border-bottom-right-radius: 0.5rem;
+		background-color: #e7e7e78f;
+		border-top: none;
 	}
 </style>
