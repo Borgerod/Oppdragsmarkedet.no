@@ -31,7 +31,7 @@
 		favorite = !favorite;
 	}
 
-	// console.log('in ProjectCard, gridView:', props.gridView);
+	console.log('in ProjectCard, gridView:', props.gridView);
 </script>
 
 <!-- OPTION 3 -->
