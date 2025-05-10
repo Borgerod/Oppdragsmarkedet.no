@@ -3,7 +3,8 @@
 <script lang="ts">
 	import ProjectCard from './ProjectCard.svelte';
 	import { writable, derived } from 'svelte/store';
-	import { projects } from './data/projectData';
+	import { projects } from '../lib/data/projectData';
+
 	// ! bug
 	// TODO [ ]: fix bug; the favorite icon are not unique. if i favorite the first project  page 1, but when next page; the first project on page 2 is also favoritted.
 	const props = $props<{
