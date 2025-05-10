@@ -376,14 +376,6 @@
 		align-items: center;
 		width: 20px;
 		height: 20px;
-		/* filter: drop-shadow(0px 0px 0px var(--grey));
-		filter: drop-shadow(0px 0px 0px grey); */
-	}
-	.icon.bottom-layer {
-		z-index: -1;
-	}
-	.icon.upper-layer {
-		/* z-index: 1; */
 	}
 
 	.favorite-button {
