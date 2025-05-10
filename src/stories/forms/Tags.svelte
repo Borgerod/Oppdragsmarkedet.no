@@ -1,16 +1,29 @@
+<svelte:options runes />
+
 <script lang="ts">
+	import './form.css';
 	let searchQuery = $state('');
 	let showAllTags = $state(false);
-	const visibleTagsLimit = 7;
 
 	const {
 		tagIntent = 'include',
 		display = 'false',
 		tagType = 'field',
 		selectedTags = [],
-		onTagChange = () => {}
+		onTagChange = () => {},
+		showSearch = true,
+		size = 'm', // Default size is 'm', also accepts 's' for small
+		row = false
 	} = $props();
 
+	function rowOrGrid() {
+		if (!row) {
+			return 'grid';
+		} else {
+			return 'row';
+		}
+	}
+	let row_or_grid = rowOrGrid();
 	const fieldTags = [
 		'asfaltering',
 		'brønnboring',
@@ -41,11 +54,23 @@
 		'kjøretøy_tilgang'
 	];
 
-	const allTags = $derived(
-		tagType === 'field' ? fieldTags : tagType === 'job_attributes' ? jobAttributesTags : []
-	);
+	const jobPosterTags = ['privat', 'bedrift', 'statlig'];
+
+	const allTags = $derived(() => {
+		switch (tagType) {
+			case 'field':
+				return fieldTags;
+			case 'job_attributes':
+				return jobAttributesTags;
+			case 'job_poster':
+				return jobPosterTags;
+			default:
+				return []; // Ensure to return an empty array for unsupported tag types
+		}
+	});
+
 	const filteredTags = $derived(
-		allTags.filter((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+		allTags().filter((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
 	);
 
 	function toggleTag(tag: string) {
@@ -63,30 +88,26 @@
 </script>
 
 <div class="tags-container">
-	{#if display === 'false'}
-		<input
-			type="text"
-			bind:value={searchQuery}
-			placeholder="Søk etter tagger..."
-			class="search-field"
-		/>
+	{#if display === 'false' && showSearch}
+		<input type="text" bind:value={searchQuery} placeholder="Søk etter tagger..." class="field" />
 	{/if}
-
-	<div class="tags-grid" style:maxHeight={showAllTags ? 'none' : '86px'}>
-		{#each showAllTags ? filteredTags : filteredTags.slice(0, visibleTagsLimit) as tag}
+	<div class="tags-{row_or_grid} size-{size} {showAllTags ? 'show-all' : 'collapsed'}">
+		{#each filteredTags as tag}
 			<button
 				class="tag {display === 'true' ? 'profile' : ''} 
 				 {selectedTags.includes(tag) && display !== 'true' ? 'selected' : ''}
-				 {tagIntent}"
+				 {tagIntent} size-{size}"
 				onclick={() => (display === 'true' ? handleTagClick(tag) : toggleTag(tag))}
 				disabled={display === 'true'}
 			>
-				{tag.replace(/_/g, ' ')}
+				<span class="label">
+					{tag.replace(/_/g, ' ')}
+				</span>
 			</button>
 		{/each}
 	</div>
 
-	{#if filteredTags.length > visibleTagsLimit}
+	{#if filteredTags.length > 0 && !row}
 		<button class="toggle-tags" onclick={() => (showAllTags = !showAllTags)}>
 			{showAllTags ? 'Vis færre' : 'Vis flere'}
 		</button>
@@ -100,34 +121,86 @@
 		gap: 0.8rem;
 	}
 
-	/* .search-field {
-	  padding: 0.5rem;
-	  border: 1px solid #ccc;
-	  border-radius: 4px;
-	  width: 100%;
-	} */
-
 	.tags-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
 		gap: 0.5rem;
 		overflow-y: hidden;
-		transition: max-height 0.3s ease;
+		transition: all 0.3s ease;
+		grid-template-rows: repeat(4, auto);
+		grid-auto-rows: 0;
+		max-height: 135px;
+	}
+	.tags-grid.size-m {
+		/* grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); */
+		grid-template-columns: repeat(2, auto);
+	}
+
+	.tags-grid.size-s {
+		grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+	}
+
+	/* When expanded, show all rows */
+	.tags-grid.show-all {
+		grid-auto-rows: auto;
+		max-height: none;
+	}
+
+	/* When collapsed, hide overflow rows */
+	.tags-grid.collapsed {
+		grid-auto-rows: 0;
+		overflow: hidden;
+	}
+
+	.tags-row.show-all {
+		max-height: none;
+	}
+
+	.tags-row {
+		display: flex;
+		width: 100%;
+		justify-content: space-between;
+		flex-direction: row;
+		gap: 0.5rem;
+		overflow-y: hidden;
+		transition: all 0.3s ease;
+		max-height: 86px;
+	}
+
+	.tags-row .tag.size-s {
+		padding: 0 1rem;
 	}
 
 	.tag {
-		padding: 0.4rem 0.8rem;
 		border-radius: 999px;
 		border: 1px solid #ccc;
-		/* background: white; */
 		cursor: pointer;
 		transition: all 0.2s ease;
 	}
-	/* .tag.include.selected {
-	  background: #e0e0e0;
-	  border-color: #999;
-		  color:black;
-	} */
+	.tags-container button {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
+	.tag.grey:hover,
+	.tag.grey.selected:hover {
+		border-color: var(--secondary);
+	}
+	.tag.grey.selected {
+		background-color: color-mix(in srgb, var(--secondary) 20%, transparent) !important;
+		cursor: pointer;
+	}
+
+	.tag.size-m {
+		/* padding: 0.4rem 0.8rem; */
+		padding: 0.25rem 0.5rem;
+		/* padding: 0.5rem 0.5rem; */
+		min-width: 115px;
+	}
+
+	.tag.size-s {
+		padding: 0;
+	}
+
 	.tag.include.selected {
 		background: #e8f5e9;
 		border-color: #4caf50;
@@ -141,13 +214,11 @@
 	}
 
 	.tag.include:hover {
-		/* background: #e8f5e9; */
 		border-color: #4caf50;
 		color: black;
 	}
 
 	.tag.exclude:hover {
-		/* background: #ffebee; */
 		border-color: #f44336;
 		color: black;
 	}
@@ -156,7 +227,6 @@
 		align-self: flex-start;
 		background: none;
 		border: none;
-		/* color: #666; */
 		cursor: pointer;
 		padding: 0.2rem 0;
 	}
