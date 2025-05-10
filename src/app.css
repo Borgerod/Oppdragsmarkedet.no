@@ -8,7 +8,10 @@ h1 {
 
 :root{
 	font-family: Manrope, sans-serif;
-	font-size: medium;
+	font-size: medium !important;
+	font-size: small !important;
+	/* font-size: smaller !important; */
+	/* font-size: x-small !important; */
 }
 
 @font-face {
@@ -20,8 +23,17 @@ h1 {
 	
 }
 
-
-
+:root{
+	background-color: var(--primary-bg);
+	color: var(--primary);
+}
+:global(body) {
+	background-color: var(--primary-bg);
+	color: var(--primary);
+}
+span{
+	/* color:var(--primary); */
+}
 .row{
 	display: flex;
 	flex-direction: row;
@@ -47,6 +59,58 @@ title{
 	font-size: xx-large;
 
 }
+:root select:focus{
+	outline:none;
+}
+/* 	
+:root   select > option:checked {
+    background-color: #ff0000 !important;
+    color: white;
+}
+:root option:checked {
+    background-color: #ff0000 !important;
+    color: white;
+}
+
+:root option:hover {
+    background-color: #3793fd !important;
+}
+:root   select > option:hover {
+	background-color: #3793fd !important;
+}
+ */
+
+/* option:checked {
+	background: linear-gradient(#ff0000, #ff0000) !important;
+	color: white !important;
+  }
+  
+  select > option:checked { 
+	background: #ff0000 !important;
+  }
+  
+  option:hover {
+	background: #3793fd !important;
+	color: white !important;
+  }
+  
+  @media not (hanging-punctuation) {
+	select:focus option:checked {
+	  background: #3793fd !important;
+	}
+  } */
+
+
+span{
+	color: var(--primary);
+	font-size: small;
+	font: inherit;
+}
+p{
+	color: var(--primary);
+	font-size: small;
+	font: inherit;
+}
 
 h1 {
 	color: var(--white);
@@ -54,21 +118,30 @@ h1 {
 }
 
 h2 {
-	color: var(--secondary);
-	font-size: larger;
-	font-weight: 400;
+    color: var(--secondary);
+    font-size: large;
+    font-weight: 400;
+    line-height: normal;
 }
 
 h3 {
-	color: var(--white);
-	font-size: large;
+	color: var(--secondary);
+	font-size: medium;
+	font: inherit;
 }
 
-
+h4{
+	color: var(--secondary);
+    font-size: medium;
+    font-weight: 300;
+    line-height: normal;
+}
 
 p{
 	color: var(--primary);
-	font-size: medium;
+	font-size: small;
+	font-weight: 300;
+    line-height: normal;
 }
 
 :root{
