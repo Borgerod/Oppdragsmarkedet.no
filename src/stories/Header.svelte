@@ -1,4 +1,6 @@
-<script>
+<svelte:options runes />
+
+<script lang="ts">
 	import './header.css';
 	import Button from './Button.svelte';
 	// import NeumorphicButton from '../stories/NeumorphicButton.svelte';
@@ -17,8 +19,8 @@
 
 <header>
 	<div class="storybook-header">
-		<div class="title-card">
-			<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+		<a class="title-card" href="https://oppdragsmarkedet.no">
+			<!-- <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 				<g fill="none" fill-rule="evenodd">
 					<path
 						d="M10 0h12a10 10 0 0110 10v12a10 10 0 01-10 10H10A10 10 0 010 22V10A10 10 0 0110 0z"
@@ -33,19 +35,24 @@
 						fill="var(--accent)"
 					/>
 				</g>
-			</svg>
+			</svg> -->
+
 			<h1>OPPDRAGS<span>M</span>ARKEDET</h1>
-		</div>
+		</a>
 		<div class="button-container">
 			{#if user}
 				<span class="welcome">
 					Welcome, <b>{user.name}</b>!
 				</span>
-				<Button hollow size="small" onClick={onLogout} label="Log out" style="neomorphic" />
+				<Button hollow osl size="small" onclick={onLogout} label="Log out" style="neomorphic" />
+				<!-- <Button hollow size="small" onclick={onLogout} label="Log out" style="neomorphic" /> -->
 			{:else}
+				<Button hollow osl size="small" onclick={onLogin} label="Log in" />
+				<Button hollow osl size="small" onclick={onCreateAccount} label="Sign up" />
+				<!-- <Button hollow size="small" onclick={onLogin} label="Log in" />
+			<Button hollow size="small" onclick={onCreateAccount} label="Sign up" /> -->
+
 				<!-- <NeumorphicButton hollow onClick={onLogin} label="Log in" /> -->
-				<Button hollow size="small" onClick={onLogin} label="Log in" />
-				<Button hollow size="small" onClick={onCreateAccount} label="Sign up" />
 				<!-- <NeumorphicButton size="small" onClick={onCreateAccount} label="Sign up" /> -->
 
 				<!-- <Button primary size="small" onClick={onCreateAccount} label="Sign up" /> -->
