@@ -1,14 +1,10 @@
-.neumorphic-extrude {
+/* .neumorphic-extrude {
 	box-shadow: 1px 1px 1px #b1b1b1,  -1px -1px 1px #ffff, 5px 5px 10px  #c4c4c47e, -5px -5px 10px #ffffff; 
 	color: grey;
 	background: #f7f7f7;
-	/* border: 1px solid #b1b1b1; */
 	box-sizing: border-box;
 	padding: 0 1rem;
 	width: 100%;
-	
-
-
 }
 
 .neumorphic-inset {
@@ -19,7 +15,7 @@
 	padding: 0 1rem;
 	width: 100%;
 	height: 48px;
-}
+} */
 
 .round{
 	border-radius: 3rem;
