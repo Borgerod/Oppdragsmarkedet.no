@@ -12,7 +12,7 @@
 	// import Button from '../stories/Button.svelte';
 	// import NeumorphicButton from '../stories/NeumorphicButton.svelte';
 	import ProjectListPage from './ProjectListPage.svelte';
-
+	import Test from './test.svelte';
 	// let user = $state(null);
 	// console.log(dropdown_value);
 	// let data =
@@ -34,6 +34,7 @@
 	<Header />
 	<div class="content">
 		<ProjectListPage />
+		<!-- <Test /> -->
 	</div>
 	<Footer />
 </div>
@@ -46,7 +47,8 @@
 	}
 
 	.content {
-		flex: 1;
 		padding: 2rem;
+		display: flex;
+		justify-content: center;
 	}
 </style>
