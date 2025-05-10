@@ -1,0 +1,429 @@
+/* Global dark mode styling */
+:root {
+  /* Light mode (default) variables */
+  --background-color: var(--secondary-darkmode);
+  --text-color: var(--primary-bg);
+
+  /* --primary-bg-darkmode: #0c1011; */
+  /* --primary-bg-darkmode-dark: #060b0b; */
+  
+  --primary-bg-darkmode-brighter:#233034c4;
+  --primary-bg-darkmode: #060b0b8a;
+  --primary-bg-darkmode-dark: #060b0bc7;
+  --primary-bg-darkmode-darker: #060b0b;
+
+  --secondary-darkmode-darkmode: #192224;
+  --border-color-darkmode: hsl(211 20 16);
+  --div-bg-darkmode: hsl(210 27 12);
+  /* --field-bg-darkmode: hsl(207 24 6); */
+  --third-bg-darkmode: var(--accent-deep-shade);
+  --third-bg-darkmode: #242623;
+
+  --secondary-darkmode:  #dae6d4d5;
+  --primary-darkmode:  hsla(0, 0%, 100%, 0.70);
+
+  --primary-darkmode:  #dae6d4d5;
+  --secondary-darkmode:  hsla(0, 0%, 100%, 0.60);	
+  --secondary-darkmode-bright:  rgb(255, 255, 255);
+  --secondary-darkmode-dark:  hsla(0, 0%, 100%, 0.40);
+
+  /* --secondary-darkmode: hsla(0 2 79);  */
+  --third-bg-darkmode-bright:#50514f;
+  --third-bg-darkmode:#242623;
+  --third-bg-darkmode-dark:#1d1e1c;
+  --third-bg-darkmode-darker:#161715;
+  --third-bg-darkmode-darker:#0e0f0e;
+
+
+}
+
+:root.dark-mode, body.dark-mode {
+  /* Dark mode variables */
+  /* --background-color: var(--secondary-darkmode-darkmode); */
+  --background-color: var(--third-bg-darkmode-dark);
+  --text-color: var(--secondary-darkmode);
+}
+
+/* Global element styling */
+body.dark-mode {
+  background-color: var(--third-bg-darkmode-dark);
+  color: var(--secondary-darkmode);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+:root.dark-mode .page-list button,
+:root.dark-mode .page-list .active {
+	box-shadow: none !important;
+}
+
+:root.dark-mode .social-button:hover {
+	color:var(--third-bg-darkmode)
+}
+
+/* 
+:root.dark-mode .dark-mode-toggle {
+	box-shadow: none;
+	color:var(--secondary-bg);
+} */
+
+:root.dark-mode .dark-mode-toggle {
+	box-shadow: none;
+	color:var(--secondary-bg);
+}
+
+:root.dark-mode .dark-mode-toggle:hover {
+	color:var(--accent-brighter);
+	background-color:transparent;
+}
+
+:root.dark-mode .storybook-button--icon-text span {
+	/* color:var(--accent-medium); */
+	/* color:var(--seondary-darkmode); */
+	/* color:var(--primary-darkmode); */
+	color:inherit;
+}
+
+/* Header styling */
+:root.dark-mode .storybook-header {
+  color: var(--secondary-darkmode);
+  background-color: var(--third-bg-darkmode);
+}
+
+/* Footer styling */
+:root.dark-mode footer {
+  color: var(--secondary-darkmode);
+  background-color: var(--third-bg-darkmode);
+}
+
+/* Button styling */
+:root.dark-mode button {
+  /* color: var(--secondary-darkmode);
+  color: var(--primary-darkmode); */
+  border-color:var(--border-color-darkmode);
+  border-color:var(--third-bg-darkmode-bright);
+  box-shadow: var(--third-bg-darkmode-bright) 0px 0px 0px 1px inset;
+  /* border-width: 1px;  */
+  /* border-color:var(--border-color-darkmode); */
+  color:var(--accent-medium);
+}
+
+:root.dark-mode button.active {
+	color:var(--accent-medium) !important;
+	/* border-color:var(--border-color-darkmode) !important; */
+	border-color:var(--third-bg-darkmode-bright) !important;
+	box-shadow: var(--third-bg-darkmode-bright) 0px 0px 0px 1px inset !important;
+  /* border-width: 1px;  */
+  /* border-color:var(--border-color-darkmode); */
+}
+
+:root.dark-mode button.accordion-header:hover {
+  color:var(--accent-medium) !important;
+  border-color:var(--third-bg-darkmode-bright);
+  background-color: var(--third-bg-darkmode-darker);
+}
+
+:root.dark-mode button.accordion-header h3:hover {
+  color:var(--accent-medium) !important;
+}
+
+:root.dark-mode .tag {
+  color:inherit;
+  box-shadow: none;
+  border-color:var(--third-bg-darkmode-bright);
+  /* background-color: var(--third-bg-darkmode-darker);
+  background-color: inherit; */
+}
+
+:root.dark-mode button.tag {
+  box-shadow: none;
+  border-color:var(--third-bg-darkmode-bright);
+  /* background-color: var(--third-bg-darkmode-dark); */
+  background-color: inherit;
+}
+
+:root.dark-mode button.accordion-header {
+  box-shadow: none;
+}
+
+:root.dark-mode button.accordion-header h3 {
+	color:var(--secondary-darkmode);
+	background-color: transparent;
+}
+
+/* Add specific styling for the chevron in accordion headers */
+:root.dark-mode button.accordion-header .chevron {
+	color: var(--secondary-darkmode) !important;
+	transition: color 0.3s ease;
+}
+
+/* Add styling for the actual chevron arrow */
+:root.dark-mode button.accordion-header .chevron::after {
+	border-right-color: var(--secondary-darkmode);
+	border-bottom-color: var(--secondary-darkmode);
+}
+
+:root.dark-mode button.accordion-header:hover .chevron::after {
+	border-right-color: var(--accent-medium);
+	border-bottom-color: var(--accent-medium);
+}
+
+:root.dark-mode button.accordion-header h2:hover,
+:root.dark-mode button.accordion-header .chevron:hover {
+	color:var(--accent-medium) !important;
+	background-color: transparent;
+}
+
+
+
+:root.dark-mode .tag {
+	background-color:color-mix(in srgb, var(--secondary) 20%, transparent); 
+	background-color:color-mix(in srgb, var(--primary-bg-darkmode-darker) 40%, transparent); 
+	color:var(--secondary-darkmode);
+}
+
+:root.dark-mode .tag.green {
+	background-color:color-mix(in srgb, var(--accent) 30%, transparent); 
+	color:var(--secondary-darkmode);
+	/* color:var(--primary-darkmode); */
+}
+
+:root.dark-mode button.accordion-header:hover {
+	background-color: transparent;
+}
+
+:root.dark-mode button.tag.grey.selected{
+	background-color:color-mix(in srgb, var(--secondary) 20%, transparent) !important; 
+	border-color:var(--secondary) !important;
+}
+
+:root.dark-mode button.tag.include:hover {
+	border-color:color-mix(in srgb, var(--accent) 50%, transparent);
+	color:color-mix(in srgb, var(--accent) 50%, transparent);
+	background-color:transparent;
+}
+
+:root.dark-mode button.tag.include.selected {
+	border-color:color-mix(in srgb, var(--accent) 50%, transparent) !important;
+	color:color-mix(in srgb, var(--accent) 50%, transparent) !important;
+	background-color:color-mix(in srgb, var(--accent-brighter) 5%, transparent)  !important;
+}
+
+:root.dark-mode button.tag.exclude.selected {
+	border-color:color-mix(in srgb, var(--negative-accent) 50%, transparent);
+	color:color-mix(in srgb, var(--negative-accent) 50%, transparent);
+	background-color:color-mix(in srgb, var(--negative-accent-brighter) 5%, transparent);
+}
+
+:root.dark-mode button.tag.exclude:hover {
+  border-color:color-mix(in srgb, var(--negative-accent) 50%, transparent);
+  color:color-mix(in srgb, var(--negative-accent) 50%, transparent);
+  background-color:transparent;
+}
+
+
+
+:root.dark-mode .tabs-header button  {
+	/* color: red; */
+	/* color:color-mix(in srgb, var(--accent) 50%, transparent); */
+	/* color:color-mix(in srgb, var(--negative-accent) 50%, transparent); */
+	color: var(--secondary-darkmode);
+	color: var(--secondary-darkmode-dark);
+	/* font-weight: 800; */
+	box-shadow: none;
+	
+}
+
+:root.dark-mode .tags-container button  {
+	box-shadow: var(--third-bg-darkmode-bright) 
+}
+
+:root.dark-mode .tabs-container,
+:root.dark-mode .tabs-content {
+	border:none;
+	box-shadow: none;
+	background-color:var(--third-bg-darkmode);
+}
+
+:root.dark-mode .tabs-header {
+	border:none;
+	box-shadow: none;
+	background-color:var(--third-bg-darkmode-dark);
+}
+:root.dark-mode .tabs-header button.active:where(.s-USobv33d1EIC){
+	/* color: red; */
+	/* color:color-mix(in srgb, var(--accent) 50%, transparent); */
+	/* color:color-mix(in srgb, var(--secondary) 50%, transparent) !important; */
+	color: var(--secondary-darkmode) !important;
+	font-weight: 500 !important;
+	/* color: red !important; */
+	/* box-shadow: var(--negative-accent-medium) 0px 0px 0px 1px inset !important; */
+	/* border-bottom:none; */
+	background-color:var(--third-bg-darkmode);
+	border-bottom:none;
+	box-shadow: none !important;
+	border-width: 1px !important;
+	/* box-shadow: none; */
+	/* box-shadow: none; */
+	/* box-shadow: none; */
+	/* background-color:red !important; */
+}
+
+
+:root.dark-mode button:hover {
+  /* color: var(--secondary-darkmode);
+  color: var(--primary-darkmode); */
+  /* border-color:var(--border-color-darkmode) !important; */
+  /* border-color:var(--third-bg-darkmode); */
+  box-shadow: var(--accent-medium) 0px 0px 0px 1px inset;
+  box-shadow: none;
+  background-color:var(--third-bg-darkmode);
+  /* border-color:var(--border-color-darkmode); */
+}
+
+/* Button styling */
+:root.dark-mode .field {
+  border-color:var(--third-bg-darkmode);
+  background-color: #0e0f0e;
+  background-color: var(--primary-bg-darkmode);
+  color:var(--secondary-darkmode);
+  color:var(--secondary-darkmode-bright);
+}
+
+:root.dark-mode .field.dropdown {
+  color: var(--secondary-darkmode) !important;
+}
+
+/* Change arrow color on hover */
+:root.dark-mode .field.dropdown:hover {
+  filter: brightness(0) invert(0.7) sepia(1) saturate(3) hue-rotate(170deg); /* Accent color for hover */
+}
+
+/* :global() */
+:root.dark-mode h1 {
+	color: var(--secondary-darkmode);
+	color: var(--primary-darkmode);
+}
+ 
+:root.dark-mode h1 span {
+	color: var(--accent);
+}
+
+:root.dark-mode h2 {
+	color: var(--primary-darkmode);
+}
+
+:root.dark-mode h3 {
+	color: var(--primary-darkmode);
+}
+
+:root.dark-mode h4 {
+	color: var(--primary-darkmode);
+}
+
+:root.dark-mode span {
+	color: var(--secondary-darkmode);
+}
+
+:root.dark-mode p {
+	color: var(--secondary-darkmode);
+}
+
+/* Card styling for dark mode */
+:root.dark-mode .card {
+  background-color: var(--third-bg-darkmode);
+}
+
+/* Add smooth transitions */
+body, header, footer, .card, button {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* _______ FILTER TAGS ____________________________ */
+:root.dark-mode .filter-tag {
+	border-radius: 999px;
+	border: none;
+	display: flex;
+	align-items: center;
+	font-size: 0.875rem;
+}
+
+:root.dark-mode .filter-tag {
+	color:color-mix(in srgb, var(--secondary) 50%, transparent) !important;
+}
+
+:root.dark-mode .filter-tag.grey
+{
+	/* color: var(--secondary); */
+	color:color-mix(in srgb, var(--secondary) 50%, transparent);
+	background-color:color-mix(in srgb, var(--secondary) 5%, transparent);
+	box-shadow: color-mix(in srgb, var(--secondary) 50%, transparent) 0px 0px 0px 1px inset;
+
+}
+:root.dark-mode .filter-tag.include{
+	color:color-mix(in srgb, var(--accent) 50%, transparent);
+	color: var(--secondary);
+	background-color:color-mix(in srgb, var(--accent-brighter) 5%, transparent);
+	box-shadow: color-mix(in srgb, var(--accent) 50%, transparent) 0px 0px 0px 1px inset;
+}
+:root.dark-mode .filter-tag.exclude{
+	color:color-mix(in srgb, var(--negative-accent) 50%, transparent);
+	color: var(--secondary);
+	background-color:color-mix(in srgb, var(--negative-accent-brighter) 5%, transparent);
+	box-shadow: color-mix(in srgb, var(--negative-accent) 50%, transparent) 0px 0px 0px 1px inset;
+}
+:root.dark-mode .filter-tag .tag-right{
+ filter: opacity(100%);
+}
+
+
+
+:root.dark-mode .tag-right, 
+:root.dark-mode .tag-left {
+	box-shadow: none;
+}
+
+:root.dark-mode .filter-tag .tag-left {
+	box-shadow: none;
+	padding: 0.25rem 0.25rem 0.25rem 0.5rem;
+	border-bottom-left-radius: 999px;
+	border-top-left-radius: 999px;
+	background-color: inherit;
+	color: inherit;
+	border: none;
+	cursor: pointer;
+	height: 100%;
+	height: 100%;
+}
+
+:root.dark-mode .filter-tag .tag-right {
+	padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+	border-bottom-right-radius: 999px;
+	border-top-right-radius: 999px;
+	background-color: inherit;
+	color: inherit;
+	border: none;
+	cursor: pointer;
+	height: 100%;
+	font-size: 1rem;
+}
+
+:root.dark-mode .filter-tag .tag-left:hover span,
+:root.dark-mode .filter-tag .tag-left:hover,
+:root.dark-mode .filter-tag .tag-right:hover{
+	color: var(--white);
+}
+
+:root.dark-mode .filter-tag.include .tag-left:hover,
+:root.dark-mode .filter-tag.include .tag-right:hover{
+	background-color:color-mix(in srgb, var(--accent-brighter) 20%, transparent);
+}
+
+:root.dark-mode .filter-tag.exclude .tag-left:hover,
+:root.dark-mode .filter-tag.exclude .tag-right:hover{
+	background-color:color-mix(in srgb, var(--negative-accent) 10%, var(--negative-accent-brighter) 10%);
+}
+
+:root.dark-mode .filter-tag.grey .tag-left:hover,
+:root.dark-mode .filter-tag.grey .tag-right:hover{
+	background-color:color-mix(in srgb, var(--secondary) 20%, transparent);
+}
