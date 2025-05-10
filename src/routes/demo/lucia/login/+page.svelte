@@ -1,4 +1,6 @@
-<script>
+<svelte:options runes />
+
+<script lang="ts">
 	import { enhance } from '$app/forms';
 
 	let { form } = $props();

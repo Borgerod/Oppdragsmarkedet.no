@@ -1,4 +1,6 @@
-<script>
+<svelte:options runes />
+
+<script lang="ts">
 	import '../app.css';
 	let { children } = $props();
 
