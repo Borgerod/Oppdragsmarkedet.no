@@ -1,137 +1,290 @@
 <!-- USED BY projectListPage, is the container for each company displayed in list.  -->
-<script>
+<svelte:options runes />
+
+<script lang="ts">
 	import './theme.css';
 	import '@fortawesome/fontawesome-free/css/all.css';
-	import '../app.css';
-	// import '../stories/page.css'
 
-	let { project } = $props();
+	// import { Fa } from 'svelte-fa';
+	// import { faHeart } from '@fortawesome/free-solid-svg-icons;
+
+	import '../app.css';
+	// import { onMount } from 'svelte';
+
+	const props = $props<{
+		project: any;
+		gridView: boolean;
+	}>();
+
+	let favorite = $state(false);
+	// let favorite = $state(true);
+
+	let isExpanded = $state(false);
+	let mainCardElement: HTMLElement;
+
+	// Toggle expanded state
+	function toggleExpand() {
+		isExpanded = !isExpanded;
+	}
+
+	function handleFavorite() {
+		favorite = !favorite;
+	}
+
+	console.log('in ProjectCard, gridView:', props.gridView);
 </script>
 
-<!-- OPTION 1 -->
-<!-- <div class="main card row ">
-		<div class="thumbnail">
-			<div class="card neumorphic-inset"> 
-				<img src={project.image_link} alt="Flowers in Chania" style="neumorphic-inset">
-			</div>
-		</div>
-
-		<div class="container mini-profile">
-
-			<div class="mini row">
-				{#if project.heart === true}
-				<div class="tag">{project.payed_listing}</div>
-				{:else}
-				{project.date_issued} | {project.area} | <div class="tag">{project.lister_class}</div>
-				{/if}
-			</div>
-
-			<div class="card small neumorphic-inset">
-				<h2> {project.job_title}</h2>
-			</div>
-			<div class="card medium row">
-				<div class="card small space">
-					<h2 class="">{project.category} {#if project.sub_category === true}, {project.sub_category}{/if}</h2>
-				</div>
-				<spacer></spacer>
-				<div class="card small space neumorphic-inset row"><h2>Tidsfrist: </h2> {project.due_date}</div>
-			</div>
-			
-				<div class="row">
-					{#each project.tags as tag}
-					<div class="tag">{tag}</div>
-					{/each}
-				</div>
-		</div>
-		<div class="icon favorite-button">
-			{#if project.heart === false}
-				<i class="fa-lg far fa-heart"></i> 
-			{:else}
-				<i class="fas fa-heart"></i> 
-			{/if}
-		</div>
-	</div> -->
-
 <!-- OPTION 3 -->
-<div class="main card row">
-	<!-- 
-	<div class="thumbnail neumorphic-inset"> 
-		<img src={project.image_link} alt="Flowers in Chania">
-	</div> 
-	-->
-	<div
-		class="thumbnail neumorphic-image"
-		style="background-image: url({project.image_link}); background-size: cover; background-position: center;"
-	></div>
-	<!-- 	old thumbnail
-		<div class="thumbnail">
-			<div class="card neumorphic-inset"> 
-				<img src={project.image_link} alt="Flowers in Chania" style="neumorphic-inset">
-			</div>
-		</div> 
-	-->
+<div
+	class="main card row"
+	class:grid-view={props.gridView}
+	class:expanded={isExpanded}
+	bind:this={mainCardElement}
+>
+	<div class="thumbnail">
+		<img src={props.project.image_link} alt="decking schema" style="" />
+		{#if props.gridView}
+			<!-- acts as outer rim fill for favorite-button -->
+			<button
+				class="favorite-button upper-layer"
+				class:grid-view={props.gridView}
+				onclick={handleFavorite}
+			>
+				<div class="icon upper-layer">
+					{#if favorite === false}
+						<i class="fa-lg far fa-heart"></i>
+					{:else}
+						<!-- <i class="fa-lg far fa-heart" style="color: var(--accent-darker);"></i> -->
+						<!-- <i class="fa-lg far fa-heart" style="color: var(--white);"></i> -->
+						<!-- <i class="fa-lg far fa-heart" style="color: var(--white);"></i> -->
+						<i class="fa-lg far fa-heart" style="color: var(--accent-signal);"></i>
+					{/if}
+				</div>
+			</button>
+			<!-- acts as inner fill for favorite-button -->
+			<button class="favorite-button" onclick={handleFavorite}>
+				<div class="icon">
+					<!-- <div class="icon bottom-layer"> -->
+					{#if favorite === false}
+						<!-- <i class="fa-lg far fa-heart"></i> -->
+						<!-- <i class="fa-lg fas fa-heart" style="color: var(--shadow-brighter);"></i> -->
+						<i class="fa-lg fas fa-heart" style="color: var(--secondary-medium-translucent);"></i>
+						<!-- <i class="fa-lg fas fa-heart" style="color: var(--secondary-translucent);"></i> -->
+					{:else}
+						<!-- <i class="fa-lg far fa-heart"></i> -->
+						<!-- <i class="fa-lg fas fa-heart" style="color: var(--accent-medium);"></i> -->
+						<i class="fa-lg fas fa-heart" style="color: var(--accent-signal);"></i>
+						<!-- <i class="fa-lg fas fa-heart" style="color: var(--accent-little-translucent);"></i> -->
+					{/if}
+				</div>
+			</button>
+		{/if}
+	</div>
 
 	<div class="mini-profile container">
-		<div class="mini row">
-			{#if project.heart === true}
-				<div class="tag">{project.payed_listing}</div>
-			{:else}
-				{project.date_issued} | {project.area}
+		<div class="upper">
+			<div class="column">
+				<div class="mini row">
+					{#if props.project.payed_listing === true}
+						<div class="tag">{props.project.payed_listing}</div>
+					{/if}
+					<p>
+						{props.project.date_issued} | {props.project.area}
+					</p>
+				</div>
+
+				<div class="small">
+					<h4>{props.project.job_title}</h4>
+				</div>
+			</div>
+			{#if !props.gridView}
+				<div
+					class="spacer"
+					aria-label="will be stand in for favorite button, act as its margin"
+				></div>
+				<button class="favorite-button" onclick={handleFavorite}>
+					<div class="icon">
+						{#if favorite === false}
+							<i class="fa-lg far fa-heart"></i>
+						{:else}
+							<i class="fa-lg fas fa-heart" style="color: var(--accent);"></i>
+						{/if}
+					</div>
+				</button>
 			{/if}
 		</div>
 
-		<div class="card small neumorphic-inset">
-			<h2>{project.job_title}</h2>
-		</div>
-		<div class="card medium row">
-			<div class="card small space neumorphic-inset row">
-				<h2 class="">
-					{project.category}
-					{#if project.sub_category === true}, {project.sub_category}{/if}
-				</h2>
+		<div class="lower">
+			<div class="small row">
+				<div class="small space row">
+					<h4 class="">
+						{props.project.category}
+						{#if props.project.sub_category === true}, {props.project.sub_category}{/if}
+					</h4>
+				</div>
+				<!-- <spacer></spacer> -->
+				<!-- <spacer></spacer> -->
+				<!-- <spacer></spacer> -->
 			</div>
-			<div class="card small neumorphic-inset row">
-				<h3>Tidsfrist:</h3>
-				<p>{project.due_date}</p>
+			<div class="row">
+				<div class="tag-row-container">
+					<div class="tag-row">
+						<div class="tag green">{props.project.lister_class}</div>
+						|
+						{#each props.project.tags as tag}
+							<div class="tag">{tag}</div>
+						{/each}
+					</div>
+				</div>
+				<div class="column s-SdDzWjP088pA due-date-container">
+					<p>Frist</p>
+					<p>{props.project.due_date}</p>
+				</div>
 			</div>
-			<spacer></spacer>
-			<spacer></spacer>
-			<spacer></spacer>
 		</div>
-
-		<div class="tag-row">
-			<div class="tag green">{project.lister_class}</div>
-			|
-			{#each project.tags as tag}
-				<div class="tag">{tag}</div>
-			{/each}
-		</div>
-	</div>
-	<div class="icon favorite-button">
-		{#if project.heart === false}
-			<i class="fa-lg far fa-heart"></i>
-		{:else}
-			<i class="fas fa-heart"></i>
-		{/if}
 	</div>
 </div>
 
-<style>
-	/* NEUMORPHIC */
+<!-- {#if hasOverflow && !isExpanded}
+	<button class="show-more-btn" onclick={toggleExpand}>
+		<i class="fas fa-chevron-down"></i> Show more
+	</button>
+{/if}
+{#if isExpanded}
+	<button class="show-less-btn" onclick={toggleExpand}>
+		<i class="fas fa-chevron-up"></i> Show less
+	</button>
+{/if} -->
 
-	.main {
+<style>
+	.thumbnail {
+		position: relative;
+		min-width: 150px;
+		width: 30%; /* Fixed width percentage */
+		padding: 0;
+		margin: 0;
 	}
 
-	.main:hover {
-		box-shadow:
-			inset 3px 3px 6px #c4c4c47e,
-			inset -3px -3px 6px #ffffff,
-			inset 0px 0px 20px #c4c4c47e;
-		box-shadow:
-			1px 1px 1px #b1b1b1,
-			-1px -1px 1px #ffff,
-			5px 5px 10px #c4c4c47e,
-			-5px -5px 10px #ffffff;
+	.thumbnail img {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		object-fit: cover;
+		object-position: center;
+		border-radius: 0.5rem 0 0 0.5rem;
+	}
+
+	.main.card.grid-view .thumbnail img {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		object-fit: cover;
+		object-position: center;
+		border-radius: 0.5rem 0.5rem 0 0;
+	}
+
+	/* Ensure the main card has proper structure to support the thumbnail */
+	.main.card {
+		display: flex;
+		align-items: stretch;
+		padding: 0;
+		/* overflow: auto; */
+		min-height: 200px;
+		/* height: 200px; */
+		transition: height 0.3s ease;
+		min-width: 250px;
+		max-width: 100%;
+	}
+
+	/* Grid view styling */
+	.main.card.grid-view {
+		flex-direction: column;
+		height: auto;
+		min-height: 350px;
+		max-height: 450px;
+	}
+
+	.main.card.grid-view .tag-row {
+		/* padding-right: 2rem; */
+		padding-right: 20%;
+	}
+
+	/* Expanded card state */
+	.main.card.expanded {
+		height: auto;
+		min-height: 200px;
+		overflow: visible;
+	}
+
+	/* Adjust container to properly align with the thumbnail */
+	.mini-profile.container {
+		padding: 1rem;
+		flex: 1;
+		justify-content: space-between;
+		overflow: hidden;
+		row-gap: 1rem;
+		position: relative;
+	}
+
+	.upper {
+		display: flex;
+		flex-direction: row;
+		row-gap: 1rem;
+		width: 100%;
+		justify-content: space-between;
+	}
+	.lower {
+		display: flex;
+		flex-direction: column;
+		row-gap: 0.5rem;
+		/* bottom: 0; */
+		/* max-height: 50%; */
+	}
+	.lower .column {
+		row-gap: 0.25rem;
+		display: flex;
+		align-items: flex-end;
+	}
+
+	.due-date-container {
+		margin-top: 1rem;
+		margin-left: 1rem;
+		position: absolute;
+		bottom: 1rem;
+		right: 1rem;
+		text-align: right;
+		display: flex;
+		flex-direction: column;
+		row-gap: 0.25rem;
+	}
+
+	.column {
+		display: flex;
+		flex-direction: column;
+		row-gap: 1rem;
+	}
+
+	.row {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+	}
+	.mini.row {
+		justify-content: flex-start;
+	}
+
+	.container {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		flex-wrap: nowrap;
+		/* row-gap: 1rem; */
+		flex: 3;
+		justify-content: space-between;
 	}
 
 	.tag {
@@ -141,10 +294,17 @@
 		display: flex;
 		flex-wrap: nowrap;
 		font-size: small;
+		align-items: center;
 	}
 
 	.tag.green {
 		background: rgba(from var(--accent) r g b / 50%);
+	}
+
+	.tag-row-container {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
 	}
 
 	.tag-row {
@@ -153,23 +313,38 @@
 		flex-wrap: wrap;
 		column-gap: 0.5rem;
 		row-gap: 0.5rem;
+		padding-right: 1.6rem;
 	}
 
-	.column {
-		flex-direction: column;
-		row-gap: 1rem;
-	}
-
-	.row {
+	.show-more-btn,
+	.show-less-btn {
+		background: none;
+		border: none;
+		color: var(--accent);
+		cursor: pointer;
+		font-size: small;
+		padding: 4px 8px;
+		margin: 8px auto;
 		display: flex;
-		align-items: flex-end;
-		/* align-items: center; */
-		justify-content: space-between;
-		column-gap: 1rem;
+		align-items: center;
+		gap: 4px;
+		width: fit-content;
+	}
+
+	.show-more-btn:hover,
+	.show-less-btn:hover {
+		text-decoration: underline;
 	}
 
 	spacer {
 		width: 100%;
+	}
+
+	.spacer {
+		/* width: 25%;
+		height: 100%; */
+		width: 42px;
+		height: 42px;
 	}
 
 	.space {
@@ -177,135 +352,97 @@
 		column-gap: 100%;
 	}
 
-	.container {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		justify-content: space-between;
-		flex-wrap: nowrap;
-		row-gap: 1rem;
-	}
-
 	.card .mini {
 		border-radius: 0.5rem;
-		padding: 0.25rem 0.5rem;
 		margin-bottom: -0.5rem;
 	}
 
 	.card .small {
-		border-radius: 1rem;
+		border-radius: 0.5rem;
 		padding: 0.5rem 1rem;
-		/* align-items: baseline; */
 		align-items: flex-end;
-		/* padding: .5rem .5rem; */
-		/* padding: .5rem .5rem; */
-		/* display: flex;
-		flex-direction: row;
-		align-items: flex-start;
-		justify-content: space-between;
-		flex-wrap: nowrap; */
-	}
-
-	.card .medium {
-		border-radius: 1rem;
-		padding: 0rem;
-		/* flex-direction: column; */
-
-		/* width: 100%; */
-		/* row-gap: 1rem; */
-		/* column-gap: 1rem; */
-	}
-
-	.card .big {
-		border-radius: 2rem;
-		padding: 2rem;
-		width: 100%;
-		row-gap: 1rem;
-		column-gap: 1rem;
+		padding: 0;
 	}
 
 	.card {
-		border-radius: 2rem;
+		border-radius: 0.5rem;
 		padding: 2rem;
 		width: 100%;
 		row-gap: 1rem;
-		column-gap: 1rem;
-
 		display: flex;
 		align-items: flex-start;
 		justify-content: space-between;
 		flex-wrap: nowrap;
 	}
-	/*  backup
-	.thumbnail {
-		height: 100%;
-		display: flex;
-		align-items: stretch;
-		align-content: center;
-		flex-direction: column;
-		flex-wrap: nowrap;
-		justify-content: center;
-		padding:1rem 0;
-		padding:0;
-		margin:0;
-	} */
-
-	.neumorphic-image {
+	.main.card {
 		box-shadow:
-			inset 5px 5px 6px #c4c4c47e,
-			/* inset -3px -3px 6px #ffffff,  */ inset -5px -5px 6px #c4c4c47e,
-			inset 0px 0px 20px #c4c4c47e;
+			0 1px 6px var(--shadow-bright),
+			0 1px 1px var(--shadow);
 	}
-	.thumbnail {
-		/* background-image: {project.image}; */
-		height: 100%;
+
+	.main.card:hover {
+		background-color: var(--accent-very-translucent);
+		box-shadow:
+			0 3px 6px var(--shadow-bright),
+			0 3px 8px var(--shadow);
+	}
+
+	.favorite-button:hover {
+		background-color: var(--accent-brightest);
+	}
+	.favorite-button:hover i {
+		color: black;
+	}
+
+	.favorite-button .icon {
 		display: flex;
-		align-items: stretch;
-		align-content: center;
-		flex-direction: column;
-		flex-wrap: nowrap;
-		justify-content: center;
-		padding: 1rem 0;
-		padding: 0;
-		margin: 0;
-		height: 100%;
-		width: 50%;
-		min-width: 200px;
-		max-width: 350px;
-		border-radius: 1rem;
-	}
-
-	.thumbnail .card {
-		height: 100%;
-		border-radius: 0.5rem;
-		padding: 0;
-		overflow: hidden;
-		border-width: 1px;
-		border-color: #b1b1b1;
-		/* height: 100%; */
-		/* display: flex;
-		flex-direction: column;
-		align-items: center; */
-	}
-
-	.thumbnail .card img {
-		/* object-fit: cover; */
-		object-fit: fill;
-		/* object-fit:contain; */
-		/* height: 250px; */
-		height: 200px;
-		/* height: 150px; */
-		height: 100%;
-		/* width: 350px; */
-		width: 450px;
-	}
-	.icon {
 		justify-content: center;
 		align-items: center;
-		align-content: center;
+		width: 20px;
+		height: 20px;
+		/* filter: drop-shadow(0px 0px 0px var(--grey));
+		filter: drop-shadow(0px 0px 0px grey); */
+	}
+	.icon.bottom-layer {
+		z-index: -1;
+	}
+	.icon.upper-layer {
+		/* z-index: 1; */
+	}
+
+	.favorite-button {
+		width: 42px;
+		height: 42px;
+		padding: 0;
+		border-radius: 8px;
+		box-shadow: none;
 		display: flex;
-		/* height:3rem; */
-		/* width:3rem; */
-		/* background-color: aqua; */
+		justify-content: center;
+		align-items: center;
+		border-radius: 999px;
+
+		/* margin-top: 1rem; */
+		/* margin-left: 1rem; */
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		text-align: right;
+		display: flex;
+		flex-direction: column;
+		row-gap: 0.25rem;
+	}
+
+	@media (max-width: 400px) {
+		.main.card {
+			min-width: 100%;
+		}
+
+		.due-date-container {
+			position: relative;
+			bottom: auto;
+			right: auto;
+			margin: 0.5rem 0 0 0;
+			align-items: flex-start;
+		}
 	}
 </style>
