@@ -30,3 +30,17 @@ admin_info.txt
 
 # src
 test.svelte
+deprecated/
+src/routes/deprecated/
+# depricated/
+# depricated\
+# depricated
+# depricated\TestComponent.svelte
+# depricated/TestComponent.svelte
+# TestComponent.svelte
+# src\routes\depricated\
+# src\routes\depricated
+# src/routes/depricated/
+# src/routes/depricated
+src/routes/depricated/home.svelte
+src/routes/depricated/TestComponent.svelte
