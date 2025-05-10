@@ -88,10 +88,10 @@
 	// For the tabs component
 	let activeTab = $state('profile');
 	let availableTabs = [
-		{ id: 'profile', name: 'Profile' },
-		{ id: 'projects', name: 'Projects' },
-		{ id: 'saved', name: 'Saved' },
-		{ id: 'settings', name: 'Settings' }
+		{ id: 'profile', name: 'Profil' },
+		{ id: 'projects', name: 'Prosjekter' },
+		{ id: 'saved', name: 'Lagret' },
+		{ id: 'settings', name: 'Innstillinger' }
 	];
 
 	// Fetch user data from API
@@ -199,16 +199,16 @@
 							</span>
 						{/each}
 					</div>
-					<span class="rating-text">{userData.rating} ({userData.reviews_count} reviews)</span>
+					<span class="rating-text">{userData.rating} ({userData.reviews_count} anmeldelser)</span>
 				</div>
 
-				<Button rounded size="small" label="Edit Profile" onclick={handleEditProfile} hollow />
+				<Button rounded size="small" label="Rediger Profil" onclick={handleEditProfile} hollow />
 			</div>
 
 			<div class="profile-actions">
 				<button class="action-button" onclick={handleLogout}>
 					<Fa icon={faSignOutAlt} />
-					<span>Log out</span>
+					<span>Logg ut</span>
 				</button>
 			</div>
 		</div>
@@ -232,12 +232,12 @@
 		{#if activeTab === 'profile'}
 			<div class="profile-content">
 				<div class="profile-section">
-					<h2>About</h2>
+					<h2>Beskrivelse</h2>
 					<p>{userData.bio}</p>
 				</div>
 
 				<div class="profile-section">
-					<h2>Contact Information</h2>
+					<h2>Kontakt Informasjon</h2>
 					<div class="contact-info">
 						<div class="contact-item">
 							<Fa icon={faEnvelope} />
@@ -253,13 +253,14 @@
 						</div>
 						<div class="contact-item">
 							<Fa icon={faCalendarAlt} />
-							<span>Member since {new Date(userData.date_joined).toLocaleDateString()}</span>
+							<span>Medlem siden {new Date(userData.date_joined).toLocaleDateString()}</span>
 						</div>
 					</div>
 				</div>
 
 				<div class="profile-section">
-					<h2>Skills & Specialization</h2>
+					<!-- <h2>Skills & Specialization</h2> -->
+					<h2>Ferdigheter og spesialiseringer</h2>
 					<div class="skills-container">
 						{#each userData.field as skill}
 							<div class="skill-tag">{skill}</div>
@@ -268,7 +269,7 @@
 				</div>
 
 				<div class="profile-section">
-					<h2>Social Media</h2>
+					<h2>Sosiale Media</h2>
 					<div class="social-links">
 						{#if userData.social?.linkedin}
 							<a href={userData.social.linkedin} target="_blank" class="social-link">
@@ -291,7 +292,7 @@
 		{:else if activeTab === 'projects'}
 			<div class="projects-content">
 				<div class="projects-section">
-					<h2>Active Projects</h2>
+					<h2>Aktive Prosjekter</h2>
 					{#if userData.activeProjects?.length > 0}
 						<div class="projects-list">
 							{#each userData.activeProjects as project}
@@ -299,29 +300,29 @@
 									<h3>{project.title}</h3>
 									<div class="project-details">
 										<span class="status {project.status.toLowerCase().replace(' ', '-')}"
-											>{project.status}</span
+											>{project.status === 'In progress' ? 'Pågående' : project.status}</span
 										>
-										<span class="project-client">Client: {project.client}</span>
-										<span class="project-due">Due: {project.dueDate}</span>
+										<span class="project-client">Kunde: {project.client}</span>
+										<span class="project-due">Frist: {project.dueDate}</span>
 									</div>
 								</div>
 							{/each}
 						</div>
 					{:else}
-						<p class="empty-state">No active projects</p>
+						<p class="empty-state">Ingen aktive prosjekter</p>
 					{/if}
 				</div>
 
 				<div class="projects-section">
-					<h2>Completed Projects</h2>
+					<h2>Fullførte Prosjekter</h2>
 					{#if userData.completedProjects?.length > 0}
 						<div class="projects-list">
 							{#each userData.completedProjects as project}
 								<div class="project-card">
 									<h3>{project.title}</h3>
 									<div class="project-details">
-										<span class="project-date">Completed: {project.date}</span>
-										<span class="project-client">Client: {project.client}</span>
+										<span class="project-date">Fullført: {project.date}</span>
+										<span class="project-client">Kunde: {project.client}</span>
 										<div class="project-rating">
 											<Fa icon={faStar} />
 											<span>{project.rating}</span>
@@ -331,13 +332,13 @@
 							{/each}
 						</div>
 					{:else}
-						<p class="empty-state">No completed projects</p>
+						<p class="empty-state">Ingen fullførte prosjekter</p>
 					{/if}
 				</div>
 			</div>
 		{:else if activeTab === 'saved'}
 			<div class="saved-content">
-				<h2>Saved Projects</h2>
+				<h2>Lagrede Prosjekter</h2>
 				{#if userData.savedProjects?.length > 0}
 					<div class="saved-projects-list">
 						{#each userData.savedProjects as project}
@@ -356,51 +357,51 @@
 						{/each}
 					</div>
 				{:else}
-					<p class="empty-state">No saved projects</p>
+					<p class="empty-state">Ingen lagrede prosjekter</p>
 				{/if}
 			</div>
 		{:else if activeTab === 'settings'}
 			<div class="settings-content">
-				<h2>Account Settings</h2>
+				<h2>Kontoinnstillinger</h2>
 
 				<div class="settings-section">
-					<h3>Profile Information</h3>
+					<h3>Profilinformasjon</h3>
 					<div class="settings-form">
 						<div class="form-row">
 							<div class="form-group">
-								<label for="username">Username</label>
+								<label for="username">Brukernavn</label>
 								<input type="text" id="username" class="field" value={userData.username} />
 							</div>
 							<div class="form-group">
-								<label for="email">Email</label>
+								<label for="email">E-post</label>
 								<input type="email" id="email" class="field" value={userData.email} />
 							</div>
 						</div>
 
 						<div class="form-row">
 							<div class="form-group">
-								<label for="first_name">First Name</label>
+								<label for="first_name">Fornavn</label>
 								<input type="text" id="first_name" class="field" value={userData.first_name} />
 							</div>
 							<div class="form-group">
-								<label for="sur_name">Last Name</label>
+								<label for="sur_name">Etternavn</label>
 								<input type="text" id="sur_name" class="field" value={userData.sur_name} />
 							</div>
 						</div>
 
 						<div class="form-row">
 							<div class="form-group">
-								<label for="phone">Phone</label>
+								<label for="phone">Telefon</label>
 								<input type="tel" id="phone" class="field" value={userData.phone} />
 							</div>
 							<div class="form-group">
-								<label for="location">Location</label>
+								<label for="location">Sted</label>
 								<input type="text" id="location" class="field" value={userData.location} />
 							</div>
 						</div>
 
 						<div class="form-group">
-							<label for="bio">Bio</label>
+							<label for="bio">Biografi</label>
 							<textarea id="bio" class="field" rows="4">{userData.bio}</textarea>
 						</div>
 
@@ -408,7 +409,7 @@
 							<Button
 								rounded
 								size="medium"
-								label="Save Changes"
+								label="Lagre Endringer"
 								style="secondary"
 								onclick={saveChanges}
 							/>
@@ -417,20 +418,20 @@
 				</div>
 
 				<div class="settings-section">
-					<h3>Password</h3>
+					<h3>Passord</h3>
 					<div class="settings-form">
 						<div class="form-group">
-							<label for="current_password">Current Password</label>
+							<label for="current_password">Nåværende Passord</label>
 							<input type="password" id="current_password" class="field" />
 						</div>
 
 						<div class="form-row">
 							<div class="form-group">
-								<label for="new_password">New Password</label>
+								<label for="new_password">Nytt Passord</label>
 								<input type="password" id="new_password" class="field" />
 							</div>
 							<div class="form-group">
-								<label for="confirm_password">Confirm Password</label>
+								<label for="confirm_password">Bekreft Passord</label>
 								<input type="password" id="confirm_password" class="field" />
 							</div>
 						</div>
@@ -439,7 +440,7 @@
 							<Button
 								rounded
 								size="medium"
-								label="Update Password"
+								label="Oppdater Passord"
 								style="secondary"
 								onclick={SavePassword}
 							/>
@@ -448,26 +449,26 @@
 				</div>
 
 				<div class="settings-section">
-					<h3>Notification Preferences</h3>
+					<h3>Varslingsinnstillinger</h3>
 					<div class="settings-form">
 						<div class="checkbox-option">
 							<input type="checkbox" id="email_notifications" checked />
-							<label for="email_notifications">Email Notifications</label>
+							<label for="email_notifications">E-postvarsling</label>
 						</div>
 						<div class="checkbox-option">
 							<input type="checkbox" id="project_updates" checked />
-							<label for="project_updates">Project Updates</label>
+							<label for="project_updates">Prosjektoppdateringer</label>
 						</div>
 						<div class="checkbox-option">
 							<input type="checkbox" id="marketing_emails" />
-							<label for="marketing_emails">Marketing Emails</label>
+							<label for="marketing_emails">Markedsføringse-post</label>
 						</div>
 
 						<div class="form-actions">
 							<Button
 								rounded
 								size="medium"
-								label="Save Preferences"
+								label="Lagre Innstillinger"
 								style="secondary"
 								onclick={SavePreferences}
 							/>
