@@ -1,4 +1,6 @@
-<script>
+<svelte:options runes />
+
+<script lang="ts">
 	// new edit
 	let buttonProps = {
 		// class:[$$restProps.class]
@@ -14,17 +16,18 @@
    * @property {boolean} [hollow]
    * @property {boolean} [inverted] make color inverted
    * @property {boolean} [primary] Is this the principal call to action on the page?
-   * @property {boolean} [neomorphic] Is this the principal call to action on the page?
-   * @property {boolean} [green] Is this the principal call to action on the page?
+   * @property {boolean} [dark_bg] Is this the principal call to action on the page?
    * @property {boolean} [osl] Is this the principal call to action on the page?
    * @property {boolean} [osloff] Is this the principal call to action on the page?
    * @property {string} [backgroundColor] What background color to use
+   * @property {string} [parentColor] What background color the parent has
    * @property {'small' | 'medium' | 'large'} [size] How large should the button be?
    * @property {string} label Button contents
    * @property {() => void} [onclick] The onclick event handler
    * @property {string} [style] potentially be the replacement for primary switches between: [primary, secondary, hollow, neomorphic]
    * @property {boolean} [wide] potentially be the replacement for primary switches between: [primary, secondary, hollow, neomorphic]
    * @property {boolean} [rounded] potentially be the replacement for primary switches between: [primary, secondary, hollow, neomorphic]
+   * @property {'reset' | 'submit' | 'button'} [type] which type of button 
 	
    */
 
@@ -36,50 +39,29 @@
 		inverted = false,
 		osloff = false,
 		osl = false,
-		green = false,
+		dark_bg = false,
 		primary = false,
-		neomorphic = false,
-		backgroundColor,
+		backgroundColor = '',
 		size = 'medium',
 		label,
 		onclick,
-		style = 'secondary'
+		style = 'secondary',
+		type = 'button' as 'button' | 'submit' | 'reset'
 	} = $props();
 </script>
 
 <button
-	type="button"
+	{type}
 	class={['storybook-button', `storybook-button--${size}`].join(' ')}
 	id={wide ? 'wide' : ''}
 	class:storybook-button--primary={primary}
 	class:storybook-button--hollow={!primary && hollow}
 	class:storybook-button--secondary={!primary && !hollow}
-	class:storybook-button--neomorphic={!primary && neomorphic}
-	class:storybook-button--green={!primary && neomorphic && green}
-	class:storybook-button--neomorphic-osl={!primary && neomorphic && osl}
-	class:storybook-button--neomorphic-osl_off={osloff}
+	class:storybook-button--dark_bg={!primary && !hollow && dark_bg}
+	class:storybook-button--osl={!primary && hollow && osl}
 	style:background-color={backgroundColor}
 	class:storybook-button--rounded={rounded}
 	{onclick}
 >
 	{label}
-	<!-- style:background-color=var({backgroundColor}) -->
 </button>
-<!-- onmouseover={onmouseover}
-onmouseenter={onmouseenter}
-onmouseleave={onmouseleave}
-{...buttonProps} -->
-<!-- id = {neomorphic ? 'storybook-button--neomorphic' : ''} -->
-<!-- class:storybook-button--neomorphic-${primary?:primary|secondary} = {neomorphic} -->
-
-<!-- BACKUP, old button. Do not delete -->
-<!-- <button
-  type="button"
-  class = {['storybook-button', `storybook-button--${size}`].join(' ')}
-  class:storybook-button--primary = {primary}
-  class:storybook-button--neumorphic = {!primary}
-  style:background-color = {backgroundColor}
-  onclick = {onclick}
->
-  {label}
-</button> -->

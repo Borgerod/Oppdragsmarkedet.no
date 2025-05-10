@@ -1,4 +1,6 @@
-<script module>
+<svelte:options runes />
+
+<script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import Button from './Button.svelte';
 	import { fn } from '@storybook/test';
@@ -16,7 +18,7 @@
 			}
 		},
 		args: {
-			onClick: fn()
+			onclick: fn()
 		}
 	});
 </script>
