@@ -1,4 +1,9 @@
+<svelte:options runes />
+
 <script lang="ts">
+	// import { Drawer } from 'vaul-svelte';
+	// import Drawer from '../stories/Drawer.svelte';
+	import ProjectList from '../stories/ProjectList.svelte';
 	import '../stories/button.css';
 	import { Fa } from 'svelte-fa';
 	import {
@@ -8,7 +13,8 @@
 		faGrip,
 		faTableCells,
 		faTh,
-		faMapLocation
+		faMapLocation,
+		faBookBookmark
 	} from '@fortawesome/free-solid-svg-icons';
 
 	// @ts-ignore
@@ -16,15 +22,19 @@
 	import Button from '../stories/Button.svelte';
 	import './ProjectListPage.css';
 	import DropDown from '../stories/forms/DropDown.svelte';
+	import MapView from '../stories/MapView.svelte';
+	import { onMount } from 'svelte';
 
-	type ListSettings = {
+	type DisplaySettings = {
 		sortBy: string;
+		gridView: boolean;
 	};
-	const INITIAL_LIST_VALUES: ListSettings = {
-		sortBy: 'Mest relevant'
+	const INITIAL_LIST_VALUES: DisplaySettings = {
+		sortBy: 'Mest relevant',
+		gridView: false // shows either list og grid view
 	};
 
-	let listSettings = $state({ ...INITIAL_LIST_VALUES });
+	let DisplaySettings = $state({ ...INITIAL_LIST_VALUES });
 
 	type FilterData = {
 		name: string;
@@ -52,11 +62,43 @@
 		job_attributes_exclude: [],
 		job_poster: []
 	};
-	let grid = $state();
 
+	const mapViewBaseLink = 'https://oppdragsmarkedet.no/';
+	let grid = $state(INITIAL_LIST_VALUES.gridView); // Initialize with boolean value
 	let filterData = $state({ ...INITIAL_VALUES });
 	let displayedData = $state({ ...INITIAL_VALUES });
 	let showResults = $state(false);
+	let currentUrl = '';
+
+	// Get the current URL when component mounts
+	onMount(() => {
+		// Get the current URL when component is mounted
+		if (typeof window !== 'undefined') {
+			currentUrl = window.location.href;
+		}
+	});
+
+	function linkBuilderMapView() {
+		// map view redirect; builds link for mapView then returns it.
+
+		// Use current URL as base, but fallback to mapViewBaseLink if not available
+		const baseUrl = currentUrl || mapViewBaseLink;
+
+		// Add map view parameters to URL
+		const mapParams = new URLSearchParams();
+
+		// Add filter parameters to map view URL if they exist
+		Object.entries(displayedData).forEach(([key, value]) => {
+			if (Array.isArray(value) && value.length > 0) {
+				mapParams.append(key, value.join(','));
+			} else if (value && value !== INITIAL_VALUES[key]) {
+				mapParams.append(key, String(value));
+			}
+		});
+
+		const redirectLink = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}view=map&${mapParams.toString()}`;
+		return redirectLink;
+	}
 
 	function handleApply() {
 		displayedData = {
@@ -148,17 +190,56 @@
 		// TEMP PLACEHOLDER
 		// todo make this, when profiles are in order.
 	}
-	function showMapView() {
-		// TEMP PLACEHOLDER
-		// todo make this, when profiles are in order.
-	}
 
 	function handleGrid() {
 		grid = !grid;
+		DisplaySettings.gridView = grid;
+		console.log('in ProjectListPage, gridView:', DisplaySettings.gridView);
 	}
 </script>
 
 <div class="project-list-page">
+	<!-- TEMP START -->
+	<!-- <div class="filter-button-container">
+		<div class="filter-button">
+			<Drawer.Root>
+				<Drawer.Trigger
+					><Button
+						rounded
+						size="small"
+						label="Filter"
+						onclick="Drawer.Trigger will handle the onclick"
+					/></Drawer.Trigger
+				>
+				<Drawer.Portal>
+					<Drawer.Overlay class="fixed inset-0 bg-black/40" />
+					<Drawer.Content
+						class="
+			fixed
+			right-0 
+			bottom-0 
+			left-0 
+			mt-24 
+			flex 
+			h-[95%] 
+			flex-col 
+			rounded-t-[10px] 
+			bg-zinc-100"
+					>
+						<Drawer.Close id="close-btn" />
+						<Filter {filterData} onApply={handleApply} />
+					</Drawer.Content>
+				</Drawer.Portal>
+			</Drawer.Root>
+		</div>
+	</div> -->
+	<!-- TEMP /END -->
+
+	<!-- TEMP: test -->
+	<!-- <Drawer content={{ component: Filter, props: { filterData, onApply: handleApply } }} /> -->
+	<!-- <Drawer /> -->
+
+	<!-- TEMP: /test -->
 	<!-- LEFTSIDE -->
 	<div class="leftside">
 		<!-- HEADER LEFT -->
@@ -171,12 +252,24 @@
 			</div>
 
 			<div class="save-button">
-				<Button rounded size="small" label="Lagre Søk" onclick={saveSearch} />
+				<!-- <Button rounded size="small" label="Lagre Søk" onclick={saveSearch} /> -->
+				<!-- <button
+					onclick={saveSearch}
+					class="
+	storybook-button--rounded
+	storybook-button--secondary
+	storybook-button
+	storybook-button--small
+	storybook-button--icon-text
+	"
+					><i class="fa-regular fa-bookmark"></i>
+					<span> Lagre søk </span>
+				</button> -->
 			</div>
 		</div>
 
 		<!-- FILTER -->
-		<Filter {filterData} onApply={handleApply} />
+		<Filter {filterData} onApply={handleApply} {resetAll} />
 	</div>
 
 	<!-- RIGHTSIDE -->
@@ -184,9 +277,10 @@
 		<!-- HEADER RIGHT -->
 		<div class="filter-header">
 			<div class="filter-tag-row">
+				<!-- FILTER DRAWER BUTTON -->
+				<Filter {filterData} onApply={handleApply} drawer {resetAll} />
 				<!-- RESET BUTTON -->
-				<Button rounded size="small" label="Fjern alle filtre" onclick={resetAll} />
-
+				<Button rounded size="small" label="Nullstill" onclick={resetAll} />
 				<!-- FILTER TAGS -->
 				<!-- TODO: seperate into component -->
 				{#if showResults}
@@ -302,22 +396,27 @@
 						{/if}
 					</button>
 					<!-- map display -->
+					<MapView {displayedData} initialValues={INITIAL_VALUES} {mapViewBaseLink} />
+					<!-- <Button rounded size="small" label="Lagre Søk" onclick={saveSearch} /> -->
 					<button
-						onclick={showMapView}
-						class="storybook-button--rounded storybook-button--secondary storybook-button storybook-button--small"
-					>
-						<Fa size="lg" icon={faMapLocation} />
-						<span class="button-label">Vis på kart</span>
+						onclick={saveSearch}
+						class="
+	storybook-button--rounded
+	storybook-button--secondary
+	storybook-button
+	storybook-button--small
+	storybook-button--icon-text
+	"
+						><i class="fa-regular fa-bookmark"></i>
+						<span> Lagre søk </span>
 					</button>
 				</div>
 				<!-- <Button rounded size="small" label={'[icon], Vis på kart'} /> -->
 				<!-- show on map  -->
-				<div>
+				<div class="display-settings-row">
 					<!-- Sort by.. select  -->
-					Sorter etter
-					<select name="sortBy" id=""></select>
-					<DropDown bind:value={listSettings.sortBy} type="sortby" />
-					<!--  -->
+					<!-- <span> Sorter etter </span> -->
+					<DropDown bind:value={DisplaySettings.sortBy} type="sortby" />
 				</div>
 
 				<!--   -->
@@ -345,7 +444,7 @@
 		{/if}
 		<div class="results">
 			<p>List Settings:</p>
-			{#each Object.entries(listSettings) as [key, value]}
+			{#each Object.entries(DisplaySettings) as [key, value]}
 				<div class="">
 					<span>
 						{key.charAt(0).toUpperCase() + key.slice(1)}: {value}
@@ -353,10 +452,19 @@
 				</div>
 			{/each}
 		</div>
+
+		<ProjectList gridView={DisplaySettings.gridView} sortBy={DisplaySettings.sortBy} />
 	</div>
 </div>
 
 <style>
+	/* .project-list-page {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+	} */
+
 	.display-settings-row-left {
 		display: flex;
 		column-gap: 0.5rem;
@@ -366,27 +474,41 @@
 			display: none;
 		}
 	}
+
+	@media (max-width: 890px) {
+		.save-button span {
+			display: none;
+		}
+	}
 	.display-settings-row {
 		display: flex;
 		flex-direction: row;
 		column-gap: 0.5rem;
 		justify-content: space-between;
+		align-items: center;
+	}
+	.display-settings-row span {
+		display: flex;
+		width: 100%;
+		align-items: center;
+		justify-content: flex-end;
 	}
 	.grid-icon-container {
 		padding: 10px;
-		width: 42px; /* Fixed width to accommodate both icons */
-		height: 42px; /* Fixed height to accommodate both icons */
+		width: 42px;
+		height: 42px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 	.grid-icon {
+		overflow: hidden;
 		display: grid;
+		align-items: center;
 		grid-template-columns: repeat(2, 1fr);
 		grid-template-rows: repeat(2, 1fr);
-		gap: 10%;
-		width: 22px;
-		height: 22px;
+		column-gap: 3px;
+		row-gap: 2px;
 	}
 
 	/* Add styles for list icon */
