@@ -1,7 +1,7 @@
 /* @import 'color_scheme.css'; */
 .storybook-footer {
 	color: var(--primary-invert);
-	background-color: var(--tertiary-bg);
+	background-color: var(--third-bg);
     display: flex;
     align-items: flex-start;
     padding: 15px 20px;
