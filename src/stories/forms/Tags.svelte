@@ -81,6 +81,9 @@
 	}
 
 	function handleTagClick(tag: string) {
+		// TEMP Placeholder
+		// TODO [ ]: add functionality
+		// Navigating to search with tag
 		if (display === 'true') {
 			// console.log(`Navigating to search with tag: ${tag}`);
 		}
