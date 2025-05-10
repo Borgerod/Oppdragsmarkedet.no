@@ -5,8 +5,8 @@
 	let { min = $bindable(''), max = $bindable('') } = $props();
 
 	// Format display values with thousand separators
-	let displayMin = '';
-	let displayMax = '';
+	let displayMin = $state('');
+	let displayMax = $state('');
 
 	// Format number with thousand separators (spaces)
 	function formatNumber(value: string | number): string {
@@ -67,18 +67,18 @@
 	<input
 		type="text"
 		value={displayMin}
-		on:input={handleMinChange}
-		on:focus={handleFocus}
-		on:blur={handleBlur}
+		oninput={handleMinChange}
+		onfocus={handleFocus}
+		onblur={handleBlur}
 		placeholder="Min"
 		class="field"
 	/>
 	<input
 		type="text"
 		value={displayMax}
-		on:input={handleMaxChange}
-		on:focus={handleFocus}
-		on:blur={handleBlur}
+		oninput={handleMaxChange}
+		onfocus={handleFocus}
+		onblur={handleBlur}
 		placeholder="Max"
 		class="field"
 	/>

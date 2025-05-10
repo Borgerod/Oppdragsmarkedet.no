@@ -469,17 +469,7 @@
 		display: flex;
 		column-gap: 0.5rem;
 	}
-	@media (max-width: 768px) {
-		.button-label {
-			display: none;
-		}
-	}
 
-	@media (max-width: 890px) {
-		.save-button span {
-			display: none;
-		}
-	}
 	.display-settings-row {
 		display: flex;
 		flex-direction: row;
