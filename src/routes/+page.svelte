@@ -11,6 +11,7 @@
 	// import Home from './home.svelte';
 	// import Button from '../stories/Button.svelte';
 	import ProjectListPage from './ProjectListPage.svelte';
+	import UserProfilePage from './UserProfilePage.svelte';
 	import Test from './test.svelte';
 	// let user = $state(null);
 	// console.log(dropdown_value);
@@ -32,8 +33,9 @@
 <div class="page-wrapper">
 	<Header user={{}} onLogin={() => {}} onLogout={() => {}} onCreateAccount={() => {}} />
 	<div class="content">
-		<ProjectListPage />
+		<!-- <ProjectListPage /> -->
 		<!-- <Test /> -->
+		<UserProfilePage />
 	</div>
 	<Footer />
 </div>
