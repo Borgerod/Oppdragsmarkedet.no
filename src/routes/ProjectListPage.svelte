@@ -194,7 +194,7 @@
 	function handleGrid() {
 		grid = !grid;
 		DisplaySettings.gridView = grid;
-		console.log('in ProjectListPage, gridView:', DisplaySettings.gridView);
+		// console.log('in ProjectListPage, gridView:', DisplaySettings.gridView);
 	}
 </script>
 

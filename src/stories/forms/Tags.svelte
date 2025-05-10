@@ -82,7 +82,7 @@
 
 	function handleTagClick(tag: string) {
 		if (display === 'true') {
-			console.log(`Navigating to search with tag: ${tag}`);
+			// console.log(`Navigating to search with tag: ${tag}`);
 		}
 	}
 </script>
