@@ -31,7 +31,7 @@
 </svelte:head>
 
 <div class="page-wrapper">
-	<Header />
+	<Header user={{}} onLogin={() => {}} onLogout={() => {}} onCreateAccount={() => {}} />
 	<div class="content">
 		<ProjectListPage />
 		<!-- <Test /> -->
