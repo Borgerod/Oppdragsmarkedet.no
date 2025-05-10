@@ -31,7 +31,7 @@
 		favorite = !favorite;
 	}
 
-	console.log('in ProjectCard, gridView:', props.gridView);
+	// console.log('in ProjectCard, gridView:', props.gridView);
 </script>
 
 <!-- OPTION 3 -->
@@ -316,30 +316,6 @@
 		padding-right: 1.6rem;
 	}
 
-	.show-more-btn,
-	.show-less-btn {
-		background: none;
-		border: none;
-		color: var(--accent);
-		cursor: pointer;
-		font-size: small;
-		padding: 4px 8px;
-		margin: 8px auto;
-		display: flex;
-		align-items: center;
-		gap: 4px;
-		width: fit-content;
-	}
-
-	.show-more-btn:hover,
-	.show-less-btn:hover {
-		text-decoration: underline;
-	}
-
-	spacer {
-		width: 100%;
-	}
-
 	.spacer {
 		/* width: 25%;
 		height: 100%; */
@@ -402,12 +378,6 @@
 		height: 20px;
 		/* filter: drop-shadow(0px 0px 0px var(--grey));
 		filter: drop-shadow(0px 0px 0px grey); */
-	}
-	.icon.bottom-layer {
-		z-index: -1;
-	}
-	.icon.upper-layer {
-		/* z-index: 1; */
 	}
 
 	.favorite-button {

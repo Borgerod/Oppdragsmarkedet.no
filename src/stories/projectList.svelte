@@ -79,8 +79,8 @@
 		return sortedProjects.slice(($currentPage - 1) * 12, $currentPage * 12);
 	});
 
-	console.log('in ProjectList, gridView:', props.gridView);
-	console.log('in ProjectList, sortBy:', props.sortBy);
+	// console.log('in ProjectList, gridView:', props.gridView);
+	// console.log('in ProjectList, sortBy:', props.sortBy);
 </script>
 
 <div class="project-list" class:grid-view={props.gridView}>
