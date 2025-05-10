@@ -2,6 +2,7 @@
 
 	/* ACCENTS */
 	--accent-brightest: hsl(from var(--accent) calc(h + 0) calc(s * 3.33) calc(l * 1.27));
+	--accent-brightest: #dcefdd;
 	--accent-brighter: hsl(from var(--accent) calc(h + 0) calc(s * 3.33) calc(l * 1.21));
 	--accent-bright: hsl(from var(--accent) calc(h + 0) calc(s * 1.7) calc(l * 1.12));
 	--accent:          hsl(100, 30%, 75%);
@@ -11,11 +12,14 @@
 	--accent-darkest: hsl(from var(--accent) calc(h - 2) calc(s * 0.33) calc(l * 0.31));
 	--accent-shade: hsl(from var(--accent) calc(h - 5) calc(s * 0.2) calc(l * 0.24));
 	--accent-deep-shade: hsl(from var(--accent) calc(h - 8) calc(s * 0.15) calc(l * 0.19));
+	--accent-signal: hsl(99, 55%, 60%);
 
 	/* --accent-translucent: rgba(from var(--accent) calc(r - 5) calc(g * 0.2) calc(b * 0.24), 0.8); */
 
 	/* --accent-translucent: rgba(var(--accent-bright), 0.8); */
-	--accent-translucent: color-mix(in srgb, var(--accent) 80%, transparent); /* Dynamically derived translucent color */
+	--accent-little-translucent: color-mix(in srgb, var(--accent) 60%, transparent); /* Dynamically derived translucent color */
+	--accent-translucent: color-mix(in srgb, var(--accent) 30%, transparent); /* Dynamically derived translucent color */
+	--accent-very-translucent: color-mix(in srgb, var(--accent) 10%, transparent); /* Dynamically derived translucent color */
 
 
 
@@ -32,6 +36,7 @@
 	
 	/* --accent-translucent: rgba(var(--negative-accent), 0.8); */
 	/* --accent-translucent: rgba(var(--negative-accent-bright), 0.8); */
+	--negative-accent-translucent: color-mix(in srgb, var(--negative-accent) 30%, transparent); /* Dynamically derived translucent color */
 
 	
 
@@ -39,31 +44,72 @@
 	--white:#ffff;
 	--hightlight: #ffffffde;
 
-	--primary:#0c0c0c;
+	/* --primary:#0c0c0c; */
+	/* --primary:#414141; */
+	--primary:#292929;
+	--primary-brighter:hsl(from var(--primary) h s calc(l * 1.80)); 
+	--primary-darker: hsl(from var(--primary) h s calc(l * 0.80));  /* Slightly darker */
 	--primary-invert:#ededed;
 	
-	--secondary:#666;
-	--secondary-invert:#f6f6f6;
+	/* --secondary:#666; */
+	--secondary-inverted:#f6f6f6;
+	--secondary-brighter:hsl(from var(--secondary) h s calc(l * 1.20)); 
+	--secondary:#808080;
 	--secondary-darker: hsl(from var(--secondary) h s calc(l * 0.80));  /* Slightly darker */
+	--secondary-translucent: color-mix(in srgb, var(--secondary) 80%, transparent); /* Dynamically derived translucent color */
+	--secondary-medium-translucent: color-mix(in srgb, var(--secondary) 50%, transparent); /* Dynamically derived translucent color */
+	--secondary-very-translucent: color-mix(in srgb, var(--secondary) 20%, transparent); /* Dynamically derived translucent color */
 
 	--title:#3d5033;
 
 	/* BACKGROUND COLORS */
-	--primary-bg:#f6f6f6;
-	--secondary-bg: hsl(from var(--primary-bg) h s calc(l * 0.99));  /* Slightly darker */
-	--tertiary-bg:var(--accent-dark);
+	--primary-bg-brighter:hsl(from var(--primary-bg) h s calc(l * 1.20));
+	--primary-bg-bright:hsl(from var(--primary-bg) h s calc(l * 1.03));
+	/* --primary-bg:#f6f6f6; */
+	--primary-bg:#f8f8f8;
+	--secondary-bg: hsl(from var(--primary-bg) h s calc(l * 0.99)); 
+	--third-bg:var(--accent-dark);
+	--third-bg:var(--accent-darker);
 
-	/* SHADOWS */
-	--shadow-inv: hsla(from var(--shadow) h s calc(l * 4.5) / alpha);    /* 20% → 90% */
-	--shadow-bright: hsla(from var(--shadow) h s calc(l * 1.75) / alpha); /* 20% → 35% */
-	--shadow: hsla(0, 0%, 20%, 0.612);
-	--shadow-dark: hsla(from var(--shadow) h s calc(l * 0.25) / alpha);  /* 20% → 5% */
+
 
 	
+	/* SHADOWS */
+	/* --shadow-inv: hsla(from var(--shadow) h s calc(l * 4.5) / alpha);    
+	--shadow-bright: hsla(from var(--shadow) h s calc(l * 1.75) / alpha); 
+	--shadow: #3333339c;
+	--shadow-dark: hsla(from var(--shadow) h s calc(l * 0.25) / alpha);   */
+
+	/* --shadow-bright: hsla(from var(--shadow) h s calc(l * 1.75) / alpha); 
+	--shadow:hsla(0, 0%, 0%, 0.102);
+	--shadow:hsla(0, 0%, 0%, 0.161);
+	--shadow-dark: hsla(from var(--shadow) h s calc(l * 0.25) / alpha);   */
+
+
+	--shadow-inv: hsla(from var(--shadow) h s calc(l * 4.5) / alpha);    
+	--shadow-brighter:hsla(0, 0%, 0%, 0.050);
+	--shadow-brighter:hsla(0, 0%, 0%, 0.100);
+	--shadow-bright:hsla(0, 0%, 0%, 0.122);
+	--shadow:hsla(0, 0%, 0%, 0.161);
+	--shadow-dark:#00000044;
+
+
+
+	--primary-bg-darkmode-brighter:#233034;
+	--primary-bg-darkmode: #0c1011;
+	--primary-bg-darkmode: #060b0b8a;
+	--primary-bg-darkmode-dark: #060b0bc7;
+	--primary-bg-darkmode-darker: #060b0b;
+	--secondary-bg-darkmode: #192224;
+	--third-bg-darkmode: var(--accent-deep-shade);
+	
+	--third-bg-darkmode-bright:#50514f;
+	--third-bg-darkmode:#242623;
+	--third-bg-darkmode-dark:#1d1e1c;
 }
 
-	/* --tertiary-bg:var(--accent-darker); */
-	/* --tertiary-bg:var(--accent-darkest); */
+	/* --third-bg:var(--accent-darker); */
+	/* --third-bg:var(--accent-darkest); */
 	
 	/* todo check before deleting
 	--negative-accent-brightest: #ffe0dd;
