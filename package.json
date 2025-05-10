@@ -97,6 +97,7 @@
 		"svelte-fa": "^4.0.3",
 		"svelte-icons": "^2.1.0",
 		"svelte-select": "^5.8.3",
+		"tippy.js": "^6.3.7",
 		"vaul-svelte": "^0.3.2"
 	}
 }
