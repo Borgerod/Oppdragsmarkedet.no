@@ -4,12 +4,7 @@
 <script lang="ts">
 	import './theme.css';
 	import '@fortawesome/fontawesome-free/css/all.css';
-
-	// import { Fa } from 'svelte-fa';
-	// import { faHeart } from '@fortawesome/free-solid-svg-icons;
-
 	import '../app.css';
-	// import { onMount } from 'svelte';
 
 	const props = $props<{
 		project: any;
@@ -17,8 +12,6 @@
 	}>();
 
 	let favorite = $state(false);
-	// let favorite = $state(true);
-
 	let isExpanded = $state(false);
 	let mainCardElement: HTMLElement;
 
@@ -54,9 +47,6 @@
 					{#if favorite === false}
 						<i class="fa-lg far fa-heart"></i>
 					{:else}
-						<!-- <i class="fa-lg far fa-heart" style="color: var(--accent-darker);"></i> -->
-						<!-- <i class="fa-lg far fa-heart" style="color: var(--white);"></i> -->
-						<!-- <i class="fa-lg far fa-heart" style="color: var(--white);"></i> -->
 						<i class="fa-lg far fa-heart" style="color: var(--accent-signal);"></i>
 					{/if}
 				</div>
@@ -64,17 +54,10 @@
 			<!-- acts as inner fill for favorite-button -->
 			<button class="favorite-button" onclick={handleFavorite}>
 				<div class="icon">
-					<!-- <div class="icon bottom-layer"> -->
 					{#if favorite === false}
-						<!-- <i class="fa-lg far fa-heart"></i> -->
-						<!-- <i class="fa-lg fas fa-heart" style="color: var(--shadow-brighter);"></i> -->
 						<i class="fa-lg fas fa-heart" style="color: var(--secondary-medium-translucent);"></i>
-						<!-- <i class="fa-lg fas fa-heart" style="color: var(--secondary-translucent);"></i> -->
 					{:else}
-						<!-- <i class="fa-lg far fa-heart"></i> -->
-						<!-- <i class="fa-lg fas fa-heart" style="color: var(--accent-medium);"></i> -->
 						<i class="fa-lg fas fa-heart" style="color: var(--accent-signal);"></i>
-						<!-- <i class="fa-lg fas fa-heart" style="color: var(--accent-little-translucent);"></i> -->
 					{/if}
 				</div>
 			</button>
@@ -122,9 +105,6 @@
 						{#if props.project.sub_category === true}, {props.project.sub_category}{/if}
 					</h4>
 				</div>
-				<!-- <spacer></spacer> -->
-				<!-- <spacer></spacer> -->
-				<!-- <spacer></spacer> -->
 			</div>
 			<div class="row">
 				<div class="tag-row-container">
@@ -144,17 +124,6 @@
 		</div>
 	</div>
 </div>
-
-<!-- {#if hasOverflow && !isExpanded}
-	<button class="show-more-btn" onclick={toggleExpand}>
-		<i class="fas fa-chevron-down"></i> Show more
-	</button>
-{/if}
-{#if isExpanded}
-	<button class="show-less-btn" onclick={toggleExpand}>
-		<i class="fas fa-chevron-up"></i> Show less
-	</button>
-{/if} -->
 
 <style>
 	.thumbnail {
@@ -192,9 +161,7 @@
 		display: flex;
 		align-items: stretch;
 		padding: 0;
-		/* overflow: auto; */
 		min-height: 200px;
-		/* height: 200px; */
 		transition: height 0.3s ease;
 		min-width: 250px;
 		max-width: 100%;
@@ -209,7 +176,6 @@
 	}
 
 	.main.card.grid-view .tag-row {
-		/* padding-right: 2rem; */
 		padding-right: 20%;
 	}
 
@@ -241,8 +207,6 @@
 		display: flex;
 		flex-direction: column;
 		row-gap: 0.5rem;
-		/* bottom: 0; */
-		/* max-height: 50%; */
 	}
 	.lower .column {
 		row-gap: 0.25rem;
@@ -282,7 +246,6 @@
 		flex-direction: column;
 		align-items: flex-start;
 		flex-wrap: nowrap;
-		/* row-gap: 1rem; */
 		flex: 3;
 		justify-content: space-between;
 	}
@@ -317,8 +280,6 @@
 	}
 
 	.spacer {
-		/* width: 25%;
-		height: 100%; */
 		width: 42px;
 		height: 42px;
 	}
@@ -376,14 +337,6 @@
 		align-items: center;
 		width: 20px;
 		height: 20px;
-		/* filter: drop-shadow(0px 0px 0px var(--grey));
-		filter: drop-shadow(0px 0px 0px grey); */
-	}
-	.icon.bottom-layer {
-		z-index: -1;
-	}
-	.icon.upper-layer {
-		/* z-index: 1; */
 	}
 
 	.favorite-button {
@@ -396,9 +349,6 @@
 		justify-content: center;
 		align-items: center;
 		border-radius: 999px;
-
-		/* margin-top: 1rem; */
-		/* margin-left: 1rem; */
 		position: absolute;
 		top: 5px;
 		right: 5px;
