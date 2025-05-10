@@ -1,3 +1,5 @@
+<svelte:options runes />
+
 <script lang="ts">
 	// Filter Ideer:
 	// 		- New todday: (boolean, checkbox) [new today] describes all jobs that got posted since 00:00 today.
@@ -17,7 +19,7 @@
 	// 							note:	this will also only apply if both; a deadline and a job length estimate has been set.
 	//
 	// 		- Job type / Oppdragstype
-	// 		- requirements / Krav til kompetanse / Sertifisering: [journeyman’s certificate,Driver’s License, Certified Responsible Contractor, HSE Card] will describe the requirement for specific skills or certifications needed for the job.
+	// 		- requirements / Krav til kompetanse / Sertifisering: [journeyman's certificate,Driver's License, Certified Responsible Contractor, HSE Card] will describe the requirement for specific skills or certifications needed for the job.
 	// 		- Availability / tilgjengelighet: (checkbox or tags)["Oppdragsgiver er tilgjengelig for kontakt nå"/"Møte etter avtale","Rask svarstid (innen 1 time)", "Kan besøkes før oppdrag","Helgetilgjengelig", ] describes the level of availability of the job poster, i.e., ready to discuss or answer questions or if the site is available for inspefction before committing.
 	// 					+ [COOKIE CLAUS NEEDED] "Svartid" should be a tag that is fetched from the posters profile, which is calculated by response-time in chat logs* then assigned to the profile as a "medal/acvhevement"-tag. (*only 'timestamps', 'seen'-tags and 'user-ids' are surveilled)
 	// 		- Poster-rating / Oppdragsgiver-score: (radio buttons or a slider+checkbox for "hide")["⭐ 4.5+", "⭐ 4.0+", "⭐ 3.0+", "❌ Hide unrated clients"]
@@ -27,95 +29,247 @@
 
 	import TextField from './forms/TextField.svelte';
 	import PriceRange from './forms/PriceRange.svelte';
-	import DropDown from './forms/DropDown.svelte'; // Updated casing here
+	import DropDown from './forms/DropDown.svelte';
 	import Accordion from './Accordion.svelte';
 	import Tabs from './forms/Tabs.svelte';
 	import Tags from './forms/Tags.svelte';
 	import CheckBox from './forms/CheckBox.svelte';
 	import Button from './Button.svelte';
+	import { Drawer } from 'vaul-svelte';
+	import './forms/form.css';
 
-	const { filterData, onApply } = $props();
+	/**
+   * @typedef {Object} Props
+   * @property {Object} [filterData] the data object containing all filter values.
+   * @property {function} [onApply] the apply buttons functionality, handled in parent. 
+   * @property {boolean} [drawer] integrated vaul-svelte drawer component.
+   * @property {function} [resetAll] function to reset all filter values.
+	
+   */
+
+	/** @type {Props} */
+	const { filterData = {}, onApply, drawer = false, resetAll } = $props();
+
+	// Function to handle apply action (avoids reference to potentially undefined handleApply)
+	function handleApplyAction() {
+		if (onApply) onApply();
+	}
 </script>
 
-<div class="filter-form">
-	<TextField bind:value={filterData.name} />
+{#snippet Filter()}
+	<div class="filter-form">
+		<TextField bind:value={filterData.name} />
 
-	<DropDown bind:value={filterData.county} type="county" />
-	<DropDown bind:value={filterData.workfield} type="workfield" />
-	<CheckBox
-		label="Oppdragsgiver"
-		options={['Private', 'Business']}
-		bind:selectedOptions={filterData.job_poster}
-	/>
-	<PriceRange bind:min={filterData.price_min} bind:max={filterData.price_max} />
+		<DropDown bind:value={filterData.county} type="county" />
+		<DropDown bind:value={filterData.workfield} type="workfield" />
 
-	<Accordion
-		title="Erfaringskrav"
-		tooltip="Velg hvilke erfaringer som skal inkluderes eller ekskluderes"
-	>
-		<Tabs
-			includeTags={filterData.field_include}
-			excludeTags={filterData.field_exclude}
-			onIncludeTagsChange={(tags: string[]) => (filterData.field_include = tags)}
-			onExcludeTagsChange={(tags: string[]) => (filterData.field_exclude = tags)}
+		<PriceRange bind:min={filterData.price_min} bind:max={filterData.price_max} />
+		<div>
+			<h3>Oppdragsgiver</h3>
+
+			<Tags
+				tagIntent="grey"
+				tagType="job_poster"
+				selectedTags={filterData.job_poster}
+				onTagChange={(tags: string[]) => (filterData.job_poster = tags)}
+				showSearch={false}
+				size="s"
+				row={true}
+			/>
+		</div>
+		<Accordion
+			title="Erfaringskrav"
+			tooltip_content="Velg hvilke erfaringer som skal inkluderes eller ekskluderes"
 		>
-			<div slot="inkluder" let:includeTags let:onIncludeTagsChange>
-				<Tags
-					tagIntent="include"
-					tagType="field"
-					selectedTags={includeTags}
-					onTagChange={onIncludeTagsChange}
-				/>
-			</div>
-			<div slot="ekskluder" let:excludeTags let:onExcludeTagsChange>
-				<Tags
-					tagIntent="exclude"
-					tagType="field"
-					selectedTags={excludeTags}
-					onTagChange={onExcludeTagsChange}
-				/>
-			</div>
-		</Tabs>
-	</Accordion>
+			<Tabs
+				includeTags={filterData.field_include}
+				excludeTags={filterData.field_exclude}
+				onIncludeTagsChange={(tags: string[]) => (filterData.field_include = tags)}
+				onExcludeTagsChange={(tags: string[]) => (filterData.field_exclude = tags)}
+			>
+				<div slot="inkluder" let:includeTags let:onIncludeTagsChange>
+					<Tags
+						tagIntent="include"
+						tagType="field"
+						selectedTags={includeTags}
+						onTagChange={onIncludeTagsChange}
+					/>
+				</div>
+				<div slot="ekskluder" let:excludeTags let:onExcludeTagsChange>
+					<Tags
+						tagIntent="exclude"
+						tagType="field"
+						selectedTags={excludeTags}
+						onTagChange={onExcludeTagsChange}
+					/>
+				</div>
+			</Tabs>
+		</Accordion>
 
-	<Accordion
-		title="Andre Tagger"
-		tooltip="inkluder eller ekskluder oppdrag som inneholder disse taggene"
-	>
-		<Tabs
-			includeTags={filterData.job_attributes_include}
-			excludeTags={filterData.job_attributes_exclude}
-			onIncludeTagsChange={(tags: string[]) => (filterData.job_attributes_include = tags)}
-			onExcludeTagsChange={(tags: string[]) => (filterData.job_attributes_exclude = tags)}
+		<Accordion
+			title="Andre Tagger"
+			tooltip_content="inkluder eller ekskluder oppdrag som inneholder disse taggene"
 		>
-			<div slot="inkluder" let:includeTags let:onIncludeTagsChange>
-				<Tags
-					tagIntent="include"
-					tagType="job_attributes"
-					display="false"
-					selectedTags={includeTags}
-					onTagChange={onIncludeTagsChange}
-				/>
-			</div>
-			<div slot="ekskluder" let:excludeTags let:onExcludeTagsChange>
-				<Tags
-					tagIntent="exclude"
-					tagType="job_attributes"
-					display="false"
-					selectedTags={excludeTags}
-					onTagChange={onExcludeTagsChange}
-				/>
-			</div>
-		</Tabs>
-	</Accordion>
+			<Tabs
+				includeTags={filterData.job_attributes_include}
+				excludeTags={filterData.job_attributes_exclude}
+				onIncludeTagsChange={(tags: string[]) => (filterData.job_attributes_include = tags)}
+				onExcludeTagsChange={(tags: string[]) => (filterData.job_attributes_exclude = tags)}
+			>
+				<div slot="inkluder" let:includeTags let:onIncludeTagsChange>
+					<Tags
+						tagIntent="include"
+						tagType="job_attributes"
+						display="false"
+						selectedTags={includeTags}
+						onTagChange={onIncludeTagsChange}
+					/>
+				</div>
+				<div slot="ekskluder" let:excludeTags let:onExcludeTagsChange>
+					<Tags
+						tagIntent="exclude"
+						tagType="job_attributes"
+						display="false"
+						selectedTags={excludeTags}
+						onTagChange={onExcludeTagsChange}
+					/>
+				</div>
+			</Tabs>
+		</Accordion>
 
-	<Button rounded size="small" label="Apply" onclick={onApply} />
-</div>
+		<!-- <Button rounded size="small" label="Apply" onclick={onApply} /> -->
+	</div>
+{/snippet}
+
+{#snippet applyButton()}
+	<div class="apply-container">
+		<Button rounded wide size="small" label="Søk" onclick={onApply} />
+	</div>
+{/snippet}
+
+{#if drawer}
+	<!-- filter-drawer controls if drawer is displayed based on window size -->
+
+	<!-- <div class="filter-button-container"> -->
+	<div class="filter-button">
+		<Drawer.Root>
+			<Drawer.Trigger
+				><Button
+					rounded
+					size="small"
+					label="Filter"
+					onclick="Drawer.Trigger will handle the onclick"
+				/></Drawer.Trigger
+			>
+			<Drawer.Portal>
+				<Drawer.Overlay class="fixed inset-0 bg-black/40" />
+				<!-- class="fixed right-0 bottom-0 left-0 mt-24 flex flex-col rounded-t-[10px] bg-zinc-100 " -->
+				<Drawer.Content
+					class="fixed right-0 bottom-0 left-0 flex max-h-[96%] flex-col rounded-t-[10px]"
+					style="background: var(--primary-bg)
+					
+					"
+				>
+					<div class="flex flex-1 flex-col rounded-t-[10px] p-4">
+						<div class="mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-zinc-300" />
+						<Drawer.Title class="mb-4 font-medium"
+							><div class="filter-header-drawer">
+								<div></div>
+								<span>Filtrer søket</span>
+								<div class="reset-container">
+									<Button rounded size="small" label="Nullstill" onclick={resetAll} />
+								</div>
+							</div></Drawer.Title
+						>
+						<div class="filter-drawer">
+							{@render Filter()}
+						</div>
+					</div>
+					<div class="sticky-apply-button">
+						<Drawer.Close class="close-button" style="width:100%;">
+							{@render applyButton()}
+						</Drawer.Close>
+					</div>
+				</Drawer.Content>
+			</Drawer.Portal>
+		</Drawer.Root>
+	</div>
+	<!-- </div> -->
+{:else}
+	<!-- filter-container controls if filter is displayed based on window size -->
+	<div class="filter-container">
+		{@render Filter()}
+		{@render applyButton()}
+	</div>
+{/if}
 
 <style>
+	/* .filter-container {
+	} */
+
+	.filter-button {
+		display: none;
+	}
+
+	/* @media (max-width: 768px) { */
+	@media (max-width: 890px) {
+		.filter-container {
+			display: none;
+		}
+
+		.filter-button {
+			display: contents;
+		}
+		.filter-form {
+			padding: 2rem;
+			overflow-y: auto;
+		}
+		.filter-drawer {
+			overflow-y: auto;
+			max-height: calc(96vh - 120px); /* Account for header and apply button */
+			padding-bottom: 1rem;
+		}
+		.apply-container {
+			padding: 1rem 2rem !important;
+		}
+	}
 	.filter-form {
 		display: grid;
 		gap: 1rem;
-		max-width: 300px;
+		/* z-index: 3; */
+	}
+
+	.apply-container {
+		padding: 2rem 0;
+		width: 100%;
+	}
+	.sticky-apply-button {
+		position: sticky;
+		bottom: 0;
+		background: var(--primary-bg);
+	}
+	.filter-header-drawer {
+		display: grid;
+		grid-column: 3;
+		grid-auto-flow: column;
+		grid-template-columns: repeat(3, 1fr);
+		border-bottom: 1px solid var(--shadow-brighter) !important;
+		align-items: flex-start;
+		padding: 0 1rem 1rem 1rem;
+		/* z-index: 3; */
+	}
+	.filter-header-drawer span {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+	}
+
+	.reset-container {
+		height: 100%;
+		display: flex;
+		align-items: end;
+		align-items: center;
+		justify-content: end;
 	}
 </style>
