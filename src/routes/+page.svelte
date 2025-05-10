@@ -10,7 +10,6 @@
 	// import Tabs from '../stories/tabs.svelte';
 	// import Home from './home.svelte';
 	// import Button from '../stories/Button.svelte';
-	// import NeumorphicButton from '../stories/NeumorphicButton.svelte';
 	import ProjectListPage from './ProjectListPage.svelte';
 	import Test from './test.svelte';
 	// let user = $state(null);
