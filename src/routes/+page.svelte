@@ -31,11 +31,11 @@
 </svelte:head>
 
 <div class="page-wrapper">
-	<Header user={{}} onLogin={() => {}} onLogout={() => {}} onCreateAccount={() => {}} />
+	<Header user={null} onLogin={() => {}} onLogout={() => {}} onCreateAccount={() => {}} />
 	<div class="content">
-		<!-- <ProjectListPage /> -->
+		<ProjectListPage />
 		<!-- <Test /> -->
-		<UserProfilePage />
+		<!-- <UserProfilePage /> -->
 	</div>
 	<Footer />
 </div>
