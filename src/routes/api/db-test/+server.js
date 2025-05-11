@@ -1,8 +1,3 @@
-// now do the same for all the tables,
-// active_projects, completed projects, favorite_projects,
-// financial_stats, financial_transactions, following, saved_filters,
-// social_links, spatial_ref_sys, users, vendors, wallet_transactions, wallets.
-
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
@@ -24,47 +19,107 @@ export async function GET() {
             WHERE table_schema = 'public'
         `;
 
-		console.log(
-			'Tables in database:',
-			tables.map((t) => t.table_name)
-		);
+		const tableNames = tables.map((t) => t.table_name);
+		console.log('Tables in database:', tableNames);
 
-		// Try to query each possible table name variation
-		let users = [];
-		let tableFound = '';
+		// Create a map to store our test results
+		const tableResults = {};
 
-		try {
-			users = await db.select().from(table.user);
-			tableFound = 'user';
-		} catch (userError) {
-			console.log('Failed to query "user" table:', userError.message);
-
+		// Test each table
+		for (const tableName of tableNames) {
 			try {
-				const result = await client`SELECT * FROM "users"`;
-				users = result;
-				tableFound = 'users';
-			} catch (usersError) {
-				console.log('Failed to query "users" table:', usersError.message);
+				// Use unsafe method for proper SQL query execution
+				const result = await client.unsafe(`SELECT COUNT(*) FROM "${tableName}"`);
+
+				tableResults[tableName] = {
+					exists: true,
+					count: parseInt(result[0].count),
+					error: null
+				};
+				console.log(`Table "${tableName}" exists with ${result[0].count} records`);
+			} catch (error) {
+				tableResults[tableName] = {
+					exists: false,
+					count: 0,
+					error: error instanceof Error ? error.message : String(error)
+				};
+				console.log(
+					`Table "${tableName}" does not exist or has an issue: ${error instanceof Error ? error.message : String(error)}`
+				);
 			}
 		}
 
-		console.log('Users found:', users.length);
-		console.log('Users:', users);
+		// Check database structure to debug schema issues
+		const schemaInfo = {};
+
+		// Get column details for users table
+		try {
+			const userColumns = await client`
+				SELECT column_name, data_type, is_nullable
+				FROM information_schema.columns
+				WHERE table_name = 'users' 
+			`;
+
+			schemaInfo.users = {
+				columns: userColumns.map((col) => ({
+					name: col.column_name,
+					type: col.data_type,
+					nullable: col.is_nullable
+				}))
+			};
+
+			console.log('Users table structure:', schemaInfo.users);
+
+			// Try to get sample data
+			if (tableResults.users && tableResults.users.count > 0) {
+				const sampleUsers = await client.unsafe(`SELECT * FROM "users" LIMIT 1`);
+				schemaInfo.userSample = sampleUsers[0];
+				console.log('Sample user data:', sampleUsers[0]);
+			}
+		} catch (error) {
+			schemaInfo.usersError = error instanceof Error ? error.message : String(error);
+			console.error('Error getting users table structure:', error);
+		}
+
+		// Get column details for sessions table if it exists
+		try {
+			const sessionColumns = await client`
+				SELECT column_name, data_type, is_nullable
+				FROM information_schema.columns
+				WHERE table_name = 'sessions'
+			`;
+
+			schemaInfo.sessions = {
+				columns: sessionColumns.map((col) => ({
+					name: col.column_name,
+					type: col.data_type,
+					nullable: col.is_nullable
+				}))
+			};
+
+			console.log('Sessions table structure:', schemaInfo.sessions);
+		} catch (error) {
+			schemaInfo.sessionsError = error instanceof Error ? error.message : String(error);
+			console.error('Error getting sessions table structure:', error);
+		}
 
 		return json({
 			connected: true,
-			tableFound,
-			tables: tables.map((t) => t.table_name),
-			userCount: users.length,
-			message: 'Database is connected! Check server console for full user data.'
+			tables: tableNames,
+			tableResults,
+			schemaInfo,
+			message: 'Database is connected! Check server console for full results.'
 		});
 	} catch (error) {
-		console.error('Database connection failed:', error);
+		console.error(
+			'Database connection failed:',
+			error instanceof Error ? error.message : String(error)
+		);
 
 		return json(
 			{
 				connected: false,
-				error: error.message
+				error: error instanceof Error ? error.message : String(error)
 			},
 			{ status: 500 }
 		);
