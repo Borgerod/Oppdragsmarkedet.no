@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import * as table from '$lib/server/db/schema';
+import * as table from '$lib/server/db/ignore/schema';
 import postgres from 'postgres';
 import { env } from '$env/dynamic/private';
 
