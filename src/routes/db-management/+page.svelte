@@ -3,8 +3,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	// Define table interface
+	interface Table {
+		name: string;
+		description: string;
+	}
+
 	// UI State
-	let availableTables = $state([]);
+	let availableTables = $state<Table[]>([]);
 	let selectedTable = $state('users');
 	let dataCount = $state(1);
 	let customJson = $state('');
@@ -28,7 +34,7 @@
 				error = data.message || 'Failed to load available tables';
 			}
 		} catch (err) {
-			error = err.message || 'Error loading available tables';
+			error = err instanceof Error ? err.message : 'Error loading available tables';
 		}
 	});
 
@@ -45,7 +51,7 @@
 				try {
 					customData = JSON.parse(customJson);
 				} catch (err) {
-					error = 'Invalid JSON: ' + err.message;
+					error = 'Invalid JSON: ' + (err instanceof Error ? err.message : 'Unknown error');
 					loading = false;
 					return;
 				}
@@ -79,7 +85,7 @@
 				error = data.message || 'Failed to add data';
 			}
 		} catch (err) {
-			error = err.message || 'Error adding data';
+			error = err instanceof Error ? err.message : 'Error adding data';
 		} finally {
 			loading = false;
 		}
@@ -117,7 +123,7 @@
 				error = data.message || 'Failed to clear data';
 			}
 		} catch (err) {
-			error = err.message || 'Error clearing data';
+			error = err instanceof Error ? err.message : 'Error clearing data';
 		} finally {
 			loading = false;
 		}
