@@ -37,3 +37,4 @@ src/routes/depricated/TestComponent.svelte
 src/routes/depricated/userList.svelte
 src/routes/db-test/commands db structure.txt
 src/lib/server/db/ignore/fixed-relations.js
+fixed-relations.js
