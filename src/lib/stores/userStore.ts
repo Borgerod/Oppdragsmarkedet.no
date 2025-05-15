@@ -74,7 +74,12 @@ export interface UserProfile {
 }
 
 export interface VendorProfile {
+	logo: string;
 	company_name: string;
+	contact_phone: string;
+	email_contact: string;
+	area: string;
+	business_address: string;
 	org_number: string;
 	fields_of_work: string[];
 	specializations: string[];
