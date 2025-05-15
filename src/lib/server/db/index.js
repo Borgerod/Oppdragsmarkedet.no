@@ -1,18 +1,20 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import * as schema from './schema';
+import * as schema from './optimized_schema_v2';
+import { allRelations } from './relations';
 import { env } from '$env/dynamic/private';
 
-
+// Export all schema and relations
+export * from './optimized_schema_v2';
+export * from './relations';
 
 if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 const client = postgres(env.DATABASE_URL);
 
+// Create database instance with schema and relations
 export const db = drizzle(client, {
-	schema
+	schema: { ...schema, ...allRelations }
 });
-
-
 
 // import { drizzle } from 'drizzle-orm/node-postgres';
 // import { Pool } from 'pg';
