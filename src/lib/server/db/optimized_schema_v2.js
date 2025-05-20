@@ -1,6 +1,8 @@
 export * from './ignore/schema-extensions';
 
+// import { float } from 'drizzle-orm/mysql-core';
 import {
+	real,
 	pgTable,
 	text,
 	integer,
@@ -8,7 +10,9 @@ import {
 	boolean,
 	json,
 	point,
-	pgEnum
+	pgEnum,
+	varchar,
+	date
 } from 'drizzle-orm/pg-core';
 
 // ========================
@@ -55,10 +59,9 @@ export const session = pgTable('sessions', {
 // User table - core user information
 export const users = pgTable('users', {
 	id: text('id').primaryKey(), // e.g., 'u10000023cp'
-	username: text('username').notNull().unique(),
-	password_hash: text('password_hash').notNull(),
-	email: text('email').notNull().unique(),
-	field: text('field'),
+	username: varchar('username', { length: 50 }).notNull().unique(),
+	password_hash: varchar('password_hash', { length: 255 }).notNull(),
+	email: varchar('email', { length: 319 }).notNull().unique(),
 	user_type: userTypeEnum('user_type').notNull(), // 'vendor' or 'client'
 	user_role: userRoleEnum('user_role').notNull(), // 'business', 'private', 'government'
 	date_joined: timestamp('date_joined').defaultNow(),
@@ -72,19 +75,19 @@ export const users = pgTable('users', {
 });
 
 // User profile data - personal information
-export const profiles = pgTable('profiles', {
+export const user_profiles = pgTable('user_profiles', {
 	id: text('id').primaryKey(), // e.g., 'p20000023cp'
 	user_id: text('user_id')
 		.notNull()
 		.references(() => users.id),
-	first_name: text('first_name'),
-	last_name: text('last_name'),
-	birth_date: timestamp('birth_date'),
-	phone: text('phone'),
+	first_name: varchar('first_name', { length: 100 }).notNull(),
+	last_name: varchar('last_name', { length: 100 }).notNull(),
+	birth_date: date('birth_date'),
+	phone: varchar('phone', { length: 20 }),
 	profile_image: text('profile_image'),
 
 	// Ratings
-	client_reviews_rating: integer('client_reviews_rating'),
+	client_reviews_rating: real('client_reviews_rating').default(0),
 	client_reviews_count: integer('client_reviews_count').default(0),
 
 	// Profile tags - explicit columns for better filtering
@@ -161,12 +164,13 @@ export const vendorProfiles = pgTable('vendor_profiles', {
 		.notNull()
 		.references(() => users.id),
 	company_name: text('company_name'),
-	org_number: integer('org_number'),
+	org_number: varchar('org_number', { length: 9 }).notNull().unique(),
 	fields_of_work: json('fields_of_work'),
 	specializations: json('specializations'),
 	certificates: json('certificates'),
 	description: text('description'),
-	logo: text('logo')
+	logo: varchar('logo', { length: 2048 }),
+	org_validated_at: timestamp('org_validated_at', { withTimezone: true })
 });
 
 // Social media links for vendors
@@ -175,13 +179,13 @@ export const socialMedia = pgTable('social_media', {
 	user_id: text('user_id')
 		.notNull()
 		.references(() => users.id),
-	facebook: text('facebook'),
-	tiktok: text('tiktok'),
-	linkedin: text('linkedin'),
-	twitter: text('twitter'),
-	instagram: text('instagram'),
-	homepage: text('homepage'),
-	proff: text('proff')
+	facebook: varchar('facebook', { length: 2048 }),
+	tiktok: varchar('tiktok', { length: 2048 }),
+	linkedin: varchar('linkedin', { length: 2048 }),
+	twitter: varchar('twitter', { length: 2048 }),
+	instagram: varchar('instagram', { length: 2048 }),
+	homepage: varchar('homepage', { length: 2048 }),
+	proff: varchar('proff', { length: 2048 })
 });
 
 // ========================
@@ -189,7 +193,7 @@ export const socialMedia = pgTable('social_media', {
 // ========================
 
 // Project favorites (normalized from the JSON arrays)
-export const projectFavorites = pgTable('project_favorites', {
+export const favoriteProjects = pgTable('favorite_projects', {
 	id: text('id').primaryKey(),
 	user_id: text('user_id')
 		.notNull()
@@ -197,7 +201,8 @@ export const projectFavorites = pgTable('project_favorites', {
 	project_id: text('project_id')
 		.notNull()
 		.references(() => projects.id),
-	date_saved: timestamp('date_saved').defaultNow()
+	date_saved: timestamp('date_saved').defaultNow(),
+	url: varchar('url', { length: 2048 })
 });
 
 // Saved search filters
@@ -207,7 +212,7 @@ export const savedFilters = pgTable('saved_filters', {
 		.notNull()
 		.references(() => users.id),
 	save_name: text('save_name'),
-	url: text('url'),
+	url: varchar('url', { length: 2048 }),
 	date_saved: timestamp('date_saved').defaultNow()
 });
 
@@ -247,7 +252,7 @@ export const financialTransactions = pgTable('financial_transactions', {
 	user_id: text('user_id')
 		.notNull()
 		.references(() => users.id), // for faster queries
-	transaction_type: text('transaction_type').notNull(), // 'deposit', 'withdrawal', 'payment'
+	transaction_type: transactionTypeEnum('transaction_type').notNull(), // 'incoming', 'outgoing'
 	amount: integer('amount').notNull(),
 	currency: text('currency').default('NOK'),
 	description: text('description'),
@@ -312,20 +317,20 @@ export const getProjectWithDetails = async (db, projectId) => {
     project: projects,
     client: {
       user: users,
-      profile: profiles
+      profile: user_profiles
     },
     vendor: {
       user: users,
-      profile: profiles,
+      profile: user_profiles,
       vendorInfo: vendorProfiles
     }
   })
   .from(projects)
   .where(eq(projects.id, projectId))
   .leftJoin(users, eq(projects.client_id, users.id))
-  .leftJoin(profiles, eq(users.id, profiles.user_id))
+  .leftJoin(user_profiles, eq(users.id, user_profiles.user_id))
   .leftJoin(users, eq(projects.vendor_id, users.id))
-  .leftJoin(profiles, eq(users.id, profiles.user_id))
+  .leftJoin(user_profiles, eq(users.id, user_profiles.user_id))
   .leftJoin(vendorProfiles, eq(users.id, vendorProfiles.user_id));
 };
 

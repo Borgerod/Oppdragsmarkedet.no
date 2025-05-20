@@ -2,7 +2,8 @@ import { eq } from 'drizzle-orm';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
 import { db } from '$lib/server/db';
-import * as table from '$lib/server/db/ignore/schema';
+// import * as table from '$lib/server/db/ignore/schema';
+import * as table from '$lib/server/db/optimized_schema_v2';
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
@@ -34,23 +35,23 @@ export async function validateSessionToken(token) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	const [result] = await db
 		.select({
-			// Adjust user table here to tweak returned data
-			user: { id: table.user.id, username: table.user.username },
+			// Adjust users table here to tweak returned data
+			users: { id: table.users.id, username: table.users.username },
 			session: table.session
 		})
 		.from(table.session)
-		.innerJoin(table.user, eq(table.session.userId, table.user.id))
+		.innerJoin(table.users, eq(table.session.userId, table.users.id))
 		.where(eq(table.session.id, sessionId));
 
 	if (!result) {
-		return { session: null, user: null };
+		return { session: null, users: null };
 	}
-	const { session, user } = result;
+	const { session, users } = result;
 
 	const sessionExpired = Date.now() >= session.expiresAt.getTime();
 	if (sessionExpired) {
 		await db.delete(table.session).where(eq(table.session.id, session.id));
-		return { session: null, user: null };
+		return { session: null, users: null };
 	}
 
 	const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
@@ -62,7 +63,7 @@ export async function validateSessionToken(token) {
 			.where(eq(table.session.id, session.id));
 	}
 
-	return { session, user };
+	return { session, users };
 }
 
 /** @param {string} sessionId */

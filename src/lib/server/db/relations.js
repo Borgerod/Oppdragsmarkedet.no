@@ -1,13 +1,13 @@
 import { relations } from 'drizzle-orm';
 import {
 	users,
-	profiles,
+	user_profiles,
 	projects,
 	vendorProfiles,
 	socialMedia,
 	wallets,
 	financialStats,
-	projectFavorites,
+	favoriteProjects,
 	savedFilters,
 	followedClients,
 	walletTransactions,
@@ -31,15 +31,15 @@ export const usersRelations = relations(users, ({ many }) => ({
 	sessions: many(session),
 	projects: many(projects, { relationName: 'clientProjects' }),
 	vendorProjects: many(projects, { relationName: 'vendorProjects' }),
-	favoriteProjects: many(projectFavorites),
+	favoriteProjects: many(favoriteProjects),
 	savedFilters: many(savedFilters),
 	following: many(followedClients, { relationName: 'following' }),
 	followers: many(followedClients, { relationName: 'followers' })
 }));
 
 // Profile relations
-export const profilesRelations = relations(profiles, ({ one }) => ({
-	user: one(users, { fields: [profiles.user_id], references: [users.id] })
+export const profilesRelations = relations(user_profiles, ({ one }) => ({
+	user: one(users, { fields: [user_profiles.user_id], references: [users.id] })
 }));
 
 // Project relations
@@ -54,7 +54,7 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
 		references: [users.id],
 		relationName: 'vendorProjects'
 	}),
-	favorited: many(projectFavorites)
+	favorited: many(favoriteProjects)
 }));
 
 // Vendor profile relations
@@ -81,9 +81,9 @@ export const financialStatsRelations = relations(financialStats, ({ one }) => ({
 }));
 
 // Project favorites relations
-export const projectFavoritesRelations = relations(projectFavorites, ({ one }) => ({
-	user: one(users, { fields: [projectFavorites.user_id], references: [users.id] }),
-	project: one(projects, { fields: [projectFavorites.project_id], references: [projects.id] })
+export const favoriteProjectsRelations = relations(favoriteProjects, ({ one }) => ({
+	user: one(users, { fields: [favoriteProjects.user_id], references: [users.id] }),
+	project: one(projects, { fields: [favoriteProjects.project_id], references: [projects.id] })
 }));
 
 // Saved filters relations
@@ -131,13 +131,13 @@ export const walletTransactionsRelations = relations(walletTransactions, ({ one 
 // Export all relations
 export const allRelations = {
 	users: usersRelations,
-	profiles: profilesRelations,
+	user_profiles: profilesRelations,
 	projects: projectsRelations,
 	vendorProfiles: vendorProfilesRelations,
 	socialMedia: socialMediaRelations,
 	wallets: walletsRelations,
 	financialStats: financialStatsRelations,
-	projectFavorites: projectFavoritesRelations,
+	favoriteProjects: favoriteProjectsRelations,
 	savedFilters: savedFiltersRelations,
 	followedClients: followedClientsRelations,
 	financialTransactions: financialTransactionsRelations,
