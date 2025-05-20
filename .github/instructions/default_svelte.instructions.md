@@ -4,6 +4,7 @@ applyTo: '**'
 
 Use svelte 5
 use runes mode
+when making actions in svelte 5 code, never use on:action, allways use onaction. e.g. onsubmit, onclick, etc.
 use drizzle-orm
 prefering dynamic methods
 allways use the newest solutions
