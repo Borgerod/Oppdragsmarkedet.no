@@ -1,0 +1,94 @@
+// mock data: USERS
+[
+  {
+    "id": "u10000001cp",
+    "username": "craftmaster",
+    "password_hash": "$2a$12$HFY5.rBoXtYxad4KsP.9V.KgkbubJEgMtfFznNnPXJblSZMKB5Vw.",
+    "email": "craft@example.com",
+    "user_type": "vendor",
+    "user_role": "business",
+    "date_joined": "2024-12-10T08:30:00Z",
+    "last_login": "2025-05-14T14:22:10Z",
+    "is_active": true,
+    "is_online": true,
+    "is_email_verified": true,
+    "is_phone_verified": true,
+    "location": "Oslo, Norway",
+    "location_data": "(10.7522, 59.9139)"
+  },
+  {
+    "id": "u10000002cp",
+    "username": "designpro",
+    "password_hash": "$2a$12$YvR8FjkZ3Cm7DCXzrFP.7.XwjL2S9ehXD8F5WqO.cgEj4mOfj6W0i",
+    "email": "design@example.com",
+    "user_type": "vendor",
+    "user_role": "private",
+    "date_joined": "2024-11-15T14:20:00Z",
+    "last_login": "2025-05-13T09:45:30Z",
+    "is_active": true,
+    "is_online": false,
+    "is_email_verified": true,
+    "is_phone_verified": true,
+    "location": "Bergen, Norway",
+    "location_data": "(5.3221, 60.3913)"
+  },
+  {
+    "id": "u10000003cp",
+    "username": "techsolutions",
+    "password_hash": "$2a$12$pLZ7.8kHnKV4FYS6rQBrE.DjY.l/cyVEHx1NQpFr.Dj8ZmPgo2rUO",
+    "email": "tech@example.com",
+    "user_type": "vendor",
+    "user_role": "government",
+    "date_joined": "2025-01-05T11:30:00Z",
+    "last_login": "2025-05-14T16:10:15Z",
+    "is_active": true,
+    "is_online": true,
+    "is_email_verified": true,
+    "is_phone_verified": false,
+    "location": "Trondheim, Norway",
+    "location_data": "(10.3951, 63.4305)"
+  }
+]
+
+
+
+// ***** single 
+
+{
+"id": "u100003311cp",
+"username": "more4din",
+"password_hash": "$2a$4412$HFY5.rBoXtYxad4dsdsddsgkbubJEgMtfFznNnPXJblSZMKB5Vw.",
+"email": "more4in@example.com",
+"user_type": "vendor",
+"user_role": "business",
+"date_joined": "2024-12-10T08:30:00Z",
+"last_login": "2025-05-14T14:22:10Z",
+"is_active": true,
+"is_online": true,
+"is_email_verified": true,
+"is_phone_verified": true,
+"location": "Oslo, Norway",
+"location_data": "(10.7522, 59.9139)"
+}
+
+
+{
+  table: 'users',
+  count: 1,
+  dataSet: [{
+    id: 'u100003311cp',
+    username: 'more4din',
+    password_hash: '$2a$4412$HFY5.rBoXtYxad4dsdsddsgkbubJEgMtfFznNnPXJblSZMKB5Vw.',
+    email: 'more4in@example.com',
+    user_type: 'vendor',
+    user_role: 'business',
+    date_joined: '2024-12-10T08:30:00Z',
+    last_login: '2025-05-14T14:22:10Z',
+    is_active: true,
+    is_online: true,
+    is_email_verified: true,
+    is_phone_verified: true,
+    location: 'Oslo, Norway',
+    location_data: '(10.7522, 59.9139)'
+  }]
+}

@@ -1,0 +1,129 @@
+// mock data: USER PROFILE
+  
+   [
+    {
+      "id": "p20000001cp",
+      "user_id": "u10000001cp",
+      "first_name": "Anders",
+      "last_name": "Johansen",
+      "birth_date": "1985-03-15",
+      "phone": "+4791234567",
+      "profile_image": "https://randomuser.me/api/portraits/men/22.jpg",
+      "client_reviews_rating": 4,
+      "client_reviews_count": 27,
+      "verified_user": true,
+      "verified_payment": true,
+      "choice": true,
+      "long_time_user": true,
+      "fast_replyer": true,
+      "slow_replyer": false,
+      "given_complaints": false,
+      "received_complaints": false,
+      "insurance": true,
+      "payment_insurance": true,
+      "fast_worker": true,
+      "slow_worker": false
+    },
+    {
+      "id": "p20000002cp",
+      "user_id": "u10000002cp",
+      "first_name": "Maria",
+      "last_name": "Pedersen",
+      "birth_date": "1992-07-22",
+      "phone": "+4798765432",
+      "profile_image": "https://randomuser.me/api/portraits/women/35.jpg",
+      "client_reviews_rating": 3,
+      "client_reviews_count": 8,
+      "verified_user": true,
+      "verified_payment": true,
+      "choice": false,
+      "long_time_user": false,
+      "fast_replyer": false,
+      "slow_replyer": true,
+      "given_complaints": false,
+      "received_complaints": true,
+      "insurance": true,
+      "payment_insurance": false,
+      "fast_worker": false,
+      "slow_worker": true
+    },
+    {
+      "id": "p20000003cp",
+      "user_id": "u10000003cp",
+      "first_name": "Erik",
+      "last_name": "Olsen",
+      "birth_date": "1978-11-03",
+      "phone": "+4745678901",
+      "profile_image": "https://randomuser.me/api/portraits/men/54.jpg",
+      "client_reviews_rating": 5,
+      "client_reviews_count": 15,
+      "verified_user": true,
+      "verified_payment": true,
+      "choice": true,
+      "long_time_user": true,
+      "fast_replyer": true,
+      "slow_replyer": false,
+      "given_complaints": false,
+      "received_complaints": false,
+      "insurance": false,
+      "payment_insurance": true,
+      "fast_worker": true,
+      "slow_worker": false
+    }
+  ]
+
+
+
+
+//   ****Only one 
+[
+{
+"id": "p20000003cp",
+"user_id": "u10000003cp",
+"first_name": "Erik",
+"last_name": "Olsen",
+"phone": "+4745678901",
+"birth_date": "1978-11-03",
+"profile_image": "https://randomuser.me/api/portraits/men/54.jpg",
+"client_reviews_rating": 5,
+"client_reviews_count": 15,
+"verified_user": true,
+"verified_payment": true,
+"choice": true,
+"long_time_user": true,
+"fast_replyer": true,
+"slow_replyer": false,
+"given_complaints": false,
+"received_complaints": false,
+"insurance": false,
+"payment_insurance": true,
+"fast_worker": true,
+"slow_worker": false
+}
+]
+
+
+
+{
+"id": "p20000003cp",
+"user_id": "u10000003cp",
+"first_name": "Erik",
+"last_name": "Olsen",
+"phone": "+4745678901",
+"birth_date": "1978-11-03",
+"profile_image": "https://randomuser.me/api/portraits/men/54.jpg",
+"client_reviews_rating": "5",
+"client_reviews_count": "15",
+"verified_user": "true",
+"verified_payment": "true",
+"choice": "true",
+"long_time_user": "true",
+"fast_replyer": "true",
+"slow_replyer": "false",
+"given_complaints": "false",
+"received_complaints": "false",
+"insurance": "false",
+"payment_insurance": "true",
+"fast_worker": "true",
+"slow_worker": "false"
+}

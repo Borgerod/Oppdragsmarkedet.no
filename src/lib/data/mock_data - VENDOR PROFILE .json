@@ -1,0 +1,57 @@
+// mock data: VENDOR_PROFILE
+
+[
+  {
+    "id": "p10000001cp",
+    "user_id": "u10000001cp",
+    "display_name": "CraftMaster Pro",
+    "bio": "Professional carpenter with over 15 years of experience in custom furniture and home renovation projects.",
+    "avatar_url": "https://example.com/avatars/craftmaster.jpg",
+    "profile_banner_url": "https://example.com/banners/craftmaster-workshop.jpg",
+    "skills": "Furniture Making, Cabinet Installation, Custom Woodwork, Interior Renovation",
+    "experience": "15+ years in professional carpentry and furniture making. Specializing in Nordic designs.",
+    "education": "Master Craftsman Certificate, Oslo Craft Academy",
+    "certifications": "Master Carpenter, Furniture Design Specialist, Home Renovation Expert",
+    "languages": "Norwegian, English, Swedish",
+    "contact_info": "{\"phone\":\"+47 555 12 345\",\"website\":\"https://craftmaster.no\",\"social_media\":{\"instagram\":\"@craftmaster_no\",\"linkedin\":\"craftmaster-professional\"}}",
+    "rating": 4.9,
+    "created_at": "2024-12-11T10:15:00Z",
+    "updated_at": "2025-05-01T14:30:00Z"
+  },
+  {
+    "id": "p10000002cp",
+    "user_id": "u10000002cp",
+    "display_name": "Design Professional",
+    "bio": "Interior designer passionate about creating beautiful and functional spaces. Specializing in Scandinavian minimalism.",
+    "avatar_url": "https://example.com/avatars/designpro.jpg",
+    "profile_banner_url": "https://example.com/banners/design-studio.jpg",
+    "skills": "Interior Design, Space Planning, Color Theory, Sustainable Design, 3D Visualization",
+    "experience": "8 years working with high-end residential and commercial clients throughout Norway.",
+    "education": "Bachelor in Interior Architecture, Bergen School of Design",
+    "certifications": "Certified Interior Designer, Sustainable Design Specialist",
+    "languages": "Norwegian, English, Danish",
+    "contact_info": "{\"phone\":\"+47 555 67 890\",\"website\":\"https://designpro.no\",\"social_media\":{\"instagram\":\"@design_pro_bergen\",\"pinterest\":\"designpro_nordic\"}}",
+    "rating": 4.7,
+    "created_at": "2024-11-16T09:30:00Z",
+    "updated_at": "2025-04-20T11:45:00Z"
+  },
+  {
+    "id": "p10000003cp",
+    "user_id": "u10000003cp",
+    "display_name": "Tech Solutions Norway",
+    "bio": "Providing innovative technical solutions for government and enterprise clients. Specializing in smart infrastructure and sustainable tech integration.",
+    "avatar_url": "https://example.com/avatars/techsolutions.jpg",
+    "profile_banner_url": "https://example.com/banners/tech-office.jpg",
+    "skills": "Project Management, Systems Integration, Smart City Solutions, IoT Implementation, Technical Consulting",
+    "experience": "12 years delivering major technical projects for municipal and government clients.",
+    "education": "MSc in Systems Engineering, Norwegian University of Science and Technology",
+    "certifications": "Project Management Professional (PMP), Certified Systems Engineer, IoT Solutions Architect",
+    "languages": "Norwegian, English, German",
+    "contact_info": "{\"phone\":\"+47 555 98 765\",\"website\":\"https://techsolutions.no\",\"social_media\":{\"linkedin\":\"tech-solutions-norway\",\"twitter\":\"@TechSolNorway\"}}",
+    "rating": 4.8,
+    "created_at": "2025-01-06T13:20:00Z",
+    "updated_at": "2025-05-10T09:15:00Z"
+  }
+]
+
+
