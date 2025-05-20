@@ -43,25 +43,35 @@
 		error = '';
 		success = '';
 		result = null;
+		// console.log('***customJson: ', customJson);
 
 		try {
 			// Parse custom JSON if provided
-			let customData;
+			let dataInput;
 			if (customJson.trim()) {
 				try {
-					customData = JSON.parse(customJson);
+					dataInput = JSON.parse(customJson);
 				} catch (err) {
 					error = 'Invalid JSON: ' + (err instanceof Error ? err.message : 'Unknown error');
 					loading = false;
 					return;
 				}
 			}
+			// console.log('***dataInput: ', dataInput);
+			// for (let i = 0; i < dataInput.length; i++){
 
+			// }
+			// count = dataInput.length
 			const payload = {
+				// table: dataInput.table,
+				// count: dataInput.count,
+				// dataSet: {}
 				table: selectedTable,
-				count: dataCount,
-				...(customData ? { customData } : {})
+				count: dataInput.length,
+				...(dataInput ? { dataInput } : {})
+				// ...(dataInput ? { dataInput } : {})
 			};
+			// console.log('***payload: ', payload);
 
 			const response = await fetch('/api/data', {
 				method: 'POST',
@@ -148,7 +158,7 @@
 			</div>
 		{/if}
 
-		<form on:submit|preventDefault={addData}>
+		<form onsubmit={addData}>
 			<div class="form-group">
 				<label for="table">Table</label>
 				<select id="table" bind:value={selectedTable} required>
@@ -179,7 +189,7 @@
 				<button type="submit" class="primary" disabled={loading}>
 					{loading ? 'Adding...' : 'Add Data'}
 				</button>
-				<button type="button" class="danger" on:click={clearTable} disabled={loading}>
+				<button type="button" class="danger" onclick={clearTable} disabled={loading}>
 					Clear Table
 				</button>
 			</div>
