@@ -1,0 +1,28 @@
+function genCharForUserType(user_type){
+switch (user_type){
+case"client":
+return "c";
+case"vendor":
+return "v";
+}
+}
+function genCharForUserRole(user_role){
+switch (user_role){
+case"business":
+return "b";
+case"private":
+return "p";
+case"government":
+return "g";
+}
+}
+
+
+function genIdNumForUserType(user_type){
+switch (user_type){
+case"client":
+return 1;
+case"vendor":
+return 2;
+}
+}
