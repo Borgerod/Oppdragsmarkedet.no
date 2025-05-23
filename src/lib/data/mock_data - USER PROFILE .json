@@ -127,3 +127,30 @@
 "fast_worker": "true",
 "slow_worker": "false"
 }
+
+{
+  "id": "p20000003cp",
+  "userId": "u10000003cp",
+  "firstName": "Erik",
+  "lastName": "Olsen",
+  "phone": "+4745678901",
+  "birthDate": "1978-11-03",
+  "profileImage": "https://randomuser.me/api/portraits/men/54.jpg",
+  "clientReviewsRating": "5",
+  "clientReviewsCount": "15",
+  "verifiedUser": "true",
+  "verifiedPayment": "true",
+  "choice": "true",
+  "longTimeUser": "true",
+  "fastReplyer": "true",
+  "slowReplyer": "false",
+  "givenComplaints": "false",
+  "receivedComplaints": "false",
+  "insurance": "false",
+  "paymentInsurance": "true",
+  "fastWorker": "true",
+  "slowWorker": "false"
+}
+
+
+
