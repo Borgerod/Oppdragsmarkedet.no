@@ -1,5 +1,5 @@
 export * from './ignore/schema-extensions';
-
+import { sql } from 'drizzle-orm';
 // import { float } from 'drizzle-orm/mysql-core';
 import {
 	real,
@@ -12,7 +12,8 @@ import {
 	point,
 	pgEnum,
 	varchar,
-	date
+	date,
+	unique
 } from 'drizzle-orm/pg-core';
 
 // ========================
@@ -43,7 +44,6 @@ export const userRoleEnum = pgEnum('user_role', ['business', 'private', 'governm
 // ========================
 // SESSION
 // ========================
-
 export const session = pgTable('sessions', {
 	id: text('id').primaryKey(),
 	userId: text('user_id')
@@ -56,13 +56,72 @@ export const session = pgTable('sessions', {
 // CORE TABLES
 // ========================
 
+function idGenerator(table: Object, user_role: Object, user_type: Object) {
+	return (
+		idCharGenerator(table),
+		idCharGenerator(user_role),
+		idCharGenerator(user_type),
+		integer().generatedAlwaysAsIdentity(),
+		idCharGenerator(user_role, true),
+		idCharGenerator(user_type, true)
+	);
+}
+
+function idCharGenerator(tag: Object, get_num?: boolean) {
+	// generates a char for id based on the tag input; user_type, user_role
+	// returns a number or a letter based on get_num
+	// const tagValue = typeof tag === 'object' && tag !== null ? String(tag.value) : String(tag);
+
+	switch (tag) {
+		// id_type
+		case 'user':
+			return 'u';
+		case 'profile':
+			return 'p';
+		case 'wallet':
+			return 'p';
+		case 'project':
+			return 'pro';
+		// todo make more id_types
+
+		// user_type
+		case 'vendor':
+			return get_num ? 1 : 'v';
+		case 'client':
+			return get_num ? 2 : 'c';
+		case 'employee': //also used for id_type
+			return get_num ? 3 : 'e';
+		case 'admin': //also used for id_type
+			return get_num ? 4 : 'a';
+		// user_role
+		case 'private':
+			return get_num ? 1 : 'p';
+		case 'business':
+			return get_num ? 2 : 'b';
+		case 'government':
+			return get_num ? 3 : 'g';
+		// Add more cases as needed
+		default:
+			return get_num ? 0 : '?'; // Default or unknown case
+	}
+}
+
 // User table - core user information
 export const users = pgTable('users', {
-	id: text('id').primaryKey(), // e.g., 'u10000023cp'
+	// id: text('id').primaryKey(), // e.g., 'u10000023cp'
+	// id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+	// id: varchar('id', { length: 15 }).notNull().unique().primaryKey().generatedAlwaysAsIdentity({ name: "users_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647, cache: 1 }),
+	id: varchar('id', { length: 15 })
+		.notNull()
+		.unique()
+		.primaryKey()
+		.generatedAlwaysAs(
+			sql`CONCAT('u', ${idCharGenerator('users')}, ${idCharGenerator(userTypeEnum('user_type'))}, ${idCharGenerator(userRoleEnum('user_role'))})`
+		),
 	username: varchar('username', { length: 50 }).notNull().unique(),
 	password_hash: varchar('password_hash', { length: 255 }).notNull(),
 	email: varchar('email', { length: 319 }).notNull().unique(),
-	user_type: userTypeEnum('user_type').notNull(), // 'vendor' or 'client'
+	user_type: userTypeEnum('user_type').notNull(), // 'vendor', 'client' , 'employee' or 'admin'
 	user_role: userRoleEnum('user_role').notNull(), // 'business', 'private', 'government'
 	date_joined: timestamp('date_joined').defaultNow(),
 	last_login: timestamp('last_login'),
@@ -73,7 +132,7 @@ export const users = pgTable('users', {
 	location: text('location'),
 	location_data: point('location_data')
 });
-
+console.log(users);
 // User profile data - personal information
 export const user_profiles = pgTable('user_profiles', {
 	id: text('id').primaryKey(), // e.g., 'p20000023cp'
