@@ -19,7 +19,7 @@
 
 <header>
 	<div class="storybook-header">
-		<a class="title-card" href="https://oppdragsmarkedet.no">
+		<a class="title-card" href="/">
 			<h1>OPPDRAGS<span>M</span>ARKEDET</h1>
 		</a>
 		<div class="button-container">
@@ -28,7 +28,12 @@
 			{:else}
 				<Button hollow osl size="small" onclick={onLogin} label="Logg inn" />
 				<!-- <Button hollow osl size="small" onclick={onCreateAccount} label="Sign up" /> -->
-				<Button hollow osl size="small" onclick={onCreateAccount} label="Registrer konto" />
+				<div class="register-button-container">
+					<Button hollow osl size="small" onclick={onCreateAccount} label="Registrer konto" />
+				</div>
+				<div class="menu-button-container">
+					<Button hollow osl size="small" onclick={onCreateAccount} icon="fa-bars" />
+				</div>
 			{/if}
 		</div>
 	</div>
