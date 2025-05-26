@@ -115,35 +115,35 @@
 		// Handle edit profile action
 		// TEMP placeholder
 		// TODO [ ]: add functionality
-		console.log('Edit profile clicked');
+		// console.log('Edit profile clicked');
 	}
 
 	function handleLogout() {
 		// TEMP placeholder
 		// TODO [ ]: add functionality
 		// Handle logout action
-		console.log('Logout clicked');
+		// console.log('Logout clicked');
 	}
 
 	function saveChanges() {
 		// TEMP placeholder
 		// TODO [ ]: add functionality
 		// Handle save changes action
-		console.log('Saving profile changes');
+		// console.log('Saving profile changes');
 	}
 
 	function SavePassword() {
 		// TEMP placeholder
 		// TODO [ ]: add functionality
 		// Handle password action
-		console.log('Saving Password');
+		// console.log('Saving Password');
 	}
 
 	function SavePreferences() {
 		// TEMP placeholder
 		// TODO [ ]: add functionality
 		// Handle save preferences action
-		console.log('Saving Preferences');
+		// console.log('Saving Preferences');
 	}
 
 	function getRatingStars(rating: number) {
