@@ -1,55 +1,64 @@
+// local
 import { db } from '@db/index';
 import * as schema from '@db/schema';
-import { eq } from 'drizzle-orm';
+// external
+import { eq, and } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
-export const load = (async ({ params }) => {
-	// const userID = params.id; //* or your hardcoded ID
-	const userID = 'u10000001cp'; // placeholder
-	try {
-		const userProfileData = {
-			id: 'p20000003cp',
-			userId: 'u10000001cp',
-			firstName: 'Erik',
-			lastName: 'Olsen',
-			phone: '+4745678901',
-			birthDate: '1978-11-03',
-			profileImage: 'https://randomuser.me/api/portraits/men/54.jpg',
-			clientReviewsRating: 5,
-			clientReviewsCount: 15,
-			verifiedUser: true,
-			verifiedPayment: true,
-			choice: true,
-			longTimeUser: true,
-			fastReplyer: true,
-			slowReplyer: false,
-			givenComplaints: false,
-			receivedComplaints: false,
-			insurance: false,
-			paymentInsurance: true,
-			fastWorker: true,
-			slowWorker: false
-		};
-		await db.insert(schema.userProfiles).values(userProfileData).execute(); // Just execute without returning
-		const result = await db.select().from(schema.userProfiles);
-		console.log('profile data: ', result);
+export const load: PageServerLoad = async () => {
+	const placeholder_state_user_id = 'u10869961796'; // a standin state for the users id which will be fetched on login
 
-		const profile = await db
-			.select()
-			.from(schema.userProfiles)
-			.where(eq(schema.userProfiles.userId, userID))
-			.limit(1);
+	// Get the specific user profile that matches the user ID
+	const userProfile = await db
+		.select()
+		.from(schema.userProfiles)
+		.where(eq(schema.userProfiles.userId, placeholder_state_user_id))
+		.limit(1);
 
-		console.log('profile data: ', profile);
+	// Optionally get the user data as well
+	const user = await db
+		.select()
+		.from(schema.users)
+		.where(eq(schema.users.id, placeholder_state_user_id))
+		.limit(1);
 
-		if (!profile) {
-			return { status: 404, error: new Error('Profile not found') };
-		}
+	let profileStructure = user[0].userType; // > can be removed
 
-		return {
-			profile
-		};
-	} catch (error) {
-		return { status: 500, error: new Error('Failed to fetch profile') };
-	}
-}) satisfies PageServerLoad;
+	//* using query
+	const favoriteProjects = {
+		favoriteProjects: await db.query.favoriteProjects.findMany({
+			where: (favoriteProjects, { eq, and }) =>
+				and(eq(favoriteProjects.userId, placeholder_state_user_id))
+		})
+	};
+	const ownedProjects = {
+		activeProjects: await db.query.projects.findMany({
+			where: (projects, { eq, and }) =>
+				and(eq(projects.clientId, placeholder_state_user_id), eq(projects.isActive, true))
+		}),
+		closedProjects: await db.query.projects.findMany({
+			where: (projects, { eq, and }) =>
+				and(eq(projects.clientId, placeholder_state_user_id), eq(projects.isActive, false))
+		})
+	};
+	const vendoredProjects = {
+		activeProjects: await db.query.projects.findMany({
+			where: (projects, { eq, and }) =>
+				and(eq(projects.vendorId, placeholder_state_user_id), eq(projects.isActive, true))
+		}),
+		closedProjects: await db.query.projects.findMany({
+			where: (projects, { eq, and }) =>
+				and(eq(projects.vendorId, placeholder_state_user_id), eq(projects.isActive, false))
+		})
+	};
+	//> /_______________ WORK AREA  _______________
+
+	return {
+		favoriteProjects: favoriteProjects,
+		ownedProjects: ownedProjects,
+		vendoredProjects: vendoredProjects,
+		profileStructure: profileStructure, // > can be removed
+		user: user[0] || null,
+		userProfile: userProfile[0] || null
+	};
+};
