@@ -20,7 +20,7 @@ import { json } from '@sveltejs/kit';
 
 const db = drizzle(process.env.DATABASE_URL!);
 
-console.log(process.env.DATABASE_URL);
+// console.log(process.env.DATABASE_URL);
 
 async function main() {
 	const user: typeof users.$inferInsert = {
@@ -42,11 +42,11 @@ async function main() {
 
 	// CREATE USER
 	await db.insert(users).values(user);
-	console.log('New user created.');
+	// console.log('New user created.');
 
 	// GET USER
 	const results = await db.select().from(users);
-	console.log('Getting all results from the database: ', results);
+	// console.log('Getting all results from the database: ', results);
 	/*
   const users: {
 	id: number;
@@ -63,11 +63,11 @@ async function main() {
 			username: 'JohnIsColl69'
 		})
 		.where(eq(users.id, user.id));
-	console.log('User info updated.');
+	// console.log('User info updated.');
 
 	// DELETE USER
 	await db.delete(users).where(eq(users.id, user.id));
-	console.log('User deleted.');
+	// console.log('User deleted.');
 }
 main();
 
