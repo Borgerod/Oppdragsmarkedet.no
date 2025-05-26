@@ -1,22 +1,9 @@
 <svelte:options runes />
 
+<!-- * HOME PAGE -->
 <script lang="ts">
-	import Header from '../stories/Header.svelte';
-	import Footer from '../stories/Footer.svelte';
-	//  import DropDown from '../stories/forms/DropDown.svelte';
-	// import UserList from './userList.svelte';
-	// import '../stories/page.css';
-	// import ProjectListPage from './projectListPage.svelte';
-	// import Tabs from '../stories/tabs.svelte';
-	// import Home from './home.svelte';
-	// import Button from '../stories/Button.svelte';
-	import ProjectListPage from './ProjectListPage.svelte';
-	import UserProfilePage from './UserProfilePage.svelte';
-	import Test from './test.svelte';
-	// let user = $state(null);
-	// console.log(dropdown_value);
-	// let data =
-	// let area=$state()
+	// import Header from '@stories/Header.svelte';
+	// import Footer from '@stories/Footer.svelte';
 </script>
 
 <svelte:head>
@@ -31,13 +18,10 @@
 </svelte:head>
 
 <div class="page-wrapper">
-	<Header user={null} onLogin={() => {}} onLogout={() => {}} onCreateAccount={() => {}} />
 	<div class="content">
-		<ProjectListPage />
-		<!-- <Test /> -->
-		<!-- <UserProfilePage /> -->
+		<!-- EMPTY -->
+		<!-- <slot /> -->
 	</div>
-	<Footer />
 </div>
 
 <style>
