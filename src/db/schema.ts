@@ -17,13 +17,14 @@ import {
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
-export const projectStatus = pgEnum('project_status', [
+export const projectState = pgEnum('project_status', [
 	'draft',
 	'posted',
 	'in_progress',
 	'completed',
 	'cancelled'
 ]);
+
 export const transactionSource = pgEnum('transaction_source', ['wallets', 'direct']);
 export const transactionType = pgEnum('transaction_type', ['incoming', 'outgoing']);
 export const userRole = pgEnum('user_role', [
@@ -76,11 +77,13 @@ export const userProfiles = pgTable(
 		userId: varchar('user_id', { length: 50 }).unique().notNull(),
 		firstName: varchar('first_name', { length: 100 }).notNull(),
 		lastName: varchar('last_name', { length: 100 }).notNull(),
-		phone: varchar({ length: 20 }).unique(),
-		birthDate: date('birth_date'),
+		phone: varchar('phone', { length: 30 }).unique(),
+		email: varchar('email', { length: 254 }).unique(),
+		birthDate: date('birth_date').notNull(),
 		profileImage: varchar('profile_image', { length: 250 }),
-		clientReviewsRating: real('client_reviews_rating'),
-		clientReviewsCount: integer('client_reviews_count').default(0),
+		clientReviewsRating: real('client_reviews_rating').notNull(),
+		clientReviewsCount: integer('client_reviews_count').default(0).notNull(),
+		address: varchar('profile_image', { length: 250 }).notNull(),
 		verifiedUser: boolean('verified_user').default(false),
 		verifiedPayment: boolean('verified_payment').default(false),
 		choice: boolean().default(false),
@@ -126,7 +129,8 @@ export const projects = pgTable(
 		budget: integer(),
 		currency: text().default('NOK'),
 		paymentVerification: boolean('payment_verification').default(false),
-		status: projectStatus().default('draft'),
+		state: projectState().default('draft'),
+		isActive: boolean('is_active').default(true),
 		favoritedCount: integer('favorited_count').default(0),
 		viewCount: integer('view_count').default(0),
 		purchaseCount: integer('purchase_count').default(0),
@@ -137,7 +141,7 @@ export const projects = pgTable(
 	},
 	(table) => [
 		index('idx_projects_client_id').using('btree', table.clientId.asc().nullsLast().op('text_ops')),
-		index('idx_projects_status').using('btree', table.status.asc().nullsLast().op('enum_ops')),
+		index('idx_projects_state').using('btree', table.state.asc().nullsLast().op('enum_ops')),
 		index('idx_projects_vendor_id').using('btree', table.vendorId.asc().nullsLast().op('text_ops')),
 		foreignKey({
 			columns: [table.clientId],
