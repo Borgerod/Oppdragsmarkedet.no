@@ -10,7 +10,7 @@ export async function GET() {
 		const client = postgres(env.DATABASE_URL);
 
 		// Log connection info and get table list
-		console.log('Database connection test:');
+		// console.log('Database connection test:');
 
 		// Query to list all tables in the database
 		const tables = await client`
@@ -20,7 +20,7 @@ export async function GET() {
         `;
 
 		const tableNames = tables.map((t) => t.table_name);
-		console.log('Tables in database:', tableNames);
+		// console.log('Tables in database:', tableNames);
 
 		// Create a map to store our test results
 		const tableResults = {};
@@ -36,16 +36,16 @@ export async function GET() {
 					count: parseInt(result[0].count),
 					error: null
 				};
-				console.log(`Table "${tableName}" exists with ${result[0].count} records`);
+				// console.log(`Table "${tableName}" exists with ${result[0].count} records`);
 			} catch (error) {
 				tableResults[tableName] = {
 					exists: false,
 					count: 0,
 					error: error instanceof Error ? error.message : String(error)
 				};
-				console.log(
-					`Table "${tableName}" does not exist or has an issue: ${error instanceof Error ? error.message : String(error)}`
-				);
+				// console.log(
+				// 	`Table "${tableName}" does not exist or has an issue: ${error instanceof Error ? error.message : String(error)}`
+				// );
 			}
 		}
 
@@ -68,13 +68,13 @@ export async function GET() {
 				}))
 			};
 
-			console.log('Users table structure:', schemaInfo.users);
+			// console.log('Users table structure:', schemaInfo.users);
 
 			// Try to get sample data
 			if (tableResults.users && tableResults.users.count > 0) {
 				const sampleUsers = await client.unsafe(`SELECT * FROM "users" LIMIT 1`);
 				schemaInfo.userSample = sampleUsers[0];
-				console.log('Sample user data:', sampleUsers[0]);
+				// console.log('Sample user data:', sampleUsers[0]);
 			}
 		} catch (error) {
 			schemaInfo.usersError = error instanceof Error ? error.message : String(error);
@@ -97,7 +97,7 @@ export async function GET() {
 				}))
 			};
 
-			console.log('Sessions table structure:', schemaInfo.sessions);
+			// console.log('Sessions table structure:', schemaInfo.sessions);
 		} catch (error) {
 			schemaInfo.sessionsError = error instanceof Error ? error.message : String(error);
 			console.error('Error getting sessions table structure:', error);
