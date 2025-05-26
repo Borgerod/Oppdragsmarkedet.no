@@ -8,6 +8,7 @@
 	// end of edit
 
 	import './button.css';
+	import '@fortawesome/fontawesome-free/css/all.min.css';
 	// import './neumorphicButton.css';
 	// import './button.scss';
 
@@ -23,6 +24,7 @@
    * @property {string} [parentColor] What background color the parent has
    * @property {'small' | 'medium' | 'large'} [size] How large should the button be?
    * @property {string} label Button contents
+   * @property {string} icon Button contents
    * @property {() => void} [onclick] The onclick event handler
    * @property {string} [style] potentially be the replacement for primary switches between: [primary, secondary, hollow, neomorphic]
    * @property {boolean} [wide] potentially be the replacement for primary switches between: [primary, secondary, hollow, neomorphic]
@@ -36,14 +38,15 @@
 		hollow = false,
 		rounded = false,
 		wide = false,
-		inverted = false,
-		osloff = false,
+		// inverted = false,
+		// osloff = false,
 		osl = false,
 		dark_bg = false,
 		primary = false,
 		backgroundColor = '',
 		size = 'medium',
-		label,
+		label = undefined,
+		icon = undefined,
 		onclick,
 		style = 'secondary',
 		type = 'button' as 'button' | 'submit' | 'reset'
@@ -63,5 +66,8 @@
 	class:storybook-button--rounded={rounded}
 	{onclick}
 >
+	{#if icon}
+		<i class={`fa ${icon}`} aria-hidden="true"></i>
+	{/if}
 	{label}
 </button>
