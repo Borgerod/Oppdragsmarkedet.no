@@ -4,8 +4,11 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		alias: {
+			'@src': 'src',
 			'@db': 'src/db',
-			'@components': 'src/components'
+			'@components': 'src/components',
+			'@stories': 'src/stories',
+			'@forms': 'src/stories/forms'
 		}
 	}
 };
