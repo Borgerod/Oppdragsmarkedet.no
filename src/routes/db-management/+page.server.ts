@@ -1,19 +1,23 @@
+// local
 import { db } from '@db/index';
 import * as schema from '@db/schema';
-import { eq, isNull } from 'drizzle-orm';
+// external
+// import { eq, isNull } from 'drizzle-orm';
+import { eq, isNull, inArray } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 import { fail as kitFail } from '@sveltejs/kit';
-import { supabaseAuthAdminRole } from 'drizzle-orm/supabase';
 
-export const load = (async () => {
+export const load: PageServerLoad = async () => {
 	const users = await db.select().from(schema.users);
 	const userProfiles = await db.select().from(schema.userProfiles);
+	const projects = await db.select().from(schema.projects);
 	return {
-		users,
-		userProfiles
+		users: users || null,
+		userProfiles: userProfiles || null,
+		projects: projects || null
 	};
-}) satisfies PageServerLoad;
+};
 
 function fail(status: number, data: Record<string, any>): ReturnType<typeof kitFail> {
 	return kitFail(status, data);
@@ -31,6 +35,12 @@ const insertUserProfile = async (userProfile: NewUserProfile) => {
 	return db.insert(schema.userProfiles).values(userProfile);
 };
 
+type NewProject = typeof schema.projects.$inferInsert;
+
+const insertProject = async (project: NewProject) => {
+	return db.insert(schema.projects).values(project);
+};
+
 export const actions = {
 	createUsers: async ({ request }) => {
 		const formData = await request.formData();
@@ -42,8 +52,7 @@ export const actions = {
 			// Parse the JSON string from the form
 			// const parsedJson = JSON.parse(formJson); //!OLD
 			const parsedJson = formJson
-				? // creates mock data if json is empty
-					JSON.parse(formJson)
+				? JSON.parse(formJson)
 				: [
 						{
 							// id: `u${roleKey}${Math.floor(Math.random() * 99999999999)}`,
@@ -53,9 +62,10 @@ export const actions = {
 							email: `MockUser${Math.floor(Math.random() * 1000)}@example.com`,
 							...(function () {
 								// First determine userRole from the full list of options
-								const userRole = ['private', 'business', 'government', 'employee', 'admin'][
-									Math.floor(Math.random() * 5) // Use all 5 options
-								];
+								// const userRole = ['private', 'business', 'government', 'employee', 'admin'][
+								// 	Math.floor(Math.random() * 5) // Use all 5 options
+								// ];
+								const userRole = 'business';
 
 								// Set idChar based on userRole
 								if (userRole === 'admin') {
@@ -72,8 +82,10 @@ export const actions = {
 									userType = 'employee';
 								} else if (userRole === 'business') {
 									// Business can be vendor+client or just client
-									const isVendor = Math.random() > 0.5; // 50% chance to be a vendor
-									userType = isVendor ? ['vendor', 'client'] : 'client';
+									// const isVendor = Math.random() > 0.5; // 50% chance to be a vendor
+									// userType = isVendor ? ['vendor', 'client'] : 'client';
+									userType = ['vendor', 'client'][Math.floor(Math.random() * 2)];
+									console.log('userType: ', userType);
 								} else {
 									// For private and government
 									userType = 'client';
@@ -81,16 +93,6 @@ export const actions = {
 
 								return { userRole, userType };
 							})(),
-							// ...(function () {
-							// 	const userRole = ['private', 'business', 'government', 'employee', 'admin'][
-							// 		Math.floor(Math.random() * 3)
-							// 	];
-							// 	const userType =
-							// 		userRole === 'business'
-							// 			? ['vendor', 'client',][Math.floor(Math.random() * 2)]
-							// 			: 'client';
-							// 	return { userRole, userType };
-							// })(),
 							dateJoined: new Date().toISOString(),
 							lastLogin: new Date().toISOString(),
 							isActive: true,
@@ -123,13 +125,14 @@ export const actions = {
 					: [0, 0]
 			}));
 
-			const insertedData = await db.transaction(async (tx) => {
+			// const insertedData =
+			await db.transaction(async (tx) => {
 				const results = [];
 				for (const data of cleanedData) {
 					const inserted = await tx.insert(schema.users).values(data).returning();
 					results.push(inserted[0]);
 				}
-				console.log('Results', cleanedData);
+				// console.log('Results', cleanedData);
 				return results;
 			});
 		} catch (error) {
@@ -144,13 +147,9 @@ export const actions = {
 	createUserProfile: async ({ request }) => {
 		const formData = await request.formData();
 		const formJson = formData.get('form')?.toString();
-		// if (!formJson) {
-		// 	return fail(400, { message: 'Form data is required' });
-		// }
 
 		try {
 			// Parse the JSON string from the form
-			// const parsedJson = JSON.parse(formJson); //! OLD
 
 			// Get valid userIds that don't already have profiles
 			const existingUsers = await db
@@ -223,14 +222,164 @@ export const actions = {
 				slowWorker: Boolean(RawData.slowWorker)
 			}));
 
-			const insertedData = await db.transaction(async (tx) => {
+			// const insertedData =
+			await db.transaction(async (tx) => {
 				const results = [];
 				for (const data of cleanedData) {
 					const inserted = await tx.insert(schema.userProfiles).values(data).returning();
 					results.push(inserted[0]);
-					console.log('Results:', cleanedData);
-					// console.log('success. data was pushed: ', data);
 				}
+				return results;
+			});
+		} catch (error) {
+			console.error('Error processing form:', error);
+			return fail(500, {
+				message: 'Failed to process form data',
+				error: error instanceof Error ? error.message : 'Unknown error'
+			});
+		}
+	},
+
+	createProject: async ({ request }) => {
+		// make sure generated ID doesn't already exist
+		const existingProjects = await db.select({ id: schema.projects.id }).from(schema.projects);
+
+		// const randomUProjectId =
+		// 	existingProjects.length > 0
+		// 		? existingProjects[Math.floor(Math.random() * existingProjects.length)].id
+		// 		: `pro${Math.floor(Math.random() * 99999999999)}`; // Fallback
+
+		const idChar = 'pro';
+
+		try {
+			// Parse the JSON string from the form
+			const formData = await request.formData();
+			const formJson = formData.get('form')?.toString();
+			const parsedJson = formJson
+				? JSON.parse(formJson)
+				: [
+						{
+							id: `${idChar}${Math.floor(Math.random() * 99999999999)}`,
+							clientId:
+								(
+									await db
+										.select({ id: schema.users.id })
+										.from(schema.users)
+										.where(eq(schema.users.userType, 'client'))
+								)
+									.map((u) => u.id)
+									.sort(() => 0.5 - Math.random())[0] ?? null,
+							vendorId:
+								(
+									await db
+										.select({ id: schema.users.id })
+										.from(schema.users)
+										.where(eq(schema.users.userType, 'vendor'))
+								)
+									.map((u) => u.id)
+									.sort(() => 0.5 - Math.random())[0] ?? null,
+							title: `MockTitle_${Math.floor(Math.random() * 1000)}`,
+							shortDescription: `MockShortDescription_${Math.floor(Math.random() * 1000)}`,
+							longDescription: `MockLongDescription_${Math.floor(Math.random() * 1000)}`,
+							location: 'Mockdata Street 115',
+							category: [
+								'Blikkenslager',
+								'Elektriker',
+								'Entreprenør',
+								'Maler',
+								'Maskinentreprenør',
+								'Murer',
+								'Rengjøring',
+								'Rørlegger',
+								'Snekker',
+								'Metallarbeider',
+								'Anleggsgartner',
+								'River',
+								'Skadedyr',
+								'Sveiser',
+								'Transport'
+							][Math.floor(Math.random() * 15)],
+							experienceRequirements: 'mock sub category',
+							jobAttributes: 'mock job attributes',
+							postDate: new Date(
+								1980 + Math.floor(Math.random() * 30),
+								Math.floor(Math.random() * 12),
+								Math.floor(Math.random() * 28) + 1
+							).toISOString(),
+							startDate: new Date(
+								1980 + Math.floor(Math.random() * 30),
+								Math.floor(Math.random() * 12),
+								Math.floor(Math.random() * 28) + 1
+							).toISOString(),
+							dueDate: new Date(
+								1980 + Math.floor(Math.random() * 30),
+								Math.floor(Math.random() * 12),
+								Math.floor(Math.random() * 28) + 1
+							).toISOString(),
+							finishDate: new Date(
+								1980 + Math.floor(Math.random() * 30),
+								Math.floor(Math.random() * 12),
+								Math.floor(Math.random() * 28) + 1
+							).toISOString(),
+							estimatedTime: 'mock time',
+							budget: Math.floor(Math.random() * 100000),
+							currency: 'NOK',
+							paymentVerification: [true, false][Math.floor(Math.random() * 2)],
+							state: ['draft', 'posted', 'in_progress', 'completed', 'cancelled'][
+								Math.floor(Math.random() * 5)
+							],
+							isActive: [true, false][Math.floor(Math.random() * 2)],
+							favoritedCount: Math.floor(Math.random() * 99),
+							viewCount: Math.floor(Math.random() * 100),
+							purchaseCount: Math.floor(Math.random() * 10),
+							paidListing: [true, false][Math.floor(Math.random() * 2)],
+							listingPriorityScore: Math.floor(Math.random() * 99),
+							vendorRating: [1, 2, 3, 4, 5][Math.floor(Math.random() * 5)],
+							clientRating: [1, 2, 3, 4, 5][Math.floor(Math.random() * 5)]
+						}
+					];
+
+			const dataArray = Array.isArray(parsedJson) ? parsedJson : [parsedJson];
+
+			const cleanedData = dataArray.map((RawData) => ({
+				id: RawData.id,
+				clientId: RawData.clientId,
+				vendorId: RawData.vendorId,
+				title: RawData.title,
+				shortDescription: RawData.shortDescription,
+				longDescription: RawData.longDescription,
+				location: RawData.location,
+				address: RawData.address,
+				category: RawData.category,
+				experienceRequirements: RawData.experienceRequirements,
+				jobAttributes: RawData.jobAttributes,
+				postDate: RawData.postDate,
+				startDate: RawData.startDate,
+				dueDate: RawData.dueDate,
+				finishDate: RawData.finishDate,
+				estimatedTime: RawData.estimatedTime,
+				budget: RawData.budget,
+				currency: RawData.currency,
+				paymentVerification: RawData.paymentVerification,
+				state: RawData.state,
+				isActive: RawData.isActive,
+				favoritedCount: RawData.favoritedCount,
+				viewCount: RawData.viewCount,
+				purchaseCount: RawData.purchaseCount,
+				paidListing: RawData.paidListing,
+				listingPriorityScore: RawData.listingPriorityScore,
+				vendorRating: RawData.vendorRating,
+				clientRating: RawData.clientRating
+			}));
+
+			// const insertedData =
+			await db.transaction(async (tx) => {
+				const results = [];
+				for (const data of cleanedData) {
+					const inserted = await tx.insert(schema.projects).values(data).returning();
+					results.push(inserted[0]);
+				}
+				console.log('inserted Project');
 				return results;
 			});
 		} catch (error) {

@@ -44,6 +44,25 @@
 			<button type="submit" class="button primary">Submit</button>
 		</form>
 	</div>
+
+	<div class="projects">
+		<p>{$inspect(data.projects)}</p>
+		{#if data.projects}
+			<div class="result-section">
+				<h4>Projects</h4>
+				<pre>{JSON.stringify(data.projects, null, 2)}</pre>
+			</div>
+		{/if}
+		<form method="POST" use:enhance action="?/createProject">
+			<div class="form-group">
+				<p>Add Project</p>
+				<textarea id="form" name="form" placeholder="Enter JSON here..." rows="8"></textarea>
+				<small>Enter JSON data for custom records, or leave empty for random mock data</small>
+			</div>
+
+			<button type="submit" class="button primary">Submit</button>
+		</form>
+	</div>
 </div>
 
 <style>
