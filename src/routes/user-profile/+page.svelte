@@ -12,17 +12,20 @@
 		faStar,
 		faCog,
 		faSignOutAlt,
-		faBookmark
+		faBookmark,
+		faTrash
 	} from '@fortawesome/free-solid-svg-icons';
 	import { faLinkedinIn, faFacebookF, faInstagram } from '@fortawesome/free-brands-svg-icons';
 	import Button from '@stories/Button.svelte';
+	import Tags from '@stories/forms/Tags.svelte';
 	// import Tabs from '@stories/forms/Tabs.svelte';
 	import '@src/app.css';
 	import '@stories/button.css';
 	import '@stories/forms/form.css';
-
 	import { enhance } from '$app/forms';
-	import { projects } from '@src/db/schema.js';
+	import { onMount } from 'svelte';
+	import '@stories/theme.css';
+	// import '@src/../app.css';
 
 	// ? IDEA
 	// ? this could be only the public profile, then the private profile can be called account
@@ -54,6 +57,8 @@
 		{ id: 'saved', name: 'Favoritter' },
 		{ id: 'settings', name: 'Innstillinger' }
 	];
+	// No need for client-side project fetching since project data is included from the server
+	// The server has already loaded project data for each favorite project using "with: { project: true }"
 
 	function getRatingStars(rating: number) {
 		const fullStars = Math.floor(rating);
@@ -111,6 +116,36 @@
 		// console.log('Saving Preferences');
 	}
 	// TODO [ ] phone number , db ; format phone numbers (make sure they're stored formated in db)
+
+	function getProgression(state: string | null) {
+		switch (state) {
+			case 'draft':
+				return 1;
+			case 'posted':
+				return 2;
+			case 'in_progress':
+				return 3;
+			case 'completed':
+				return 4;
+			case 'cancelled':
+				return null;
+		}
+	}
+	let isVendor = $state(false);
+	let isEmployee = $state(false);
+
+	// if (userData.userRole)
+	switch (userData.userType) {
+		case 'client':
+			isVendor = false;
+			break;
+		case 'vendor':
+			isVendor = true;
+			break;
+		case 'employee':
+			isEmployee = true;
+			break;
+	}
 </script>
 
 <!--* New profile -->
@@ -184,11 +219,12 @@
 	<div class="tab-content">
 		{#if activeTab === 'profile'}
 			<div class="profile-content">
-				<div class="profile-section">
-					<h2>Beskrivelse</h2>
-					<!-- <p>{profile.bio}</p> -->
-				</div>
-
+				{#if isVendor}
+					<div class="profile-section">
+						<h2>Beskrivelse</h2>
+						<!-- <p>{profile.bio}</p> -->
+					</div>
+				{/if}
 				<div class="profile-section">
 					<h2>Kontakt Informasjon</h2>
 					<div class="contact-info">
@@ -215,59 +251,93 @@
 					</div>
 				</div>
 				<!-- SOCIAL MEDIA -->
-				<!-- <div class="profile-section">
-					<h2>Ferdigheter og spesialiseringer</h2>
-					<div class="skills-container">
-						{#each profile.field as skill}
-							<div class="skill-tag">{skill}</div>
-						{/each}
+				{#if isVendor}
+					<div class="profile-section">
+						<h2>Ferdigheter og spesialiseringer</h2>
+						<div class="skills-container">
+							{#each profile.field as skill}
+								<div class="skill-tag">{skill}</div>
+							{/each}
+						</div>
 					</div>
-				</div> -->
 
-				<!-- <div class="profile-section">
-					<h2>Sosiale Media</h2>
-					<div class="social-links">
-						{#if profile.social?.linkedin}
-							<a href={profile.social.linkedin} target="_blank" class="social-link">
-								<Fa icon={faLinkedinIn} />
-							</a>
-						{/if}
-						{#if profile.social?.facebook}
-							<a href={profile.social.facebook} target="_blank" class="social-link">
-								<Fa icon={faFacebookF} />
-							</a>
-						{/if}
-						{#if profile.social?.instagram}
-							<a href={profile.social.instagram} target="_blank" class="social-link">
-								<Fa icon={faInstagram} />
-							</a>
-						{/if}
+					<div class="profile-section">
+						<h2>Sosiale Media</h2>
+						<div class="social-links">
+							{#if profile.social?.linkedin}
+								<a href={profile.social.linkedin} target="_blank" class="social-link">
+									<Fa icon={faLinkedinIn} />
+								</a>
+							{/if}
+							{#if profile.social?.facebook}
+								<a href={profile.social.facebook} target="_blank" class="social-link">
+									<Fa icon={faFacebookF} />
+								</a>
+							{/if}
+							{#if profile.social?.instagram}
+								<a href={profile.social.instagram} target="_blank" class="social-link">
+									<Fa icon={faInstagram} />
+								</a>
+							{/if}
+						</div>
 					</div>
-				</div> -->
+				{/if}
 			</div>
 		{:else if activeTab === 'projects'}
 			<div class="projects-content">
 				<div class="projects-section">
-					<h2>Aktive Prosjekter</h2>
-					ownedProjects vendoredProjects
+					<h2>Som Oppdragsgiver</h2>
+					<h3>Pågående oppdrag</h3>
+					<!-- ownedProjects -->
 					{#if ownedProjects.activeProjects?.length > 0}
 						<div class="projects-list">
 							{#each ownedProjects.activeProjects as project}
-								<div class="project-card">
+								<a class="project-card" href={project?.id ? `/project/${project.id}` : '#'}>
+									<!-- <div class="project-card"> -->
 									<h3>{project.title}</h3>
 									<div class="project-details">
 										<span
-											class="status {project.state
+											class="tag {project.state
 												? project.state.toLowerCase().replace(' ', '-')
 												: ''}"
-											>{project.state === 'in_progress'
-												? 'Pågående'
-												: project.state || 'Ukjent'}</span
 										>
+											{project.state}
+										</span>
+
+										<!--TODO [] MAKE PROGRESS BAR -->
+										<!-- <div class="progress-bar-container">
+											{#if project.state && getProgression(project.state) !== null}
+												{@const progressValue = getProgression(project.state) || 0}
+												<div class="progress-bar">
+													{#each Array(4) as _, i}
+														<div class="progress-step {i < progressValue ? 'completed' : ''}">
+															<div class="step-circle"></div>
+															{#if i < 3}
+																<div
+																	class="step-line {i < progressValue - 1 ? 'completed' : ''}"
+																></div>
+															{/if}
+														</div>
+													{/each}
+												</div>
+												<div class="progress-labels">
+													<span>Utkast</span>
+													<span>Publisert</span>
+													<span>Pågående</span>
+													<span>Fullført</span>
+												</div>
+											{:else}
+												<div class="progress-cancelled">Kansellert</div>
+											{/if}
+										</div> -->
 										<span class="project-client">Kunde: {project.clientId}</span>
+										<span class="project-client">prosjektID: {project.id}</span>
 										<span class="project-due">Frist: {project.dueDate}</span>
+										<span class="project-due">started: {project.startDate}</span>
+										<span class="project-due">posted: {project.postDate}</span>
 									</div>
-								</div>
+									<!-- </div> -->
+								</a>
 							{/each}
 						</div>
 					{:else}
@@ -276,7 +346,7 @@
 				</div>
 
 				<div class="projects-section">
-					<h2>Fullførte Prosjekter</h2>
+					<h3>Fullførte oppdrag</h3>
 					{#if ownedProjects.closedProjects?.length > 0}
 						<div class="projects-list">
 							{#each ownedProjects.closedProjects as project}
@@ -297,6 +367,86 @@
 						<p class="empty-state">Ingen fullførte prosjekter</p>
 					{/if}
 				</div>
+				<div class="divider-line"></div>
+				<div class="projects-section">
+					<h2>Som Oppdragstaker</h2>
+					<h3>Pågående oppdrag</h3>
+					{#if vendoredProjects.activeProjects?.length > 0}
+						<div class="projects-list">
+							{#each vendoredProjects.activeProjects as project}
+								<a class="project-card" href={project?.id ? `/project/${project.id}` : '#'}>
+									<h3>{project.title}</h3>
+									<div class="project-details">
+										<span
+											class="tag {project.state
+												? project.state.toLowerCase().replace(' ', '-')
+												: ''}"
+										>
+											{project.state}
+										</span>
+
+										<!-- <div class="progress-bar-container">
+											{#if project.state && getProgression(project.state) !== null}
+												{@const progressValue = getProgression(project.state) || 0}
+												<div class="progress-bar">
+													{#each Array(4) as _, i}
+														<div class="progress-step {i < progressValue ? 'completed' : ''}">
+															<div class="step-circle"></div>
+															{#if i < 3}
+																<div
+																	class="step-line {i < progressValue - 1 ? 'completed' : ''}"
+																></div>
+															{/if}
+														</div>
+													{/each}
+												</div>
+												<div class="progress-labels">
+													<span>Utkast</span>
+													<span>Publisert</span>
+													<span>Pågående</span>
+													<span>Fullført</span>
+												</div>
+											{:else}
+												<div class="progress-cancelled">Kansellert</div>
+											{/if}
+										</div> -->
+										<span class="project-client">Oppdragsgiver: {project.clientId}</span>
+										<span class="project-client">prosjektID: {project.id}</span>
+										<span class="project-due">Frist: {project.dueDate}</span>
+										<span class="project-due">Frist: {project.dueDate}</span>
+										<span class="project-due">started: {project.startDate}</span>
+										<span class="project-due">posted: {project.postDate}</span>
+									</div>
+								</a>
+							{/each}
+						</div>
+					{:else}
+						<p class="empty-state">Ingen aktive oppdrag</p>
+					{/if}
+				</div>
+
+				<div class="projects-section">
+					<h3>Fullførte Oppdrag</h3>
+					{#if vendoredProjects.closedProjects?.length > 0}
+						<div class="projects-list">
+							{#each vendoredProjects.closedProjects as project}
+								<div class="project-card">
+									<h3>{project.title}</h3>
+									<div class="project-details">
+										<span class="project-date">Fullført: {project.finishDate}</span>
+										<span class="project-client">Oppdragsgiver: {project.clientId}</span>
+										<div class="project-rating">
+											<Fa icon={faStar} />
+											<span>{project.clientRating}</span>
+										</div>
+									</div>
+								</div>
+							{/each}
+						</div>
+					{:else}
+						<p class="empty-state">Ingen fullførte oppdrag</p>
+					{/if}
+				</div>
 			</div>
 		{:else if activeTab === 'saved'}
 			<div class="saved-content">
@@ -304,28 +454,66 @@
 					<h2>Favoritter</h2>
 					<span class="empty-state">- Dine lagrede prosjekter</span>
 				</div>
-				<!-- <h2>Favoritter </h2> <span class="empty-state"> - Dine lagrede prosjekter</span> -->
-
 				{#if favoriteProjects?.favoriteProjects?.length > 0}
 					<div class="saved-projects-list">
 						{#each favoriteProjects.favoriteProjects as savedProject}
-							<div class="saved-project-card">
-								<div class="saved-project-icon">
-									<Fa icon={faBookmark} />
-								</div>
+							<a
+								class="saved-project-card"
+								href={savedProject.project?.id ? `/project/${savedProject.project.id}` : '#'}
+							>
 								<div class="saved-project-info">
-									<!-- ? should i make a getter for project, or should i just save the few fields i need in favortieProjects? -->
-									<!-- > NOTE: project has not been fetched yet -->
-									<h3>{project.title}</h3>
-									<span>
-										{savedProject.dateSaved}
-									</span>
-									<div class="saved-project-details">
-										<span>{project.date}</span>
-										<span>{project.location}</span>
-									</div>
+									{#if savedProject.project}
+										<div class="h-row">
+											<div class="corner">
+												<div class="saved-project-icon">
+													<Fa icon={faBookmark} />
+												</div>
+												<h3>{savedProject.project.title}</h3>
+											</div>
+											<div class="corner">
+												<!-- {#if savedProject.project.isActive === false}
+													<h3 class="warning">Ikke lenger aktiv</h3>
+												{/if} -->
+												<div class="delete-favorite-icon">
+													<Fa icon={faTrash}></Fa>
+												</div>
+												<!-- <Button onclick={''} icon="faTrash"></Button> -->
+											</div>
+										</div>
+										<span>
+											{savedProject.dateSaved
+												? new Date(savedProject.dateSaved).toLocaleDateString()
+												: 'Dato ikke tilgjengelig'}
+										</span>
+										<div class="saved-project-details">
+											<span
+												>{savedProject.project.postDate &&
+													new Date(savedProject.project.postDate).toLocaleDateString()}</span
+											>
+											<span>{savedProject.project.location || 'Ingen plassering'}</span>
+
+											<span>
+												{savedProject.project.state}
+											</span>
+										</div>
+										<div class="corner right-side">
+											{#if savedProject.project.isActive === false}
+												<h3 class="warning">Ikke lenger aktiv</h3>
+											{/if}
+										</div>
+									{:else}
+										<h3>Prosjekt ikke funnet</h3>
+										<span
+											>{savedProject.dateSaved
+												? new Date(savedProject.dateSaved).toLocaleDateString()
+												: 'Dato ikke tilgjengelig'}</span
+										>
+										<div class="saved-project-details">
+											<span>Prosjekt ID: {savedProject.projectId}</span>
+										</div>
+									{/if}
 								</div>
-							</div>
+							</a>
 						{/each}
 					</div>
 				{:else}
@@ -745,7 +933,12 @@
 		color: var(--primary);
 		font-size: 1.25rem;
 	} */
-
+	.divider-line {
+		margin-bottom: 1rem;
+		width: 100%;
+		border-bottom-width: 1px;
+		border-bottom-color: var(--shadow-brighter);
+	}
 	.projects-list {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -834,16 +1027,54 @@
 
 	.saved-project-icon {
 		color: var(--accent);
-		margin-top: 0.25rem;
+		/* margin-top: 0.25rem; */
+		/* margin-top: 1.25rem; */
+		/* padding-top: 0.25rem; */
 	}
 
 	.saved-project-info {
 		flex: 1;
 	}
+	.saved-project-info .h-row {
+		padding: 0.5rem;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+	.saved-project_info .corner {
+		display: flex;
+		flex-direction: row;
+		/* justify-content: space-between; */
+		align-items: baseline;
+		column-gap: 1rem;
+	}
+	.saved-project-info .corner.right-side {
+		/* background-color: ; */
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: baseline;
+		column-gap: 1rem;
+		justify-content: flex-end;
+	}
 
+	.saved-project-info .warning {
+		font-size: small;
+		color: var(--negative-accent-dark);
+		margin: 0;
+		padding: 0;
+		line-height: 0;
+	}
+	.saved-project-info .delete-favorite-icon {
+		color: var(--secondary-very-translucent);
+	}
+	.saved-project-info .delete-favorite-icon:hover {
+		color: var(--secondary);
+	}
 	.saved-project-info h3 {
+		/* line-height: 0; */
 		margin-top: 0;
-		margin-bottom: 0.5rem;
+		/* margin-bottom: 0.5rem; */
 		color: var(--primary);
 		font-size: 1.125rem;
 	}
@@ -971,4 +1202,85 @@
 	}
 
 	/* Dark mode adjustments would be automatically handled by your dark-mode.css */
+
+	/* Progress Bar Styles */
+	.progress-bar-container {
+		margin: 10px 0;
+		width: 100%;
+	}
+
+	.progress-bar {
+		display: flex;
+		align-items: center;
+		position: relative;
+		width: 100%;
+		margin-bottom: 5px;
+	}
+
+	.progress-step {
+		display: flex;
+		align-items: center;
+		flex: 1;
+		position: relative;
+	}
+
+	.step-circle {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background-color: var(--secondary-very-translucent);
+		border: 2px solid var(--secondary-very-translucent);
+		z-index: 2;
+	}
+
+	.progress-step.completed .step-circle {
+		background-color: var(--accent);
+		border-color: var(--accent);
+	}
+
+	.step-line {
+		flex: 1;
+		height: 3px;
+		background-color: var(--secondary-very-translucent);
+	}
+
+	.step-line.completed {
+		background-color: var(--accent);
+	}
+
+	.progress-labels {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		font-size: 0.7rem;
+		color: var(--secondary);
+	}
+
+	.progress-labels span {
+		flex: 1;
+		text-align: center;
+	}
+
+	.progress-cancelled {
+		width: 100%;
+		text-align: center;
+		padding: 5px;
+		background-color: var(--negative-accent-very-translucent);
+		color: var(--negative-accent-dark);
+		border-radius: 4px;
+		font-size: 0.8rem;
+		font-weight: 500;
+	}
+
+	@media (max-width: 480px) {
+		.progress-labels {
+			font-size: 0.6rem;
+		}
+
+		.progress-labels span {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	}
 </style>
