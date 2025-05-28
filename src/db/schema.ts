@@ -212,7 +212,7 @@ export const favoriteProjects = pgTable(
 		}),
 		check(
 			'favorite_projects_url_check',
-			sql`(url)::text ~* '^https?://(www\.)?oppdragsmarkedet\.no/oppdrag/\?prosjekt_id=p[^\s]*$'::text`
+			sql`(url)::text ~* '^https?://(www\.)?oppdragsmarkedet\.no/oppdrag/\?prosjekt_id=pro[^\s]*$'::text`
 		)
 	]
 );
