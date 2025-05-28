@@ -250,35 +250,6 @@
 		justify-content: space-between;
 	}
 
-	.tag {
-		padding: 1px 10px;
-		border-radius: 1rem;
-		background-color: var(--shadow-inv);
-		display: flex;
-		flex-wrap: nowrap;
-		font-size: small;
-		align-items: center;
-	}
-
-	.tag.green {
-		background: rgba(from var(--accent) r g b / 50%);
-	}
-
-	.tag-row-container {
-		display: flex;
-		flex-direction: column;
-		flex: 1;
-	}
-
-	.tag-row {
-		display: flex;
-		justify-content: start;
-		flex-wrap: wrap;
-		column-gap: 0.5rem;
-		row-gap: 0.5rem;
-		padding-right: 1.6rem;
-	}
-
 	.spacer {
 		width: 42px;
 		height: 42px;
