@@ -7,7 +7,7 @@
 	};
 	// end of edit
 
-	import './button.css';
+	import './Button.css';
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	// import './neumorphicButton.css';
 	// import './button.scss';
