@@ -99,9 +99,12 @@
 		"oppdragsmarkedet.no": "file:",
 		"pg": "^8.16.0",
 		"postgres": "^3.4.6",
+		"svelte-carousel": "^1.0.25",
 		"svelte-fa": "^4.0.3",
 		"svelte-icons": "^2.1.0",
 		"svelte-select": "^5.8.3",
+		"svelte-time": "^2.0.1",
+		"temporal-polyfill": "^0.3.0",
 		"tippy.js": "^6.3.7",
 		"vaul-svelte": "^0.3.2"
 	}
