@@ -36,7 +36,7 @@
 		{/if}
 		<form method="POST" use:enhance action="?/createUserProfile">
 			<div class="form-group">
-				<p>Add Users</p>
+				<p>Add User Profile</p>
 				<textarea id="form" name="form" placeholder="Enter JSON here..." rows="8"></textarea>
 				<small>Enter JSON data for custom records, or leave empty for random mock data</small>
 			</div>
@@ -72,7 +72,8 @@
 		padding: 2rem;
 	}
 	.users,
-	.user-profiles {
+	.user-profiles,
+	.projects {
 		margin-bottom: 3rem;
 		padding: 1.5rem;
 		background: #f5f5f5;

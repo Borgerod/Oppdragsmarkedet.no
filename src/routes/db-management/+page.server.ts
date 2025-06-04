@@ -65,7 +65,10 @@ export const actions = {
 								// const userRole = ['private', 'business', 'government', 'employee', 'admin'][
 								// 	Math.floor(Math.random() * 5) // Use all 5 options
 								// ];
-								const userRole = 'business';
+								// const userRole = 'business';
+								const userRole = ['business', 'private', 'government'][
+									Math.floor(Math.random() * 3)
+								];
 
 								// Set idChar based on userRole
 								if (userRole === 'admin') {
@@ -173,6 +176,8 @@ export const actions = {
 							firstName: `FirstName${Math.floor(Math.random() * 100)}`,
 							lastName: `LastName${Math.floor(Math.random() * 100)}`,
 							phone: `+47${Math.floor(Math.random() * 10000000) + 10000000}`,
+							email: `user${Math.floor(Math.random() * 1000)}@example.com`,
+							address: `Mockdata Street ${Math.floor(Math.random() * 1000)}`,
 							birthDate: new Date(
 								1980 + Math.floor(Math.random() * 30),
 								Math.floor(Math.random() * 12),
@@ -197,13 +202,15 @@ export const actions = {
 					];
 
 			const dataArray = Array.isArray(parsedJson) ? parsedJson : [parsedJson];
-
 			const cleanedData = dataArray.map((RawData) => ({
 				id: RawData.id,
 				userId: RawData.userId,
 				firstName: RawData.firstName,
 				lastName: RawData.lastName,
 				phone: RawData.phone,
+				email:
+					RawData.email || `${RawData.firstName}.${RawData.lastName}@example.com`.toLowerCase(),
+				address: RawData.address || 'Mockdata Street 123',
 				birthDate: new Date(RawData.birthDate).toISOString(),
 				profileImage: RawData.profileImage,
 				clientReviewsRating: Number(RawData.clientReviewsRating),
@@ -243,32 +250,52 @@ export const actions = {
 	createProject: async ({ request }) => {
 		// make sure generated ID doesn't already exist
 		const existingProjects = await db.select({ id: schema.projects.id }).from(schema.projects);
-
+		// const randomUserId =
+		// 	existingUsers.length > 0
+		// 		? existingUsers[Math.floor(Math.random() * existingUsers.length)].id
+		// 		: `u${Math.floor(Math.random() * 99999999999)}`; // Fallback
 		// const randomUProjectId =
 		// 	existingProjects.length > 0
 		// 		? existingProjects[Math.floor(Math.random() * existingProjects.length)].id
 		// 		: `pro${Math.floor(Math.random() * 99999999999)}`; // Fallback
-
+		const randomUser =
+			(await db.select().from(schema.users).where(eq(schema.users.userType, 'client'))).sort(
+				() => 0.5 - Math.random()
+			)[0] ?? null;
+		const randomUserProfile =
+			(
+				await db
+					.select()
+					.from(schema.userProfiles)
+					.where(eq(schema.userProfiles.userId, randomUser.id))
+			)
+				// .map((u) => u.id)
+				.sort(() => 0.5 - Math.random())[0] ?? null;
 		const idChar = 'pro';
-
+		console.log(randomUser.id);
+		console.log(randomUser);
+		console.log(randomUserProfile);
 		try {
 			// Parse the JSON string from the form
 			const formData = await request.formData();
 			const formJson = formData.get('form')?.toString();
+			// console.log('randomUser full object:', randomUser);
+			console.log('randomUser.userType:', randomUser.userType);
+
 			const parsedJson = formJson
 				? JSON.parse(formJson)
 				: [
 						{
 							id: `${idChar}${Math.floor(Math.random() * 99999999999)}`,
-							clientId:
-								(
-									await db
-										.select({ id: schema.users.id })
-										.from(schema.users)
-										.where(eq(schema.users.userType, 'client'))
-								)
-									.map((u) => u.id)
-									.sort(() => 0.5 - Math.random())[0] ?? null,
+							clientId: randomUser.id,
+							// (
+							// 	await db
+							// 		.select({ id: schema.users.id })
+							// 		.from(schema.users)
+							// 		.where(eq(schema.users.userType, 'client'))
+							// )
+							// 	.map((u) => u.id)
+							// 	.sort(() => 0.5 - Math.random())[0] ?? null,
 							vendorId:
 								(
 									await db
@@ -281,7 +308,11 @@ export const actions = {
 							title: `MockTitle_${Math.floor(Math.random() * 1000)}`,
 							shortDescription: `MockShortDescription_${Math.floor(Math.random() * 1000)}`,
 							longDescription: `MockLongDescription_${Math.floor(Math.random() * 1000)}`,
-							location: 'Mockdata Street 115',
+							location: randomUser.location,
+							area: 'Oslo, Sentrum',
+							address: randomUserProfile.address,
+							clientRole: randomUser.userRole,
+
 							category: [
 								'Blikkenslager',
 								'Elektriker',
@@ -299,8 +330,46 @@ export const actions = {
 								'Sveiser',
 								'Transport'
 							][Math.floor(Math.random() * 15)],
-							experienceRequirements: 'mock sub category',
-							jobAttributes: 'mock job attributes',
+							subCategory: [
+								'asfaltering',
+								'brønnboring',
+								'drenering',
+								'radon',
+								'sprenging',
+								'graving',
+								'gulv',
+								'glassarbeid',
+								'termografering',
+								'betong',
+								'vanntetting',
+								'taktekking',
+								'steinlegger',
+								'snørydding',
+								'hagestell'
+							][Math.floor(Math.random() * 14)],
+							// experienceRequirements: [
+							// 	['Junior', 'Senior', 'Expert', 'sveisebrev', 'sertifikat'][
+							// 		Math.floor(Math.random() * 5)
+							// 	]
+							// ],
+							experienceRequirements: ['Junior', 'Senior', 'Expert', 'sveisebrev', 'sertifikat'][
+								Math.floor(Math.random() * 5)
+							],
+							jobAttributes: [
+								[
+									'stort_prosjekt',
+									'lite_prosjekt',
+									'enmannsjobb',
+									'flermannsjobb',
+									'haster',
+									'innejobb',
+									'utejobb',
+									'trapp',
+									'kjøretøy_tilgang'
+								][Math.floor(Math.random() * 9)]
+							],
+							thumbnail: 'https://picsum.photos/200/300',
+							imageGallery: ['https://picsum.photos/200/300', 'https://picsum.photos/200/300'],
 							postDate: new Date(
 								1980 + Math.floor(Math.random() * 30),
 								Math.floor(Math.random() * 12),
@@ -340,7 +409,6 @@ export const actions = {
 					];
 
 			const dataArray = Array.isArray(parsedJson) ? parsedJson : [parsedJson];
-
 			const cleanedData = dataArray.map((RawData) => ({
 				id: RawData.id,
 				clientId: RawData.clientId,
@@ -350,9 +418,17 @@ export const actions = {
 				longDescription: RawData.longDescription,
 				location: RawData.location,
 				address: RawData.address,
+				clientRole: RawData.clientRole,
 				category: RawData.category,
-				experienceRequirements: RawData.experienceRequirements,
+				subCategory: RawData.subCategory,
+				experienceRequirements: Array.isArray(RawData.experienceRequirements)
+					? RawData.experienceRequirements
+					: [RawData.experienceRequirements],
 				jobAttributes: RawData.jobAttributes,
+				thumbnail: RawData.thumbnail,
+				imageGallery: Array.isArray(RawData.imageGallery)
+					? RawData.imageGallery
+					: [RawData.imageGallery],
 				postDate: RawData.postDate,
 				startDate: RawData.startDate,
 				dueDate: RawData.dueDate,
