@@ -3,24 +3,25 @@
 <script lang="ts">
 	import ProjectCard from './ProjectCard.svelte';
 	import { writable, derived } from 'svelte/store';
-	import { projects } from '../lib/data/ProjectData';
 
 	// ! bug
 	// TODO [ ]: fix bug; the favorite icon are not unique. if i favorite the first project  page 1, but when next page; the first project on page 2 is also favoritted.
 	const props = $props<{
-		project?: any;
+		projects?: any[];
 		gridView: boolean;
 		sortBy?: string;
 	}>();
-
+	console.log('ALL PROJECTS:___________________________');
+	console.log(props.projects);
+	console.log(props.projects.length);
 	const currentPage = writable(1);
-	const totalPages = Math.ceil(projects.length / 12);
-
+	const totalPages = Math.ceil(props.projects.length / 12);
 	function changePage(page: number) {
 		if (page >= 1 && page <= totalPages) {
 			currentPage.set(page);
 		}
 	}
+
 	// TODO [] make sure that this is working, it doesn't seem like it is.
 	// > copilot referance: could you make the sortby dropdown to actually work?
 	// Apply sorting based on sortBy parameter
@@ -76,7 +77,7 @@
 
 	// Computed value with runes - now with sorting applied
 	const visibleProjects = derived(currentPage, ($currentPage) => {
-		const sortedProjects = getSortedProjects(projects);
+		const sortedProjects = getSortedProjects(props.projects);
 		return sortedProjects.slice(($currentPage - 1) * 12, $currentPage * 12);
 	});
 

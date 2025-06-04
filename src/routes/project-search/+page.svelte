@@ -16,6 +16,8 @@
 		faMapLocation,
 		faBookBookmark
 	} from '@fortawesome/free-solid-svg-icons';
+	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
 
 	// @ts-ignore
 	import Filter from '@stories/Filter.svelte';
@@ -24,6 +26,9 @@
 	import DropDown from '@stories/forms/DropDown.svelte';
 	import MapView from '@stories/MapView.svelte';
 	import { onMount } from 'svelte';
+
+	const pageData = $props<{ data: any }>();
+	let data = $state({ projects: pageData.data.projects || [] });
 
 	type DisplaySettings = {
 		sortBy: string;
@@ -99,8 +104,8 @@
 		const redirectLink = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}view=map&${mapParams.toString()}`;
 		return redirectLink;
 	}
-
 	function handleApply() {
+		// Update the displayed data
 		displayedData = {
 			...filterData,
 			field_include: [...filterData.field_include],
@@ -110,6 +115,42 @@
 			job_poster: [...filterData.job_poster]
 		};
 		showResults = true;
+
+		// Create a FormData object to submit to the server
+		const formData = new FormData();
+
+		// Add all filter criteria to the form data
+		Object.entries(filterData).forEach(([key, value]) => {
+			if (Array.isArray(value)) {
+				// For arrays, add each item individually with the same key
+				value.forEach((item) => {
+					formData.append(key, item);
+				});
+			} else if (value !== INITIAL_VALUES[key]) {
+				// Only add non-default values
+				formData.append(key, value.toString());
+			}
+		});
+
+		// Submit the form data to the server action
+		fetch('?/filterProjects', {
+			method: 'POST',
+			body: formData
+		})
+			.then((response) => response.json())
+			.then((result) => {
+				if (result.success) {
+					// Update the projects data with the filtered results
+					data.projects = result.projects;
+
+					console.log('Filter applied successfully:', result.projects.length, 'projects found');
+				} else {
+					console.error('Failed to apply filter:', result.message);
+				}
+			})
+			.catch((error) => {
+				console.error('Error applying filter:', error);
+			});
 	}
 
 	function resetAll() {
@@ -393,7 +434,11 @@
 			{/each}
 		</div>
 
-		<ProjectList gridView={DisplaySettings.gridView} sortBy={DisplaySettings.sortBy} />
+		<ProjectList
+			gridView={DisplaySettings.gridView}
+			sortBy={DisplaySettings.sortBy}
+			projects={data.projects}
+		/>
 	</div>
 </div>
 
