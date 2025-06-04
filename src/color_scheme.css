@@ -50,15 +50,23 @@
 	--primary-brighter:hsl(from var(--primary) h s calc(l * 1.80)); 
 	--primary-darker: hsl(from var(--primary) h s calc(l * 0.80));  /* Slightly darker */
 	--primary-invert:#ededed;
+
+	--primary-darkmode: #dae6d4d5;
 	
 	/* --secondary:#666; */
 	--secondary-inverted:#f6f6f6;
 	--secondary-brighter:hsl(from var(--secondary) h s calc(l * 1.20)); 
 	--secondary:#808080;
 	--secondary-darker: hsl(from var(--secondary) h s calc(l * 0.80));  /* Slightly darker */
+	--secondary-dark: hsl(from var(--secondary) h s calc(l * 0.10));  /* Slightly darker */
 	--secondary-translucent: color-mix(in srgb, var(--secondary) 80%, transparent); /* Dynamically derived translucent color */
 	--secondary-medium-translucent: color-mix(in srgb, var(--secondary) 50%, transparent); /* Dynamically derived translucent color */
 	--secondary-very-translucent: color-mix(in srgb, var(--secondary) 20%, transparent); /* Dynamically derived translucent color */
+	--secondary-dark-translucent: color-mix(in srgb, var(--secondary-dark) 20%, transparent); /* Dynamically derived translucent color */
+	--secondary-darkmode: hsla(0, 0%, 100%, 0.6);
+	--secondary-darkmode-bright: rgb(255, 255, 255);
+	--secondary-darkmode-dark: hsla(0, 0%, 100%, 0.4);
+
 
 	--title:#3d5033;
 
@@ -92,6 +100,8 @@
 	--shadow-bright:hsla(0, 0%, 0%, 0.122);
 	--shadow:hsla(0, 0%, 0%, 0.161);
 	--shadow-dark:#00000044;
+	--shadow-darkest:#0000006b;
+	/* --shadow-white:#00000044; */
 
 
 
