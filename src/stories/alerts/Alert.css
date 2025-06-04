@@ -1,0 +1,64 @@
+/* Material Icons import */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* Styles for the alert container */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Alert styles */
+.alert {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.alert-info {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+}
+
+.alert-danger {
+  background-color: #ffebee;
+  border-left: 4px solid #f44336;
+}
+
+.alert-warning {
+  background-color: #fff8e1;
+  border-left: 4px solid #ffc107;
+}
+
+.alert-success {
+  background-color: #e8f5e9;
+  border-left: 4px solid #4caf50;
+}
+
+.alert-heading {
+  margin-right: 0.5rem;
+}
+
+.text {
+  flex: 1;
+  margin-left: 0.5rem;
+}
+
+.close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+/* Material Icons sizing */
+.material-icons.md-36 {
+  font-size: 24px;
+}
+
+.inline-icon {
+  margin-right: 0.5rem;
+}
