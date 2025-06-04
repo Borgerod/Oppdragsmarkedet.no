@@ -5,6 +5,7 @@
 	import './theme.css';
 	import '@fortawesome/fontawesome-free/css/all.css';
 	import '../app.css';
+	import Tag from '@stories/Tag.svelte';
 
 	const props = $props<{
 		project: any;
@@ -14,6 +15,56 @@
 	let favorite = $state(false);
 	let isExpanded = $state(false);
 	let mainCardElement: HTMLElement;
+
+	function formatBudget(budget: number | string): string {
+		// Convert to number if it's a string
+		const numValue = typeof budget === 'string' ? parseFloat(budget) : budget;
+
+		// Format to have spaces for thousands and comma for decimals
+		return numValue.toLocaleString('nb-NO', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+	}
+	// Format date to YYYY.MM.DD
+	function formatDate(dateString: string): string {
+		if (!dateString) return '';
+
+		try {
+			const date = new Date(dateString);
+
+			// Check if date is valid
+			if (isNaN(date.getTime())) {
+				return dateString;
+			}
+
+			const day = date.getDate().toString();
+
+			// Array of month names in Norwegian
+			const monthNames = [
+				'Jan',
+				'Feb',
+				'Mar',
+				'Apr',
+				'Mai',
+				'Jun',
+				'Jul',
+				'Aug',
+				'Sep',
+				'Okt',
+				'Nov',
+				'Des'
+			];
+
+			const month = monthNames[date.getMonth()];
+			const year = date.getFullYear();
+
+			return `${day}. ${month} ${year}`;
+		} catch (error) {
+			console.error('Error formatting date:', error);
+			return dateString;
+		}
+	}
 
 	// Toggle expanded state
 	function toggleExpand() {
@@ -25,9 +76,9 @@
 	}
 
 	// console.log('in ProjectCard, gridView:', props.gridView);
+	console.log('props.project.image_link: ', props.project.thumbnail);
 </script>
 
-<!-- OPTION 3 -->
 <div
 	class="main card row"
 	class:grid-view={props.gridView}
@@ -35,7 +86,7 @@
 	bind:this={mainCardElement}
 >
 	<div class="thumbnail">
-		<img src={props.project.image_link} alt="decking schema" style="" />
+		<img src={props.project.thumbnail} alt="project thumbnail" style="" />
 		{#if props.gridView}
 			<!-- acts as outer rim fill for favorite-button -->
 			<button
@@ -62,22 +113,32 @@
 				</div>
 			</button>
 		{/if}
+		{#if props.project.paidListing === true}
+			<span class="material-icons md-36 inline-icon paid-icon" style="top:1rem; left:1rem"
+				>paid</span
+			>
+		{/if}
+		<!-- {:else if props.project.paidListing === true}
+			<span class="material-icons md-36 inline-icon paid-icon">paid</span>
+		{/if} -->
 	</div>
 
 	<div class="mini-profile container">
 		<div class="upper">
 			<div class="column">
 				<div class="mini row">
-					{#if props.project.payed_listing === true}
-						<div class="tag">{props.project.payed_listing}</div>
-					{/if}
 					<p>
-						{props.project.date_issued} | {props.project.area}
+						{formatDate(props.project.postDate)} | {props.project.location}
 					</p>
 				</div>
-
+				<p></p>
+				<!-- <div class="small"></div> -->
 				<div class="small">
-					<h4>{props.project.job_title}</h4>
+					<h2>{formatBudget(props.project.budget)} kr</h2>
+					<h3>{props.project.title}</h3>
+
+					<!-- <Tag>
+						</Tag> -->
 				</div>
 			</div>
 			{#if !props.gridView}
@@ -101,24 +162,28 @@
 			<div class="small row">
 				<div class="small space row">
 					<h4 class="">
-						{props.project.category}
-						{#if props.project.sub_category === true}, {props.project.sub_category}{/if}
+						<!-- {props.project.category} -->
+						{#if props.project.subCategory === true}, {props.project.subCategory}{/if}
 					</h4>
 				</div>
 			</div>
 			<div class="row">
 				<div class="tag-row-container">
 					<div class="tag-row">
-						<div class="tag green">{props.project.lister_class}</div>
+						<div class="tag green">{props.project.clientRole}</div>
+						<!-- TODO [ ] this does not exist add or remove this -->
 						|
-						{#each props.project.tags as tag}
+						{#each props.project.experienceRequirements as tag}
+							<div class="tag">{tag}</div>
+						{/each}
+						{#each props.project.jobAttributes as tag}
 							<div class="tag">{tag}</div>
 						{/each}
 					</div>
 				</div>
 				<div class="column s-SdDzWjP088pA due-date-container">
 					<p>Frist</p>
-					<p>{props.project.due_date}</p>
+					<p>{formatDate(props.project.dueDate)}</p>
 				</div>
 			</div>
 		</div>
@@ -126,6 +191,24 @@
 </div>
 
 <style>
+	.card h4 {
+		color: var(--primary);
+		font-weight: 100;
+		font-size: medium;
+	}
+	.card h3 {
+		/* color: var(--primary); */
+		font-weight: 100;
+		font-size: medium;
+	}
+	.card h2 {
+		font-size: large;
+		color: var(--primary);
+		font-weight: 500;
+	}
+	.card p {
+		color: var(--secondary);
+	}
 	.thumbnail {
 		position: relative;
 		min-width: 150px;
@@ -133,7 +216,29 @@
 		padding: 0;
 		margin: 0;
 	}
-
+	.thumbnail .paid-icon {
+		position: absolute;
+		top: 0.5rem;
+		left: 0.5rem;
+		top: 1rem;
+		left: 1rem;
+		border-radius: 5rem;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 19px;
+		height: 19px;
+		/* background-color: var(--primary-bg); */
+		/* background-color: var(--primary); */
+		color: var(--accent-medium);
+		/* color: var(--accent-brighter); */
+		/* background-color: var(--accent-brightest); */
+		background-color: var(--primary-bg);
+		/* background-color: var(--accent-medium);
+		color: var(--primary-bg); */
+	}
 	.thumbnail img {
 		position: absolute;
 		top: 0;
