@@ -121,7 +121,16 @@
 		}
 	} // Get combined array of all tags for easier processing
 	function getAllTags() {
+		const categoryTags = [];
+		if (props.project.category) {
+			categoryTags.push(props.project.category);
+		}
+		if (props.project.sub_category) {
+			categoryTags.push(props.project.sub_category);
+		}
+
 		return [
+			...categoryTags,
 			...(props.project.tags || []),
 			...(props.project.experienceRequirements || []),
 			...(props.project.jobAttributes || [])
@@ -451,12 +460,7 @@
 		</div>
 		<div class="lower">
 			<div class="small row category-header">
-				<!-- <div class="small space row">
-					<h4 class="">
-						{getCategory(props.project)}
-						{#if props.project.sub_category}, {props.project.sub_category}{/if}
-					</h4>
-				</div> -->
+				<!-- Category info is now displayed in tags -->
 			</div>
 			<div class="row">
 				<div class="tag-row-container">
@@ -471,11 +475,10 @@
 								size="small"
 							/>
 							|
-							<!-- {#each props.project.tags || [] as tag}
-								<div class="tag">{tag}</div>
-							{/each} -->
-
-							<!-- <Tag label={props.project.category} color="grey" textColor="grey" size="small" />
+							<!-- Show category and sub_category tags -->
+							{#if props.project.category}
+								<Tag label={props.project.category} color="grey" textColor="grey" size="small" />
+							{/if}
 							{#if props.project.sub_category}
 								<Tag
 									label={props.project.sub_category}
@@ -483,19 +486,20 @@
 									textColor="grey"
 									size="small"
 								/>
-							{/if} -->
+							{/if}
+							<!-- Show regular tags -->
+							{#each props.project.tags || [] as tag}
+								<Tag label={tag} color="grey" textColor="grey" size="small" />
+							{/each}
 							{#each props.project.experienceRequirements || [] as req}
-								<!-- <Tag label={req} color="grey" textColor="grey" size="small" /> -->
 								<Tag label={req} color="grey" textColor="grey" size="small" />
-								<!-- <Tag label={req} color="grey" size="small" /> -->
 							{/each}
 							{#each props.project.jobAttributes || [] as attr}
-								<!-- <Tag label={attr} color="grey" textColor="grey" size="small" /> -->
 								<Tag label={attr} color="grey" textColor="grey" size="small" />
-								<!-- <Tag label={attr} color="grey" size="small" /> -->
 							{/each}
 							<!-- <button class="show-more-tags" onclick={toggleShowAllTags}> -færre </button> -->
 							<button
+								class="show-more-tags"
 								class:visible={showMoreDivVisible}
 								bind:this={hiddenShowMoreButtonElement}
 								onclick={toggleShowAllTags}
@@ -514,9 +518,6 @@
 								size="small"
 							/>
 							| {#if tagsOverflowing && shouldHideRegularButton}
-								<!-- <div class="hidden-show-more" class:visible={showMoreDivVisible}> -->
-								<!-- class="show-more-tags" -->
-
 								<button
 									class:visible={showMoreDivVisible}
 									bind:this={hiddenShowMoreButtonElement}
@@ -524,22 +525,15 @@
 								>
 									<Tag label="+ Vis flere" color="grey" textColor="grey" size="small" />
 								</button>
-								<!-- </div> -->
 							{/if}
 							{#each tagsToShow as item, index}
-								<!-- <Tag label={props.project.category} color="grey" textColor="grey" size="small" />
-								{#if props.project.sub_category}
-									<Tag
-										label={props.project.sub_category}
-										color="grey"
-										textColor="grey"
-										size="small"
-									/>
-								{/if} -->
-								{#if index < (props.project.tags || []).length}
+								{#if index < (props.project.category ? 1 : 0) + (props.project.sub_category ? 1 : 0)}
+									<!-- Category or sub_category tag -->
+									<Tag label={item} color="grey" textColor="grey" size="small" />
+								{:else if index < (props.project.category ? 1 : 0) + (props.project.sub_category ? 1 : 0) + (props.project.tags || []).length}
 									<!-- Regular tag -->
 									<Tag label={item} color="grey" textColor="grey" size="small" />
-								{:else if index < (props.project.tags || []).length + (props.project.experienceRequirements || []).length}
+								{:else if index < (props.project.category ? 1 : 0) + (props.project.sub_category ? 1 : 0) + (props.project.tags || []).length + (props.project.experienceRequirements || []).length}
 									<!-- Experience requirement -->
 									<Tag label={item} color="grey" textColor="grey" size="small" />
 								{:else}
@@ -550,8 +544,8 @@
 							{#if tagsOverflowing && !shouldHideRegularButton}
 								{@const hiddenCount = allTags.length - visibleTagCount}
 								<button
-									class:visible={showMoreDivVisible}
-									bind:this={hiddenShowMoreButtonElement}
+									class="show-more-tags"
+									bind:this={regularShowMoreButtonElement}
 									onclick={toggleShowAllTags}
 								>
 									<Tag label="+ Vis flere" color="grey" textColor="grey" size="small" />
@@ -704,6 +698,7 @@
 		row-gap: 0.5rem;
 		padding-right: 1.6rem;
 		max-height: 4rem;
+		max-height: 3.8rem;
 		overflow: hidden;
 		transition: max-height 0.3s ease;
 		position: relative;
@@ -816,24 +811,37 @@
 	}
 
 	.show-more-tags {
-		display: flex !important; /* Force visibility */
+		display: flex !important
+;
+		/* align-items: center; */
+		/* gap: 0.25rem; */
+		/* border: 1px solid #ccc; */
+		cursor: pointer;
+		/* font-size: small; */
+		/* height: fit-content; */
+		/* min-width: 60px; */
+		min-height: 24px;
+		transition: background-color 0.2s ease;
+		/* flex-shrink: 0; */
+		/* position: relative; */
+		z-index: 2;
+		visibility: visible !important;
+		/* opacity: 1 !important;*/
+
+		/* display: flex !important; 
 		align-items: center;
 		gap: 0.25rem;
-		padding: 1px 10px;
-		border-radius: 1rem;
-		background-color: var(--shadow-inv);
-		border: 1px solid #ccc;
 		cursor: pointer;
 		font-size: small;
 		height: fit-content;
 		min-width: 60px;
 		min-height: 24px;
 		transition: background-color 0.2s ease;
-		flex-shrink: 0; /* Prevent button from shrinking */
+		flex-shrink: 0; 
 		position: relative;
-		z-index: 2; /* Ensure button stays above other elements */
-		visibility: visible !important; /* Force visibility */
-		opacity: 1 !important; /* Force opacity */
+		z-index: 2; 
+		visibility: visible !important; 
+		opacity: 1 !important;  */
 	}
 
 	.show-more-tags:hover {
@@ -953,9 +961,6 @@
 		row-gap: 0.25rem;
 	}
 	@media (max-width: 400px) {
-		/* .main.card {
-			min-width: 100%;
-		} */
 		.tag-row-container {
 			margin-right: 0; /* Remove right margin when due-date is repositioned */
 		}
@@ -966,9 +971,9 @@
 		}
 
 		.show-more-tags {
-			min-width: 50px; /* Smaller minimum width on mobile */
-			font-size: x-small; /* Smaller font to fit better */
-			padding: 1px 8px; /* Reduced padding */
+			/* min-width: 50px; 
+			font-size: x-small; 
+			padding: 1px 8px;  */
 		}
 	}
 
