@@ -1,6 +1,7 @@
 <svelte:options runes />
 
 <script lang="ts">
+	// import ProjectCard from './ProjectCard.svelte';
 	import ProjectCard from './ProjectCard.svelte';
 	import { writable, derived } from 'svelte/store';
 
@@ -11,9 +12,9 @@
 		gridView: boolean;
 		sortBy?: string;
 	}>();
-	console.log('ALL PROJECTS:___________________________');
-	console.log(props.projects);
-	console.log(props.projects.length);
+	// console.log('ALL PROJECTS:___________________________');
+	// console.log(props.projects);
+	// console.log(props.projects.length);
 	const currentPage = writable(1);
 	const totalPages = Math.ceil(props.projects.length / 12);
 	function changePage(page: number) {
@@ -87,6 +88,7 @@
 
 <div class="project-list" class:grid-view={props.gridView}>
 	{#each $visibleProjects as project}
+		{console.log(project)}
 		<ProjectCard {project} gridView={props.gridView}></ProjectCard>
 	{/each}
 </div>
@@ -128,8 +130,9 @@
 	}
 
 	.project-list.grid-view {
+		/* grid-template-columns: repeat(3, 1fr); */
 		display: grid;
-		grid-template-columns: repeat(2, 1fr); /* Default: 2 columns */
+		grid-template-columns: repeat(3, 1fr);
 		gap: 2rem;
 		width: 100%;
 	}
@@ -137,20 +140,47 @@
 	/* Media queries for responsive grid view */
 	@media (min-width: 1200px) {
 		.project-list.grid-view {
-			grid-template-columns: repeat(3, 1fr);
+			/* grid-template-columns: repeat(3, 1fr); */
 		}
 	}
 
 	@media (max-width: 1000px) {
 		.project-list.grid-view {
-			grid-template-columns: repeat(2, 1fr);
+			/* grid-template-columns: repeat(2, 1fr); */
 			/* grid-template-columns: repeat(3, 1fr); */
 		}
 	}
 
+	/* @media (max-width: 630px) { */
+	@media (max-width: 990px) {
+		.project-list.grid-view {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1rem;
+			/* grid-template-columns: 1fr; */
+		}
+	}
+	@media (max-width: 890px) {
+		.project-list.grid-view {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 1rem;
+			/* grid-template-columns: 1fr; */
+		}
+	}
+
+	/* @media (max-width: 630px) { */
+	@media (max-width: 740px) {
+		.project-list.grid-view {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1rem;
+			/* grid-template-columns: 1fr; */
+		}
+	}
+
+	/* @media (max-width: 630px) { */
 	@media (max-width: 630px) {
 		.project-list.grid-view {
-			grid-template-columns: 1fr;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1rem;
 			/* grid-template-columns: 1fr; */
 		}
 	}
@@ -204,5 +234,42 @@
 	.pagination button:disabled {
 		cursor: not-allowed;
 		opacity: 0.5;
+	}
+
+	.favorite-container {
+		border-radius: 5rem;
+	}
+	.favorite-icon {
+		/* background-color: var(--shadow); */
+		/* display: flex; */
+		/* justify-content: center; */
+		/* align-items: center; */
+		/* padding: 5px 5px 5px 5px; */
+		/* line-height: 1; */
+		/* border-radius: 5rem; */
+		color: var(--primary-bg);
+		color: var(--accent-medium);
+		font-variation-settings:
+			'FILL' 0,
+			'wght' 400,
+			'GRAD' 0,
+			'opsz' 24;
+	}
+
+	.paid-icon {
+		border-radius: 5rem;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 20px;
+		height: 20px;
+		background-color: var(--primary-bg);
+		color: var(--accent-medium);
+		/* color: var(--accent-brighter); */
+		/* background-color: var(--accent-medium);
+		color: var(--primary-bg); */
+		/* color: var(--primary-bg); */
 	}
 </style>
