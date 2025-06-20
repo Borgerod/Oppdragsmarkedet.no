@@ -1,11 +1,11 @@
-<!-- USED BY projectListPage, is the container for each company displayed in list.  -->
 <svelte:options runes />
 
 <script lang="ts">
 	import './theme.css';
 	import '@fortawesome/fontawesome-free/css/all.css';
 	import '../app.css';
-	// Note: Tag import has compilation issue - broader Svelte 5 config problem
+	import './ProjectCard.css';
+
 	// @ts-ignore
 	import Tag from '@stories/Tag.svelte';
 	const props = $props<{
@@ -20,34 +20,29 @@
 	let tagRowElement: HTMLElement;
 	let hiddenShowMoreButtonElement = $state<HTMLElement | undefined>(undefined);
 	let regularShowMoreButtonElement = $state<HTMLElement | undefined>(undefined);
-	let visibleTagCount = $state(0); // How many tags to show (0 means show all)
+	let visibleTagCount = $state(0);
 	let resizeObserver: ResizeObserver | undefined;
 	let showMoreDivVisible = $state(false);
-	let shouldHideRegularButton = $state(false); // Flag to hide regular button when it can't fit
-	let tagRowWidth = $state(0); // Track tag-row width
+	let shouldHideRegularButton = $state(false);
+	let tagRowWidth = $state(0);
 	let resizeTimeout: ReturnType<typeof setTimeout> | undefined;
 
-	// Initialize the state properly
 	$effect(() => {
-		// Reset flags when component initializes
 		shouldHideRegularButton = false;
 		showMoreDivVisible = false;
 	});
 
-	// Debounced function to update tag row width
 	function updateTagRowWidth(width: number) {
 		if (resizeTimeout) {
 			clearTimeout(resizeTimeout);
 		}
 		resizeTimeout = setTimeout(() => {
 			tagRowWidth = width;
-		}, 50); // 50ms debounce
+		}, 50);
 	}
 
-	// Track tag-row width and show/hide buttons based on width
 	$effect(() => {
 		if (tagRowElement) {
-			// Set up ResizeObserver to track tag-row width with debouncing
 			const resizeObserver = new ResizeObserver((entries) => {
 				for (const entry of entries) {
 					updateTagRowWidth(entry.contentRect.width);
@@ -56,7 +51,6 @@
 
 			resizeObserver.observe(tagRowElement);
 
-			// Initial measurement
 			tagRowWidth = tagRowElement.offsetWidth;
 
 			return () => {
@@ -67,35 +61,22 @@
 			};
 		}
 	});
-	// Reactive logic: hidden-show-more is visible when tag-row width is 155px or less
+
 	$effect(() => {
-		// Always start by checking if showAllTags is true - if so, hide hidden-show-more
 		if (showAllTags) {
 			showMoreDivVisible = false;
 			shouldHideRegularButton = false;
 			return;
 		}
 
-		// If tags are not overflowing, no button should be shown
 		if (!tagsOverflowing) {
 			showMoreDivVisible = false;
 			shouldHideRegularButton = false;
 			return;
 		}
-		// Only update if tagRowWidth is a valid number to prevent unnecessary updates
 		if (tagRowWidth > 0) {
-			// Show hidden-show-more when tag-row width is 155px or less
 			const shouldShowHidden = tagRowWidth <= 155;
-			console.log(
-				'tagRowWidth:',
-				tagRowWidth,
-				'shouldShowHidden:',
-				shouldShowHidden,
-				'tagsOverflowing:',
-				tagsOverflowing
-			);
 
-			// Only update state if it actually changed to prevent unnecessary re-renders
 			if (showMoreDivVisible !== shouldShowHidden) {
 				showMoreDivVisible = shouldShowHidden;
 				shouldHideRegularButton = shouldShowHidden;
@@ -108,13 +89,12 @@
 	}
 	function toggleShowAllTags(event: Event) {
 		showAllTags = !showAllTags;
-		event.stopPropagation(); // Prevent triggering card click
+		event.stopPropagation();
 
-		// If showing all tags, calculate and adjust heights after a small delay to ensure DOM update
 		if (showAllTags) {
 			setTimeout(adjustCardExpandedHeight, 10);
 		}
-	} // Get combined array of all tags for easier processing
+	}
 	function getAllTags() {
 		const categoryTags = [];
 		if (props.project.category) {
@@ -132,12 +112,10 @@
 		];
 	}
 
-	// Calculate total available tags
 	function getTotalTagCount() {
 		return getAllTags().length;
 	}
 
-	// Check if tags overflow and calculate optimal visible count
 	function checkAndAdjustTagOverflow() {
 		if (!tagRowElement) return;
 
@@ -150,52 +128,44 @@
 			return;
 		}
 
-		// Reset to show all tags first
 		visibleTagCount = totalTags;
 		tagsOverflowing = false;
 
-		// Force a DOM update
 		setTimeout(() => {
 			if (!tagRowElement) return;
 
-			// Check if content overflows (more than 2 lines)
 			const isOverflowing = tagRowElement.scrollHeight > tagRowElement.clientHeight;
 
 			if (isOverflowing) {
 				tagsOverflowing = true;
-				// Start with showing one less tag to make room for the button
+
 				visibleTagCount = Math.max(1, totalTags - 1);
 
-				// Give time for button to render, then check if it fits
 				setTimeout(() => {
 					adjustVisibleTagCount();
 				}, 50);
 			}
 		}, 10);
 	}
-	// Progressively reduce visible tags until the show-more button fits
+
 	function adjustVisibleTagCount() {
 		if (!regularShowMoreButtonElement || !tagRowElement) return;
 
 		const buttonRect = regularShowMoreButtonElement.getBoundingClientRect();
 		const containerRect = tagRowElement.getBoundingClientRect();
 
-		// Check if button is being clipped or pushed outside
 		const buttonOverflowing =
-			buttonRect.right > containerRect.right + 5 || // 5px tolerance
+			buttonRect.right > containerRect.right + 5 ||
 			buttonRect.bottom > containerRect.bottom + 5 ||
 			buttonRect.width === 0 ||
 			buttonRect.height === 0;
 		if (buttonOverflowing && visibleTagCount > 1) {
-			// Reduce visible tags and try again
 			visibleTagCount = visibleTagCount - 1;
 			setTimeout(() => adjustVisibleTagCount(), 50);
 		} else if (!buttonOverflowing && visibleTagCount < getTotalTagCount() - 1) {
-			// Try to show one more tag if button still fits
 			const testCount = visibleTagCount + 1;
 			visibleTagCount = testCount;
 			setTimeout(() => {
-				// Check if it still fits after adding one more tag
 				if (regularShowMoreButtonElement && tagRowElement) {
 					const newButtonRect = regularShowMoreButtonElement.getBoundingClientRect();
 					const newContainerRect = tagRowElement.getBoundingClientRect();
@@ -206,27 +176,22 @@
 						newButtonRect.height === 0;
 
 					if (newOverflowing) {
-						// Revert back to previous count
 						visibleTagCount = testCount - 1;
 					}
 				}
 			}, 50);
 		}
-	} // Reset visible tag count when overflow state changes
+	}
 	$effect(() => {
 		if (!showAllTags) {
-			// Reset and recalculate when not showing all tags
 			setTimeout(() => checkAndAdjustTagOverflow(), 100);
 		}
 	});
 
-	// Main effect to set up observers and handle initial overflow check
 	$effect(() => {
 		if (tagRowElement) {
-			// Initial check
 			checkAndAdjustTagOverflow();
 
-			// Set up ResizeObserver for better performance than window resize events
 			if (typeof ResizeObserver !== 'undefined') {
 				resizeObserver?.disconnect();
 				resizeObserver = new ResizeObserver(() => {
@@ -237,7 +202,6 @@
 				resizeObserver.observe(tagRowElement);
 			}
 
-			// Fallback to window resize if ResizeObserver isn't available
 			const handleResize = () => {
 				if (!showAllTags) {
 					checkAndAdjustTagOverflow();
@@ -252,27 +216,20 @@
 			};
 		}
 	});
-	// Dynamically adjust card height based on content
 	function adjustCardExpandedHeight() {
 		if (!tagRowElement || !mainCardElement) return;
 
-		// Get the actual height needed for tags
 		const tagRowHeight = tagRowElement.scrollHeight;
 
-		// Set custom properties based on actual content size
 		mainCardElement.style.setProperty('--expanded-tag-height', `${tagRowHeight}px`);
 
-		// Calculate the total height needed for the expanded card
-		// Base height plus the additional height needed for tags
-		const baseCardHeight = 450; // Current max-height
-		const expandedTagHeight = tagRowHeight - 50; // Subtract the default tag height
+		const baseCardHeight = 450;
+		const expandedTagHeight = tagRowHeight - 50;
 		const expandedCardHeight = baseCardHeight + expandedTagHeight;
 
-		// Set the custom property for expanded card height
 		mainCardElement.style.setProperty('--expanded-card-height', `${expandedCardHeight}px`);
 	}
 
-	// Helper functions to handle property name variations and fallbacks
 	function getImageUrl(project: any): string {
 		return (
 			project.thumbnail ||
@@ -285,17 +242,12 @@
 	function isPaidListing(project: any): boolean {
 		return project.paidListing || project.paid_listing || project.payed_listing || false;
 	}
-
 	function getProjectTitle(project: any): string {
 		return project.title || project.job_title || 'Tittel ikke oppgitt';
 	}
 
 	function getLocation(project: any): string {
-		// return project.location || project.area || 'Ikke oppgitt';
-		// ?todo: make this be based on the filter value
 		const location = project.location.split(',');
-
-		// return location.slice(0);
 		return location[0];
 	}
 	function getPostDate(project: any): string {
@@ -309,11 +261,10 @@
 				year: 'numeric'
 			});
 		} catch {
-			return date; // Return original if parsing fails
+			return date;
 		}
 	}
 
-	// function getDueDate(project: any, length: any = 'normal'): string {
 	function getDueDate(project: any): string {
 		const date = project.dueDate || project.due_date;
 		if (!date || date === 'Ikke oppgitt') return 'Ikke oppgitt';
@@ -330,17 +281,12 @@
 				return new Date(date).toLocaleDateString('nb-NO', {
 					day: '2-digit',
 					month: 'short',
-
 					year: 'numeric'
 				});
 			}
 		} catch {
-			return date; // Return original if parsing fails
+			return date;
 		}
-	}
-
-	function getCategory(project: any): string {
-		return project.category || 'Kategori ikke oppgitt';
 	}
 
 	function getBudget(project: any): string {
@@ -353,14 +299,9 @@
 		// TODO make it fetch this from language
 		return budget.format(project.budget) || 'budsjett ikke oppgitt';
 	}
-
 	function getPosterType(project: any): string {
 		return project.poster_type || project.lister_class || project.clientRole || 'privat';
 	}
-
-	// console.log('in ProjectCard, gridView:', props.gridView);
-	// console.log('Project data:', props.project);
-	// console.log('Budget value:', );
 </script>
 
 <div
@@ -369,12 +310,10 @@
 	class:expanded={isExpanded || showAllTags}
 	bind:this={mainCardElement}
 >
-	<div class="thumbnail">
+	<div class="thumbnail" class:grid-view={props.gridView}>
 		<img src={getImageUrl(props.project)} alt={getProjectTitle(props.project)} />
 		{#if props.gridView}
-			<!-- acts as outer rim fill for favorite-button -->
 			{#if isPaidListing(props.project)}
-				<!-- <div class="favorite-button icon upper-layer"> -->
 				<div class="upper-layer left">
 					<span class="material-icons md-36 inline-icon paid-icon">paid</span>
 				</div>
@@ -392,7 +331,6 @@
 					{/if}
 				</div>
 			</button>
-			<!-- acts as inner fill for favorite-button -->
 			<button class="favorite-button" onclick={handleFavorite}>
 				<div class="icon">
 					{#if favorite === false}
@@ -409,11 +347,9 @@
 		<div class="upper">
 			<div class="column">
 				<div class="mini row">
-					{#if isPaidListing(props.project)}
-						<!-- <div class="tag">Betalt plassering</div> -->
-						<!-- <Tag label="Betalt plassering" color="accent" textColor="grey" /> -->
-						{#if !props.gridView}
-							<div class="price-tag">
+					{#if !props.gridView}
+						{#if isPaidListing(props.project)}
+							<div class="paid-icon-container">
 								<span class="material-icons md-36 inline-icon paid-icon">paid</span>
 							</div>
 						{/if}
@@ -430,10 +366,8 @@
 						<h4>{getBudget(props.project)}</h4>
 					</div>
 					<div class="title">
-						<!-- <h4>{getBudget(props.project)}</h4> -->
 						<h5>{getProjectTitle(props.project)}</h5>
 					</div>
-					<!-- <h4>{props.project.budget} kr</h4> -->
 				</div>
 			</div>
 
@@ -454,12 +388,9 @@
 			{/if}
 		</div>
 		<div class="lower">
-			<div class="small row category-header">
-				<!-- Category info is now displayed in tags -->
-			</div>
+			<div class="small row category-header"></div>
 			<div class="row">
 				<div class="tag-row-container">
-					<!-- <div class="tag-row"> -->
 					<div class="tag-row" bind:this={tagRowElement} class:expanded={showAllTags}>
 						{#if showAllTags}
 							<!-- Show all tags when expanded -->
@@ -470,7 +401,6 @@
 								size="small"
 							/>
 							|
-							<!-- Show category and sub_category tags -->
 							{#if props.project.category}
 								<Tag label={props.project.category} color="grey" textColor="grey" size="small" />
 							{/if}
@@ -482,7 +412,6 @@
 									size="small"
 								/>
 							{/if}
-							<!-- Show regular tags -->
 							{#each props.project.tags || [] as tag}
 								<Tag label={tag} color="grey" textColor="grey" size="small" />
 							{/each}
@@ -492,7 +421,6 @@
 							{#each props.project.jobAttributes || [] as attr}
 								<Tag label={attr} color="grey" textColor="grey" size="small" />
 							{/each}
-							<!-- <button class="show-more-tags" onclick={toggleShowAllTags}> -færre </button> -->
 							<button
 								class="show-more-tags"
 								class:visible={showMoreDivVisible}
@@ -502,7 +430,6 @@
 								<Tag label="- Vis færre" color="grey" textColor="grey" size="small" />
 							</button>
 						{:else}
-							<!-- Show limited tags with show-more button -->
 							{@const allTags = getAllTags()}
 							{@const tagsToShow =
 								visibleTagCount > 0 ? allTags.slice(0, visibleTagCount) : allTags}
@@ -523,16 +450,12 @@
 							{/if}
 							{#each tagsToShow as item, index}
 								{#if index < (props.project.category ? 1 : 0) + (props.project.sub_category ? 1 : 0)}
-									<!-- Category or sub_category tag -->
 									<Tag label={item} color="grey" textColor="grey" size="small" />
 								{:else if index < (props.project.category ? 1 : 0) + (props.project.sub_category ? 1 : 0) + (props.project.tags || []).length}
-									<!-- Regular tag -->
 									<Tag label={item} color="grey" textColor="grey" size="small" />
 								{:else if index < (props.project.category ? 1 : 0) + (props.project.sub_category ? 1 : 0) + (props.project.tags || []).length + (props.project.experienceRequirements || []).length}
-									<!-- Experience requirement -->
 									<Tag label={item} color="grey" textColor="grey" size="small" />
 								{:else}
-									<!-- Job attribute -->
 									<Tag label={item} color="grey" textColor="grey" size="small" />
 								{/if}
 							{/each}
@@ -550,14 +473,8 @@
 					</div>
 				</div>
 
-				<!-- <div class="column s-SdDzWjP088pA due-date-container">
-					<p>Frist</p>
-					<p>{getDueDate(props.project)}</p>
-				</div> -->
-
 				<div class="column s-SdDzWjP088pA date-container">
 					<p>Frist</p>
-					<!-- <p>{getDueDate(props.project, short)}</p> -->
 					<p>{getDueDate(props.project)}</p>
 				</div>
 			</div>
@@ -566,23 +483,17 @@
 </div>
 
 <style>
-	p {
+	/* p {
 		color: var(--primary-brighter);
 	}
 	.budget h4 {
 		color: var(--primary);
 		font-weight: 600;
 	}
-	/* .title h4 {
-		color: var(--primary);
-
-	} */
-
-	/* Alternative fallback for browsers that don't support aspect-ratio */
 	.thumbnail::before {
 		content: '';
 		display: block;
-		padding-top: 100%; /* 1:1 aspect ratio fallback */
+		padding-top: 100%;
 		width: 0;
 	}
 
@@ -597,47 +508,20 @@
 	}
 	.date-container {
 		display: flex;
-
 		height: fit-content;
 	}
-	/* .main.card.grid-view .thumbnail {
-		width: 100%;
-		border-radius: 0.5rem 0.5rem 0 0;
-	}
-
-	.main.card.grid-view .thumbnail img {
-		border-radius: 0.5rem 0.5rem 0 0;
-	} */
-
-	/* MOBILE VERSION */
-
-	/* @media (max-width: 768px) {
-		.tag-row-container {
-			margin-right: 0 !important;
-		}
-	} */
-
 	.main.card {
 		display: flex;
 		align-items: stretch;
 		padding: 0;
 		max-height: 150px;
-		transition: max-height 0.3s ease; /* Add smooth transition */
+		transition: max-height 0.3s ease;
 		box-shadow:
 			0 1px 6px var(--shadow-bright),
 			0 1px 1px var(--shadow);
-		/* width: 100%; */
-		/* Remove height constraints to allow thumbnail to control height */
-		/* min-height: 200px;
-		transition: height 0.3s ease;
-		min-width: 250px;
-		max-width: 100%;
-		min-height: 100px; */
-		/* min-width: 380px !important; */
 		min-width: 380px;
 	}
 
-	/* Adjust container to properly align with the thumbnail */
 	.mini-profile {
 		padding: 1rem;
 		justify-content: space-between;
@@ -646,45 +530,30 @@
 		position: relative;
 		display: flex;
 		flex: 1;
-		/*  */
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
 		flex-wrap: nowrap;
 		justify-content: space-between;
-		/* min-width: 300px; */
-		/* flex-grow: 3; */
-		/* Remove height constraints to allow thumbnail to control height */
-		/* height: 100%; */
-		/* min-width: 0; */
-	} /* Ensure the main card has proper structure to support the thumbnail */
+	}
 
-	/* Thumbnail styling */
 	.thumbnail {
 		position: relative;
 		width: 20%;
 		aspect-ratio: 1 / 1 !important;
 		overflow: hidden;
 		border-radius: 0.5rem 0 0 0.5rem;
-		height: auto; /* Let aspect-ratio control height */
-		min-height: 0; /* Prevent minimum height conflicts */
+		height: auto;
+		min-height: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		/* min-width: 100px; */
-		/* flex-shrink: 0; */
 	}
-
 	.tag-row-container {
-		/* Ensure container doesn't clip expanded content */
 		overflow: visible;
 		display: flex;
 		flex-direction: column;
-		/* container-name: 'tagrow'; */
-		/* flex: 1; */
-		/* margin-right: 6.5rem; */
 	}
-
 	.tag-row {
 		display: flex;
 		justify-content: start;
@@ -692,7 +561,6 @@
 		column-gap: 0.5rem;
 		row-gap: 0.5rem;
 		padding-right: 1.6rem;
-		max-height: 4rem;
 		max-height: 3.8rem;
 		overflow: hidden;
 		transition: max-height 0.3s ease;
@@ -700,40 +568,27 @@
 		min-width: 0;
 	}
 
-	/* 
-
-
- */
-
-	/* Grid view styling */
 	.main.card.grid-view {
 		flex-direction: column;
 		height: auto;
 		min-height: 350px;
 		max-height: 450px;
-		/* min-width: 0 !important; */
 		min-width: 10rem;
 		max-width: 25rem;
-		/* width: 15rem; */
 	}
-
 	.main.card.grid-view .tag-row {
-		/* padding-right: 20%; */
 		padding-right: 0%;
 	}
 
-	/* Expanded card state */
 	.main.card.expanded {
 		height: auto;
 		min-height: 200px;
-		max-height: none !important; /* Remove max-height constraint when expanded */
+		max-height: none !important;
 		overflow: visible;
 	}
-
 	.upper {
 		display: flex;
 		flex-direction: row;
-		/* row-gap: 1rem; */
 		width: 100%;
 		justify-content: space-between;
 	}
@@ -742,7 +597,7 @@
 		flex-direction: column;
 		row-gap: 0.5rem;
 		width: 100%;
-		overflow: visible; /* Ensure lower container can expand */
+		overflow: visible;
 	}
 	.lower .column {
 		row-gap: 0.25rem;
@@ -762,7 +617,6 @@
 		align-content: flex-start;
 	}
 
-	/* Override row alignment for main card to allow thumbnail proper sizing */
 	.main.card.row {
 		align-items: stretch;
 	}
@@ -772,33 +626,8 @@
 		align-items: start;
 	}
 
-	.hidden-show-more {
-		display: flex !important;
-		align-items: center;
-		gap: 0.25rem;
-		padding: 1px 10px;
-		border-radius: 1rem;
-		background-color: var(--shadow-inv);
-		border: 1px solid #ccc;
-		cursor: pointer;
-		font-size: small;
-		height: fit-content;
-		min-width: 60px;
-		min-height: 24px;
-		transition: background-color 0.2s ease;
-		flex-shrink: 0;
-		position: relative;
-		z-index: 2;
-		opacity: 1 !important;
-		display: none;
-	}
-
-	.hidden-show-more.visible {
-		display: flex;
-	}
-
 	.tag-row.expanded {
-		max-height: none; /* Remove height limit when expanded */
+		max-height: none;
 		overflow: visible;
 	}
 
@@ -818,11 +647,6 @@
 	.spacer {
 		width: 42px;
 		height: 42px;
-	}
-
-	.space {
-		width: 100%;
-		column-gap: 100%;
 	}
 
 	.card .mini {
@@ -878,21 +702,13 @@
 		align-items: center;
 		width: 15px;
 		height: 15px;
-		/* width: 42px; */
-		/* height: 42px; */
 		background-color: var(--primary-bg);
 		color: var(--accent-medium);
 		font-size: large;
-		/* color: var(--accent-brighter); */
-		/* background-color: var(--accent-medium);
-		color: var(--primary-bg); */
-		/* color: var(--primary-bg); */
 	}
 	.upper-layer.left {
 		width: 42px;
 		height: 42px;
-		/* width: 20px; */
-		/* height: 20px; */
 		position: absolute;
 		top: 5px;
 		left: 5px;
@@ -931,21 +747,12 @@
 		.tag-row-container {
 			margin-right: 0;
 		}
-
 		.tag-row {
 			padding-right: 0;
 		}
-
-		.show-more-tags {
-			/* min-width: 50px; 
-			font-size: x-small; 
-			padding: 1px 8px;  */
-		}
 	}
-
 	@container (max-width: 600px) {
 		.tag-row-container {
-			margin-right: 2.5rem;
 			margin-right: 0rem;
 		}
 	}
@@ -976,5 +783,5 @@
 		.tag-row {
 			padding-right: 0 !important;
 		}
-	}
+	} */
 </style>
