@@ -103,11 +103,6 @@
 		}
 	});
 
-	// Toggle expanded state
-	function toggleExpand() {
-		isExpanded = !isExpanded;
-	}
-
 	function handleFavorite() {
 		favorite = !favorite;
 	}
@@ -778,10 +773,7 @@
 	}
 
 	.hidden-show-more {
-		/* min-width: 50px;
-		font-size: x-small;
-		padding: 1px 8px; */
-		display: flex !important; /* Force visibility */
+		display: flex !important;
 		align-items: center;
 		gap: 0.25rem;
 		padding: 1px 10px;
@@ -811,37 +803,12 @@
 	}
 
 	.show-more-tags {
-		display: flex !important
-;
-		/* align-items: center; */
-		/* gap: 0.25rem; */
-		/* border: 1px solid #ccc; */
+		display: flex !important;
 		cursor: pointer;
-		/* font-size: small; */
-		/* height: fit-content; */
-		/* min-width: 60px; */
-		min-height: 24px;
-		transition: background-color 0.2s ease;
-		/* flex-shrink: 0; */
-		/* position: relative; */
+		margin-bottom: 1rem;
+		border-radius: 5rem;
 		z-index: 2;
 		visibility: visible !important;
-		/* opacity: 1 !important;*/
-
-		/* display: flex !important; 
-		align-items: center;
-		gap: 0.25rem;
-		cursor: pointer;
-		font-size: small;
-		height: fit-content;
-		min-width: 60px;
-		min-height: 24px;
-		transition: background-color 0.2s ease;
-		flex-shrink: 0; 
-		position: relative;
-		z-index: 2; 
-		visibility: visible !important; 
-		opacity: 1 !important;  */
 	}
 
 	.show-more-tags:hover {
@@ -962,12 +929,11 @@
 	}
 	@media (max-width: 400px) {
 		.tag-row-container {
-			margin-right: 0; /* Remove right margin when due-date is repositioned */
+			margin-right: 0;
 		}
 
 		.tag-row {
 			padding-right: 0;
-			/* Remove padding when in mobile view */
 		}
 
 		.show-more-tags {
