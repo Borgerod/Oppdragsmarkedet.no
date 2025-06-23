@@ -35,159 +35,168 @@ export const load: PageServerLoad = async () => {
 
 export const actions = {
 	filterProjects: async ({ request }) => {
-		const formData = await request.formData();
+		try {
+			const formData = await request.formData();
+			// Handle array fields properly by using getAll() for known array fields
+			const arrayFields = [
+				'experienceRequirements_include',
+				'experienceRequirements_exclude',
+				'jobAttributes_include',
+				'jobAttributes_exclude',
+				'clientRole'
+			];
 
-		// Handle array fields properly by using getAll() for known array fields
-		const arrayFields = [
-			'experienceRequirements_include',
-			'experienceRequirements_exclude',
-			'jobAttributes_include',
-			'jobAttributes_exclude',
-			'clientRole'
-		];
+			// Single field examples: textSearch, location, category, budget_min, budget_max
+			const filterData: Record<string, string | string[]> = {};
 
-		// Single field examples: textSearch, location, category, budget_min, budget_max
-		const filterData: Record<string, string | string[]> = {};
-
-		// Process all form entries
-		for (const [key, value] of formData.entries()) {
-			if (arrayFields.includes(key)) {
-				// For array fields, use getAll() to get all values
-				filterData[key] = formData.getAll(key) as string[];
-			} else {
-				// For single fields, use the regular approach
-				filterData[key] = value as string;
-			}
-		}
-
-		console.log('formData: ', formData);
-		console.log('filterData: ', filterData);
-
-		// Build conditions for exact positional matching using SPLIT_PART
-		const locationConditions: any[] = [];
-		const workfieldConditions: any[] = [];
-		const clientRoleConditions: any[] = [];
-
-		//* Location  - Use SPLIT_PART for flexible matching
-
-		// Parse location string to extract meaningful parts with position awareness
-		const locationInput = filterData.location?.toString() || '';
-		const locationParts = locationInput.split(',').map((part) => part.trim());
-		if (locationParts.some((part) => part.length > 0)) {
-			locationParts.forEach((part, index) => {
-				if (part.length > 0) {
-					locationConditions.push(
-						sql`LOWER(TRIM(SPLIT_PART(${schema.projects.location}, ',', ${index + 1}))) = LOWER(${part})`
-					);
+			// Process all form entries
+			for (const [key, value] of formData.entries()) {
+				if (arrayFields.includes(key)) {
+					// For array fields, use getAll() to get all values
+					filterData[key] = formData.getAll(key) as string[];
+				} else {
+					// For single fields, use the regular approach
+					filterData[key] = value as string;
 				}
-			});
-		}
+			}
 
-		//* Category  - exact match on category field
-		if (filterData.category && filterData.category.length > 0) {
-			// ?todo: if category=empty: trigger saftey function that saves location, IP and other data. then notify admin and block user. Note: must add to cookie-accept
-			workfieldConditions.push(
-				sql`LOWER(${schema.projects.category}) = LOWER(${filterData.category})`
-			);
-		}
+			console.log('formData: ', formData);
+			console.log('filterData: ', filterData);
 
-		//* ClientRole  - exact match on client_role field
-		if (
-			filterData.clientRole &&
-			Array.isArray(filterData.clientRole) &&
-			filterData.clientRole.length > 0
-		) {
-			clientRoleConditions.push(inArray(schema.projects.clientRole, filterData.clientRole));
-		} else if (typeof filterData.clientRole === 'string' && filterData.clientRole.length > 0) {
-			clientRoleConditions.push(eq(schema.projects.clientRole, filterData.clientRole));
-		}
+			// Build conditions for exact positional matching using SPLIT_PART
+			const locationConditions: any[] = [];
+			const workfieldConditions: any[] = [];
+			const clientRoleConditions: any[] = [];
 
-		// Combine all conditions
-		const allConditions = [...locationConditions, ...workfieldConditions, ...clientRoleConditions];
+			//* Location  - Use SPLIT_PART for flexible matching
 
-		// * BudgetRange INCLUDE
-		filterData.currency;
-		//TODO add currency
-		const budgetMin = filterData.budget_min ? Number(filterData.budget_min) : undefined;
-		const budgetMax = filterData.budget_max ? Number(filterData.budget_max) : undefined;
+			// Parse location string to extract meaningful parts with position awareness
+			const locationInput = filterData.location?.toString() || '';
+			const locationParts = locationInput.split(',').map((part) => part.trim());
+			if (locationParts.some((part) => part.length > 0)) {
+				locationParts.forEach((part, index) => {
+					if (part.length > 0) {
+						locationConditions.push(
+							sql`LOWER(TRIM(SPLIT_PART(${schema.projects.location}, ',', ${index + 1}))) = LOWER(${part})`
+						);
+					}
+				});
+			}
 
-		if (budgetMin !== undefined && !isNaN(budgetMin)) {
-			allConditions.push(gte(schema.projects.budget, budgetMin));
-		}
-		if (budgetMax !== undefined && !isNaN(budgetMax)) {
-			allConditions.push(lte(schema.projects.budget, budgetMax));
-		}
+			//* Category  - exact match on category field
+			if (filterData.category && filterData.category.length > 0) {
+				// ?todo: if category=empty: trigger saftey function that saves location, IP and other data. then notify admin and block user. Note: must add to cookie-accept
+				workfieldConditions.push(
+					sql`LOWER(${schema.projects.category}) = LOWER(${filterData.category})`
+				);
+			}
 
-		//* ExperienceRequirements INCLUDE (from experienceRequirements_include)
-		if (
-			filterData.experienceRequirements_include &&
-			Array.isArray(filterData.experienceRequirements_include) &&
-			filterData.experienceRequirements_include.length > 0
-		) {
-			allConditions.push(
-				arrayContains(
-					schema.projects.experienceRequirements,
-					filterData.experienceRequirements_include
-				)
-			);
-		}
-		//! ExperienceRequirements INCLUDE (from experienceRequirements_include)
+			//* ClientRole  - exact match on client_role field
+			if (
+				filterData.clientRole &&
+				Array.isArray(filterData.clientRole) &&
+				filterData.clientRole.length > 0
+			) {
+				clientRoleConditions.push(inArray(schema.projects.clientRole, filterData.clientRole));
+			} else if (typeof filterData.clientRole === 'string' && filterData.clientRole.length > 0) {
+				clientRoleConditions.push(eq(schema.projects.clientRole, filterData.clientRole));
+			}
 
-		if (
-			filterData.experienceRequirements_exclude &&
-			Array.isArray(filterData.experienceRequirements_exclude) &&
-			filterData.experienceRequirements_exclude.length > 0
-		) {
-			allConditions.push(
-				not(
+			// Combine all conditions
+			const allConditions = [
+				...locationConditions,
+				...workfieldConditions,
+				...clientRoleConditions
+			];
+
+			// * BudgetRange INCLUDE
+			filterData.currency;
+			//TODO add currency
+			const budgetMin = filterData.budget_min ? Number(filterData.budget_min) : undefined;
+			const budgetMax = filterData.budget_max ? Number(filterData.budget_max) : undefined;
+
+			if (budgetMin !== undefined && !isNaN(budgetMin)) {
+				allConditions.push(gte(schema.projects.budget, budgetMin));
+			}
+			if (budgetMax !== undefined && !isNaN(budgetMax)) {
+				allConditions.push(lte(schema.projects.budget, budgetMax));
+			}
+
+			//* ExperienceRequirements INCLUDE (from experienceRequirements_include)
+			if (
+				filterData.experienceRequirements_include &&
+				Array.isArray(filterData.experienceRequirements_include) &&
+				filterData.experienceRequirements_include.length > 0
+			) {
+				allConditions.push(
 					arrayContains(
 						schema.projects.experienceRequirements,
-						filterData.experienceRequirements_exclude
+						filterData.experienceRequirements_include
 					)
-				)
-			);
+				);
+			}
+			//! ExperienceRequirements INCLUDE (from experienceRequirements_include)
+
+			if (
+				filterData.experienceRequirements_exclude &&
+				Array.isArray(filterData.experienceRequirements_exclude) &&
+				filterData.experienceRequirements_exclude.length > 0
+			) {
+				allConditions.push(
+					not(
+						arrayContains(
+							schema.projects.experienceRequirements,
+							filterData.experienceRequirements_exclude
+						)
+					)
+				);
+			}
+
+			//* jobAttributes INCLUDE (from jobAttributes_include)
+			if (
+				filterData.jobAttributes_include &&
+				Array.isArray(filterData.jobAttributes_include) &&
+				filterData.jobAttributes_include.length > 0
+			) {
+				allConditions.push(
+					arrayContains(schema.projects.jobAttributes, filterData.jobAttributes_include)
+				);
+			}
+			//! jobAttributes INCLUDE (from jobAttributes_include)
+
+			if (
+				filterData.jobAttributes_exclude &&
+				Array.isArray(filterData.jobAttributes_exclude) &&
+				filterData.jobAttributes_exclude.length > 0
+			) {
+				allConditions.push(
+					not(arrayContains(schema.projects.jobAttributes, filterData.jobAttributes_exclude))
+				);
+			}
+
+			// > FINAL, MAKE FILTERED REQUEST
+			const filteredProjects = await db
+				.select()
+				.from(schema.projects)
+				.where(allConditions.length > 0 ? and(...allConditions) : sql`1 = 1`);
+
+			console.log(`Found ${filteredProjects.length} projects matching filter criteria`);
+			console.log('filteredProjects: ', filteredProjects);
+
+			return {
+				success: true,
+				projects: filteredProjects
+			};
+		} catch (error) {
+			console.error('Error filtering projects:', error);
+			return kitFail(500, {
+				success: false,
+				message: 'Failed to filter projects',
+				error: error instanceof Error ? error.message : 'Unknown error'
+			});
 		}
-
-		//* jobAttributes INCLUDE (from jobAttributes_include)
-		if (
-			filterData.jobAttributes_include &&
-			Array.isArray(filterData.jobAttributes_include) &&
-			filterData.jobAttributes_include.length > 0
-		) {
-			allConditions.push(
-				arrayContains(schema.projects.jobAttributes, filterData.jobAttributes_include)
-			);
-		}
-		//! jobAttributes INCLUDE (from jobAttributes_include)
-
-		if (
-			filterData.jobAttributes_exclude &&
-			Array.isArray(filterData.jobAttributes_exclude) &&
-			filterData.jobAttributes_exclude.length > 0
-		) {
-			allConditions.push(
-				not(arrayContains(schema.projects.jobAttributes, filterData.jobAttributes_exclude))
-			);
-		}
-
-		// > FINAL, MAKE FILTERED REQUEST
-		const filteredProjects = await db
-			.select()
-			.from(schema.projects)
-			.where(allConditions.length > 0 ? and(...allConditions) : sql`1 = 1`);
-
-		console.log(
-			`Found ${filteredProjects.length} projects matching the location and workfield filter criteria`
-		);
-		console.log('filteredProjects: ', filteredProjects);
-
-		return {
-			success: true,
-			projects: filteredProjects
-		};
 	}
 } satisfies Actions;
-
 //
 //
 //

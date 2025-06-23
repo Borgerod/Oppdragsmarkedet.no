@@ -116,72 +116,6 @@
 		const redirectLink = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}view=map&${mapParams.toString()}`;
 		return redirectLink;
 	}
-	function onApply() {
-		// Update the displayed data
-		displayedData = {
-			...filterData,
-			experienceRequirements_include: [...filterData.experienceRequirements_include],
-			experienceRequirements_exclude: [...filterData.experienceRequirements_exclude],
-			jobAttributes_include: [...filterData.jobAttributes_include],
-			jobAttributes_exclude: [...filterData.jobAttributes_exclude],
-			clientRole: [...filterData.clientRole]
-		};
-
-		showResults = true;
-		console.log('+page.svelte, onApply():');
-		console.log(displayedData);
-		// $inspect(displayedData);
-		// Create a FormData object to submit to the server
-		const formData = new FormData();
-
-		// Log filter data for debugging - this is what will be displayed in the UI
-		// console.log('Filter Data Applied:', JSON.stringify(filterData, null, 2));
-		// console.log('Displayed Data:', JSON.stringify(displayedData, null, 2));
-
-		// Add all filter criteria to the form data
-		Object.entries(filterData).forEach(([key, value]) => {
-			if (Array.isArray(value)) {
-				// For arrays, add each item individually with the same key
-				value.forEach((item) => {
-					formData.append(key, item);
-				});
-			} else if (value !== INITIAL_VALUES[key]) {
-				// Only add non-default values
-				formData.append(key, value.toString());
-			}
-		});
-
-		// Submit the form data to the server action
-		displayedProjects = fetch('?/filterProjects', {
-			method: 'POST',
-			body: formData
-		})
-			// console.log('Filter applied successfully:', 'projects found');
-			.then((response) => response.json())
-			.then((result) => {
-				// console.log('response: ', response.json());
-				console.log('results: ', result);
-				const results = result.data;
-				console.log('data: ', result.data);
-				if (results.success) {
-					// if (result.type === 'success') {
-					// isFiltered = true;
-					// Update the projects data with the filtered results
-					// data.projects = result.projects;
-					data.projects = result.data;
-					// displayedProjects = result.projects;
-					// console.log()
-					// console.log('Filter applied successfully:');
-					console.log('Filter applied successfully:', data.projects.length, 'projects found');
-				} else {
-					console.error('Failed to apply filter:', result.message);
-				}
-			})
-			.catch((error) => {
-				console.error('Error applying filter:', error);
-			});
-		console.log('results: ', displayedProjects);
-	}
 
 	function resetAll() {
 		filterData = structuredClone(INITIAL_VALUES);
@@ -310,6 +244,63 @@
 
 	// console.log('PROJECTS: ', data.projects);
 	// console.log('^ PROJECTS ^');
+
+	let form: HTMLFormElement;
+	let isSubmitting = $state(false);
+
+	const submitFilter: SubmitFunction = ({ formData }) => {
+		isSubmitting = true;
+
+		// Add all filter data to formData
+		Object.entries(filterData).forEach(([key, value]) => {
+			if (Array.isArray(value)) {
+				value.forEach((item) => {
+					formData.append(key, item);
+				});
+			} else if (value !== INITIAL_VALUES[key]) {
+				formData.append(key, value.toString());
+			}
+		});
+
+		return async ({ result, update }) => {
+			isSubmitting = false;
+
+			if (result.type === 'success' && result.data) {
+				console.log('result: ', result);
+				console.log('data: ', result.data);
+				// Update projects with filtered results
+				data.projects = result.data.projects;
+				displayedProjects = result.data.projects;
+
+				console.log('Filter applied successfully:', result.data.projects.length, 'projects found');
+
+				console.log('data.projects: ', data.projects);
+				console.log('displayedProjects: ', displayedProjects);
+			} else if (result.type === 'failure') {
+				console.error('Failed to apply filter:', result.data?.message);
+			}
+
+			await update();
+		};
+	};
+
+	function onApply() {
+		displayedData = {
+			...filterData,
+			experienceRequirements_include: [...filterData.experienceRequirements_include],
+			experienceRequirements_exclude: [...filterData.experienceRequirements_exclude],
+			jobAttributes_include: [...filterData.jobAttributes_include],
+			jobAttributes_exclude: [...filterData.jobAttributes_exclude],
+			clientRole: [...filterData.clientRole]
+		};
+
+		showResults = true;
+
+		// Submit the form
+		if (form) {
+			form.requestSubmit();
+		}
+	}
 </script>
 
 <div class="project-list-page">
@@ -541,6 +532,13 @@
 		</div> -->
 	</div>
 </div>
+<form
+	bind:this={form}
+	method="POST"
+	action="?/filterProjects"
+	use:enhance={submitFilter}
+	style="display: none;"
+></form>
 
 <style>
 	/* .project-list-page {

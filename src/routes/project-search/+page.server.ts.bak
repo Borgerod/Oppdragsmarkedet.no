@@ -1,0 +1,286 @@
+// local
+import { db } from '@db/index';
+import * as schema from '@db/schema';
+// external
+import { eq, and, inArray, or, isNotNull, sql } from 'drizzle-orm';
+import type { PageServerLoad } from './$types';
+import type { Actions } from './$types';
+import { fail as kitFail } from '@sveltejs/kit';
+export const load: PageServerLoad = async () => {
+	// Get the specific user profile that matches the user ID
+	const projects = await db.select().from(schema.projects);
+
+	// const filterValues =
+
+	return {
+		projects: projects || null
+	};
+};
+
+export const actions = {
+	filterProjects: async ({ request }) => {
+		const formData = await request.formData();
+		const filterData = Object.fromEntries(formData);
+		// Enhanced FormData debugging output
+		console.log('\n==================================================');
+		console.log('📝 FILTER FORM DATA RECEIVED ON SERVER');
+		console.log('==================================================');
+
+		// Print all FormData entries individually
+		console.log('\n📋 FORM DATA ENTRIES:');
+		const formDataEntries = Array.from(formData.entries());
+		if (formDataEntries.length === 0) {
+			console.log('   [No entries found in FormData]');
+		} else {
+			formDataEntries.forEach(([key, value]) => {
+				console.log(`   ${key}: ${value}`);
+			});
+		}
+
+		// Print array-type fields (fields that appear multiple times)
+		console.log('\n📑 ARRAY-TYPE FIELDS:');
+		const arrayFields = new Set();
+		formDataEntries.forEach(([key]) => {
+			if (formData.getAll(key).length > 1) {
+				arrayFields.add(key);
+			}
+		});
+
+		if (arrayFields.size === 0) {
+			console.log('   [No array fields found]');
+		} else {
+			Array.from(arrayFields).forEach((field) => {
+				const fieldName = String(field);
+				console.log(`   ${fieldName}: ${JSON.stringify(formData.getAll(fieldName))}`);
+			});
+		}
+
+		// Print the consolidated object
+		console.log('\n🔍 CONSOLIDATED FILTER DATA OBJECT:');
+		console.log(JSON.stringify(filterData, null, 2));
+		console.log('==================================================\n');
+		
+		// Use a try-catch for the whole filter construction process
+		try {
+			// Build the query conditions based on filterData
+			const conditions = [];
+
+			// Map client filter fields to database fields
+			// Name/search filter (custom implementation)
+			if (filterData.name) {
+				conditions.push(sql`${schema.projects.title} ILIKE ${`%${filterData.name}%`}`);
+			}			// County/location filter
+			if (filterData.county) {
+				console.log(`Filtering by county: ${filterData.county}`);
+				try {
+					// First try ILIKE for case-insensitive matching
+					conditions.push(sql`${schema.projects.location} ILIKE ${`%${filterData.county}%`}`);
+					console.log('County filter condition added successfully (ILIKE)');
+				} catch (error) {
+					console.error('Error creating county filter with ILIKE:', error);
+					// Try alternative: plain text comparison as fallback
+					try {
+						console.log('Attempting alternative county filter with eq()');
+						conditions.push(eq(schema.projects.location, filterData.county.toString()));
+						console.log('Alternative county filter added successfully');
+					} catch (fallbackError) {
+						console.error('Error creating alternative county filter:', fallbackError);
+						// If both approaches fail, we'll still return results (outer try-catch will handle this)
+					}
+				}
+			}
+
+			// Workfield/category filter
+			if (filterData.workfield) {
+				conditions.push(eq(schema.projects.category, filterData.workfield.toString()));
+			}
+
+			// Price range filters
+			if (filterData.price_min) {
+				conditions.push(sql`${schema.projects.budget} >= ${Number(filterData.price_min)}`);
+			}
+
+			if (filterData.price_max) {
+				conditions.push(sql`${schema.projects.budget} <= ${Number(filterData.price_max)}`);
+			}
+
+			// Field include filter (maps to experienceRequirements)
+			if (formData.has('field_include')) {
+				const fieldIncludes = formData.getAll('field_include');
+				if (fieldIncludes.length > 0) {
+					conditions.push(sql`${schema.projects.experienceRequirements} && ${JSON.stringify(fieldIncludes)}`);
+				}
+			}
+
+			// Job attributes include filter
+			if (formData.has('job_attributes_include')) {
+				const jobAttrIncludes = formData.getAll('job_attributes_include');
+				if (jobAttrIncludes.length > 0) {
+					conditions.push(sql`${schema.projects.jobAttributes} && ${JSON.stringify(jobAttrIncludes)}`);
+				}
+			}
+
+			// Job poster filter (maps to clientRole)
+			if (formData.has('clientRole')) {
+				const jobPosters = formData.getAll('clientRole');
+				if (jobPosters.length > 0) {
+					// If multiple values, use OR condition
+					if (jobPosters.length > 1) {
+						const orConditions = jobPosters.map(poster => 
+							eq(schema.projects.clientRole, poster.toString())
+						);
+						conditions.push(or(...orConditions));
+					} else {
+						conditions.push(eq(schema.projects.clientRole, jobPosters[0].toString()));
+					}
+				}
+			}
+
+			// Original filters from the server code
+			// Category filter
+			if (filterData.category) {
+				conditions.push(eq(schema.projects.category, filterData.category.toString()));
+			}
+
+			// Client role filter
+			if (filterData.clientRole) {
+				conditions.push(eq(schema.projects.clientRole, filterData.clientRole.toString()));
+			}
+
+			// Location filter
+			if (filterData.location) {
+				conditions.push(sql`${schema.projects.location} LIKE ${`%${filterData.location}%`}`);
+			}
+
+			// Budget range filter
+			if (filterData.minBudget) {
+				conditions.push(sql`${schema.projects.budget} >= ${Number(filterData.minBudget)}`);
+			}
+
+			if (filterData.maxBudget) {
+				conditions.push(sql`${schema.projects.budget} <= ${Number(filterData.maxBudget)}`);
+			}
+
+			// Experience requirements filter
+			if (filterData.experienceRequirements) {
+				const expReqs = Array.isArray(filterData.experienceRequirements)
+					? filterData.experienceRequirements
+					: [filterData.experienceRequirements];
+
+				conditions.push(sql`${schema.projects.experienceRequirements} && ${JSON.stringify(expReqs)}`);
+			}
+
+			// Job attributes filter
+			if (filterData.jobAttributes) {
+				const jobAttrs = Array.isArray(filterData.jobAttributes)
+					? filterData.jobAttributes
+					: [filterData.jobAttributes];
+
+				conditions.push(sql`${schema.projects.jobAttributes} && ${JSON.stringify(jobAttrs)}`);
+			}
+
+			// Date filters
+			if (filterData.startDate) {
+				conditions.push(sql`${schema.projects.postDate} >= ${filterData.startDate.toString()}`);
+			}
+
+			if (filterData.endDate) {
+				conditions.push(sql`${schema.projects.postDate} <= ${filterData.endDate.toString()}`);
+			}
+
+			// // Project state filter
+			// if (filterData.state) {
+			// 	conditions.push(eq(schema.projects.state, filterData.state.toString()));
+			// }			// Project state filter
+			if (filterData.state) {
+				const stateValue = filterData.state.toString() as
+					| 'draft'
+					| 'posted'
+					| 'in_progress'
+					| 'completed'
+					| 'cancelled';
+				conditions.push(eq(schema.projects.state, stateValue));
+			}
+			
+			// Construct and execute the query
+			try {
+				console.log(`Number of filter conditions: ${conditions.length}`);
+				
+				// Debug conditions array
+				conditions.forEach((condition, index) => {
+					console.log(`Condition ${index + 1}:`, condition);
+				});
+				
+				const whereClause = conditions.length === 1 ? conditions[0] : and(...conditions);
+
+				const query =
+					conditions.length > 0
+						? db.select().from(schema.projects).where(whereClause)
+						: db.select().from(schema.projects);
+
+				// Log query for debugging
+				console.log('Executing query:', query.toSQL());
+
+				// Execute the query
+				const results = await query;
+				console.log(`Query executed successfully, found ${results.length} results`);
+
+				return {
+					success: true,
+					projects: results
+				};
+			} catch (error) {
+				console.error('Error executing query:', error);
+				const errorDetails = error instanceof Error 
+					? {
+						message: error.message,
+						stack: error.stack
+					} 
+					: String(error);
+					
+				console.error('Detailed query error:', JSON.stringify(errorDetails, null, 2));
+				
+				return kitFail(500, {
+					success: false,
+					message: 'Failed to execute filter query',
+					error: error instanceof Error ? error.message : String(error)
+				});
+			}
+		} catch (error) {
+			// This catch block handles errors in the filter construction process
+			console.error('Error constructing filter conditions:', error);
+			const errorDetails = error instanceof Error 
+				? {
+					message: error.message,
+					stack: error.stack
+				} 
+				: String(error);
+				
+			console.error('Detailed filter construction error:', JSON.stringify(errorDetails, null, 2));
+			
+			// Fallback to returning all projects when filter construction fails
+			try {
+				const allProjects = await db.select().from(schema.projects);
+				return {
+					success: true,
+					projects: allProjects,
+					warning: 'Filter criteria could not be applied, showing all projects'
+				};
+			} catch (fallbackError) {
+				return kitFail(500, {
+					success: false,
+					message: 'Failed to construct and apply filter',
+					error: error instanceof Error ? error.message : String(error)
+				});
+			}
+		}
+		} catch (error) {
+			console.error('Error constructing filter conditions:', error);
+			return kitFail(500, {
+				success: false,
+				message: 'Failed to construct filter conditions',
+				error: error instanceof Error ? error.message : String(error)
+			});
+		}
+	}
+} satisfies Actions;
