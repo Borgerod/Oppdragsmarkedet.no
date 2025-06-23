@@ -18,6 +18,7 @@
 
 	/* --accent-translucent: rgba(var(--accent-bright), 0.8); */
 	--accent-little-translucent: color-mix(in srgb, var(--accent) 60%, transparent); /* Dynamically derived translucent color */
+	--accent-some-translucent: color-mix(in srgb, var(--accent) 50%, transparent); /* Dynamically derived translucent color */
 	--accent-translucent: color-mix(in srgb, var(--accent) 30%, transparent); /* Dynamically derived translucent color */
 	--accent-very-translucent: color-mix(in srgb, var(--accent) 10%, transparent); /* Dynamically derived translucent color */
 
@@ -62,6 +63,7 @@
 	--secondary-translucent: color-mix(in srgb, var(--secondary) 80%, transparent); /* Dynamically derived translucent color */
 	--secondary-medium-translucent: color-mix(in srgb, var(--secondary) 50%, transparent); /* Dynamically derived translucent color */
 	--secondary-very-translucent: color-mix(in srgb, var(--secondary) 20%, transparent); /* Dynamically derived translucent color */
+	--secondary-dark-very-translucent: color-mix(in srgb, var(--secondary-dark) 40%, transparent); /* Dynamically derived translucent color */
 	--secondary-dark-translucent: color-mix(in srgb, var(--secondary-dark) 20%, transparent); /* Dynamically derived translucent color */
 	--secondary-darkmode: hsla(0, 0%, 100%, 0.6);
 	--secondary-darkmode-bright: rgb(255, 255, 255);
