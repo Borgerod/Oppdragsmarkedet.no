@@ -1,10 +1,10 @@
 // User Structure:
 
 // user profile employee admin
-// ****\_\_\_****|****************\_\_****************|******\_******|******\_******|
+// \***\*\_\_\_\*\***|******\*\*\*\*******\_\_******\*\*\*\*******|**\*\***\_**\*\***|**\*\***\_**\*\***|
 // | | | | |
 // vendor client <-- linked employee admin
-// | ****\_\_****|****\_\_\_****
+// | \***\*\_\_\*\***|\***\*\_\_\_\*\***
 // | | | |
 // business business private government
 
@@ -211,7 +211,7 @@ const vendorExtensionUserData: UserData = {
     saved_filters:[
 
     	{
-    		'ikke statlig':'oppdragsmarkedet.no/oppdrag&workfield=Elektriker&field_include=asfaltering%2Cbrønnboring&field_exclude=&job_attributes_include=&job_attributes_exclude=&job_poster=privat%2Cbedrift',
+    		'ikke statlig':'oppdragsmarkedet.no/oppdrag&workfield=Elektriker&field_include=asfaltering%2Cbrønnboring&field_exclude=&job_attributes_include=&job_attributes_exclude=&clientRole=privat%2Cbedrift',
     	},
     ],
 
