@@ -3,6 +3,7 @@
 <script lang="ts">
 	// import { Drawer } from 'vaul-svelte';
 	// import Drawer from '../stories/Drawer.svelte';
+	//ts ignore
 	import ProjectList from '@stories/ProjectList.svelte';
 	import '@stories/button.css';
 	import { Fa } from 'svelte-fa';
@@ -21,51 +22,62 @@
 
 	// @ts-ignore
 	import Filter from '@stories/Filter.svelte';
+	// @ts-ignore
 	import Button from '@stories/Button.svelte';
 	import './ProjectListPage.css';
+	// @ts-ignore
 	import DropDown from '@stories/forms/DropDown.svelte';
+	// @ts-ignore
 	import MapView from '@stories/MapView.svelte';
 	import { onMount } from 'svelte';
 
 	const pageData = $props<{ data: any }>();
 	let data = $state({ projects: pageData.data.projects || [] });
 
+	// >test-area
+	// let filteredData = $state();
+	let isFiltered = $state(false);
+	let displayedProjects = $state(data.projects);
+	// >test-area
+
 	type DisplaySettings = {
 		sortBy: string;
 		gridView: boolean;
 	};
+
 	const INITIAL_LIST_VALUES: DisplaySettings = {
 		sortBy: 'Mest relevant',
 		gridView: false // shows either list og grid view
 	};
 
 	let DisplaySettings = $state({ ...INITIAL_LIST_VALUES });
-
 	type FilterData = {
-		name: string;
-		county: string;
-		workfield: string;
-		price_min: string;
-		price_max: string;
-		field_include: string[];
-		field_exclude: string[];
-		job_attributes_include: string[];
-		job_attributes_exclude: string[];
-		job_poster: string[];
+		textSearch: string;
+		location: string;
+		category: string;
+		budget_min: string;
+		budget_max: string;
+		currency: string;
+		experienceRequirements_include: string[];
+		experienceRequirements_exclude: string[];
+		jobAttributes_include: string[];
+		jobAttributes_exclude: string[];
+		clientRole: string[];
 		[key: string]: string | string[];
 	};
 
 	const INITIAL_VALUES: FilterData = {
-		name: '',
-		county: '',
-		workfield: '',
-		price_min: '',
-		price_max: '',
-		field_include: [],
-		field_exclude: [],
-		job_attributes_include: [],
-		job_attributes_exclude: [],
-		job_poster: []
+		textSearch: '',
+		location: ',,',
+		category: '',
+		budget_min: '',
+		budget_max: '',
+		currency: 'NOK', // > PLACEHOLDER
+		experienceRequirements_include: [],
+		experienceRequirements_exclude: [],
+		jobAttributes_include: [],
+		jobAttributes_exclude: [],
+		clientRole: []
 	};
 
 	const mapViewBaseLink = 'https://oppdragsmarkedet.no/';
@@ -104,20 +116,27 @@
 		const redirectLink = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}view=map&${mapParams.toString()}`;
 		return redirectLink;
 	}
-	function handleApply() {
+	function onApply() {
 		// Update the displayed data
 		displayedData = {
 			...filterData,
-			field_include: [...filterData.field_include],
-			field_exclude: [...filterData.field_exclude],
-			job_attributes_include: [...filterData.job_attributes_include],
-			job_attributes_exclude: [...filterData.job_attributes_exclude],
-			job_poster: [...filterData.job_poster]
+			experienceRequirements_include: [...filterData.experienceRequirements_include],
+			experienceRequirements_exclude: [...filterData.experienceRequirements_exclude],
+			jobAttributes_include: [...filterData.jobAttributes_include],
+			jobAttributes_exclude: [...filterData.jobAttributes_exclude],
+			clientRole: [...filterData.clientRole]
 		};
-		showResults = true;
 
+		showResults = true;
+		console.log('+page.svelte, onApply():');
+		console.log(displayedData);
+		// $inspect(displayedData);
 		// Create a FormData object to submit to the server
 		const formData = new FormData();
+
+		// Log filter data for debugging - this is what will be displayed in the UI
+		// console.log('Filter Data Applied:', JSON.stringify(filterData, null, 2));
+		// console.log('Displayed Data:', JSON.stringify(displayedData, null, 2));
 
 		// Add all filter criteria to the form data
 		Object.entries(filterData).forEach(([key, value]) => {
@@ -133,17 +152,27 @@
 		});
 
 		// Submit the form data to the server action
-		fetch('?/filterProjects', {
+		displayedProjects = fetch('?/filterProjects', {
 			method: 'POST',
 			body: formData
 		})
+			// console.log('Filter applied successfully:', 'projects found');
 			.then((response) => response.json())
 			.then((result) => {
-				if (result.success) {
+				// console.log('response: ', response.json());
+				console.log('results: ', result);
+				const results = result.data;
+				console.log('data: ', result.data);
+				if (results.success) {
+					// if (result.type === 'success') {
+					// isFiltered = true;
 					// Update the projects data with the filtered results
-					data.projects = result.projects;
-
-					console.log('Filter applied successfully:', result.projects.length, 'projects found');
+					// data.projects = result.projects;
+					data.projects = result.data;
+					// displayedProjects = result.projects;
+					// console.log()
+					// console.log('Filter applied successfully:');
+					console.log('Filter applied successfully:', data.projects.length, 'projects found');
 				} else {
 					console.error('Failed to apply filter:', result.message);
 				}
@@ -151,6 +180,7 @@
 			.catch((error) => {
 				console.error('Error applying filter:', error);
 			});
+		console.log('results: ', displayedProjects);
 	}
 
 	function resetAll() {
@@ -176,11 +206,11 @@
 			displayedData[key] = INITIAL_VALUES[key];
 
 			// Special handling for price range
-			if (key === 'price_min' || key === 'price_max') {
-				filterData.price_min = INITIAL_VALUES.price_min;
-				filterData.price_max = INITIAL_VALUES.price_max;
-				displayedData.price_min = INITIAL_VALUES.price_min;
-				displayedData.price_max = INITIAL_VALUES.price_max;
+			if (key === 'budget_min' || key === 'budget_max') {
+				filterData.budget_min = INITIAL_VALUES.budget_min;
+				filterData.budget_max = INITIAL_VALUES.budget_max;
+				displayedData.budget_min = INITIAL_VALUES.budget_min;
+				displayedData.budget_max = INITIAL_VALUES.budget_max;
 			}
 		}
 	}
@@ -197,31 +227,31 @@
 						return value !== initial;
 					})
 					.filter(([key], index, arr) => {
-						if (key === 'price_min' || key === 'price_max') {
-							return arr.findIndex(([k]) => k === 'price_min') === index;
+						if (key === 'budget_min' || key === 'budget_max') {
+							return arr.findIndex(([k]) => k === 'budget_min') === index;
 						}
 						return true;
 					})
 					.map(([key]) => key)
 			: []
 	);
-	function formatPriceRange(price_min: string, price_max: string) {
-		const hasMin = price_min != null && price_min !== '';
-		const hasMax = price_max != null && price_max !== '';
+	function formatPriceRange(budget_min: string, budget_max: string) {
+		const hasMin = budget_min != null && budget_min !== '';
+		const hasMax = budget_max != null && budget_max !== '';
 
-		const numMin = parseFloat(price_min);
-		const numMax = parseFloat(price_max);
+		const numMin = parseFloat(budget_min);
+		const numMax = parseFloat(budget_max);
 
 		if (hasMin && (!hasMax || numMin > numMax)) {
-			return `${price_min} <`;
+			return `${budget_min} <`;
 		}
 
 		if (!hasMin && hasMax) {
-			return `< ${price_max}`;
+			return `< ${budget_max}`;
 		}
 
 		if (hasMin && hasMax) {
-			return `${price_min} - ${price_max}`;
+			return `${budget_min} - ${budget_max}`;
 		}
 
 		return null; // or '' if you prefer
@@ -231,12 +261,55 @@
 		// TEMP PLACEHOLDER
 		// todo make this, when profiles are in order.
 	}
-
 	function handleGrid() {
 		grid = !grid;
 		DisplaySettings.gridView = grid;
 		// console.log('in ProjectListPage, gridView:', DisplaySettings.gridView);
 	}
+	// Helper function to parse location string into individual parts
+	function parseLocationString(locationString: string): string[] {
+		if (!locationString) return [];
+		return locationString
+			.split(',')
+			.map((part) => part.trim())
+			.filter((part) => part !== '' && part.length > 0);
+	} // Helper function to handle location tag removal with hierarchical closing
+	function handleLocationTagRemoval(tagToRemove: string) {
+		const locationString = filterData.location || '';
+		const parts = locationString.split(',').map((part) => part.trim());
+
+		// The format is: cityArea,city,county (sentrum,kristiansand,agder)
+		// Find which position this tag is in
+		const tagIndex = parts.indexOf(tagToRemove);
+
+		if (tagIndex !== -1) {
+			// Hierarchical closing logic:
+			// - Closing city-area (index 0): only clear city-area
+			// - Closing city (index 1): clear city and city-area
+			// - Closing county (index 2): clear county, city, and city-area
+
+			if (tagIndex === 0) {
+				// Closing city-area: only clear position 0
+				parts[0] = '';
+			} else if (tagIndex === 1) {
+				// Closing city: clear city (1) and city-area (0)
+				parts[1] = '';
+				parts[0] = '';
+			} else if (tagIndex === 2) {
+				// Closing county: clear all
+				parts[2] = '';
+				parts[1] = '';
+				parts[0] = '';
+			}
+
+			// Rebuild the location string
+			filterData.location = parts.join(',');
+			onApply();
+		}
+	}
+
+	// console.log('PROJECTS: ', data.projects);
+	// console.log('^ PROJECTS ^');
 </script>
 
 <div class="project-list-page">
@@ -247,15 +320,15 @@
 			<div class="category-path">
 				<span>
 					<!-- todo: make this path consist of links -->
-					{displayedData.workfield ? `Oppdrag / ${displayedData.workfield}` : 'Oppdrag / '}
+					{displayedData.category ? `Oppdrag / ${displayedData.category}` : 'Oppdrag / '}
 				</span>
 			</div>
 
 			<div class="save-button"></div>
 		</div>
-
 		<!-- FILTER -->
-		<Filter {filterData} onApply={handleApply} {resetAll} />
+		<!-- <Filter {filterData} {onApply} {resetAll} /> -->
+		<Filter {filterData} {onApply} {resetAll} />
 	</div>
 
 	<!-- RIGHTSIDE -->
@@ -264,7 +337,7 @@
 		<div class="filter-header">
 			<div class="filter-tag-row">
 				<!-- FILTER DRAWER BUTTON -->
-				<Filter {filterData} onApply={handleApply} drawer {resetAll} />
+				<Filter {filterData} {onApply} drawer {resetAll} />
 				<!-- RESET BUTTON -->
 				<Button rounded size="small" label="Nullstill" onclick={resetAll} />
 				<!-- FILTER TAGS -->
@@ -272,16 +345,17 @@
 				{#if showResults}
 					<div class="filter-tags">
 						<!-- Price Range -->
-						{#if displayedData.price_min || displayedData.price_max}
+						{#if displayedData.budget_min || displayedData.budget_max}
 							<div class="filter-tag grey">
 								<button class="tag-left">
-									<span>{formatPriceRange(displayedData.price_min, displayedData.price_max)}</span>
+									<span>{formatPriceRange(displayedData.budget_min, displayedData.budget_max)}</span
+									>
 								</button>
 								<button
 									onclick={() => {
-										filterData.price_min = INITIAL_VALUES.price_min;
-										filterData.price_max = INITIAL_VALUES.price_max;
-										handleApply();
+										filterData.budget_min = INITIAL_VALUES.budget_min;
+										filterData.budget_max = INITIAL_VALUES.budget_max;
+										onApply();
 									}}
 									class="tag-right"
 								>
@@ -290,8 +364,20 @@
 							</div>
 						{/if}
 
+						<!-- Location Tags -->
+						{#each parseLocationString(displayedData.location) as locationTag}
+							<div class="filter-tag grey">
+								<button class="tag-left">
+									<span>{locationTag}</span>
+								</button>
+								<button onclick={() => handleLocationTagRemoval(locationTag)} class="tag-right">
+									×
+								</button>
+							</div>
+						{/each}
+
 						<!-- Other Filters -->
-						{#each ['job_poster', 'field_include', 'field_exclude', 'job_attributes_include', 'job_attributes_exclude'] as arrayKey}
+						{#each ['clientRole', 'experienceRequirements_include', 'experienceRequirements_exclude', 'jobAttributes_include', 'jobAttributes_exclude'] as arrayKey}
 							{#each displayedData[arrayKey] as tag}
 								<div
 									class="filter-tag {arrayKey.includes('include')
@@ -308,7 +394,7 @@
 											if (Array.isArray(filterData[arrayKey])) {
 												filterData[arrayKey] = filterData[arrayKey].filter((t) => t !== tag);
 											}
-											handleApply();
+											onApply();
 										}}
 										class="tag-right"
 									>
@@ -317,11 +403,10 @@
 								</div>
 							{/each}
 						{/each}
-
 						{#each Object.entries(displayedData) as [key, value]}
-							{#if !['job_poster', 'field_include', 'field_exclude', 'job_attributes_include', 'job_attributes_exclude', 'price_min', 'price_max'].includes(key)}
+							{#if !['clientRole', 'experienceRequirements_include', 'experienceRequirements_exclude', 'jobAttributes_include', 'jobAttributes_exclude', 'budget_min', 'budget_max', 'location'].includes(key)}
 								{#if Array.isArray(value) && value.length > 0}
-									<!-- Array filters (job_poster) -->
+									<!-- Array filters (clientRole) -->
 									{#each value as item}
 										<div class="filter-tag grey">
 											<button class="tag-left">
@@ -329,7 +414,7 @@
 											</button>
 											<button
 												onclick={() => {
-													handleApply();
+													onApply();
 												}}
 												class="tag-right"
 											>
@@ -346,7 +431,7 @@
 										<button
 											onclick={() => {
 												filterData[key] = INITIAL_VALUES[key];
-												handleApply();
+												onApply();
 											}}
 											class="tag-right"
 										>
@@ -403,17 +488,38 @@
 				</div>
 			</div>
 		</div>
+		<!-- {#if isFiltered}
+			displayedProjects={data.projects}
+		{:else}
+			displayedProjects={filteredData}
+		{/if} -->
+		<ProjectList
+			gridView={DisplaySettings.gridView}
+			sortBy={DisplaySettings.sortBy}
+			projects={displayedProjects}
+		/>
 
 		<!-- FILTER DISPLAY -->
-		{#if showResults}
+
+		<!-- Raw Filter Data Display Section -->
+		<!-- > FOR TESTING: FILTER -->
+		<!-- {#if showResults}
+			<div class="filter-data-display">
+				<h3>Filter Data (Raw):</h3>
+				<pre>{JSON.stringify(filterData, null, 2)}</pre>
+			</div>
+
 			<div class="results">
 				<p>Filter Results:</p>
 				{#each activeFilterTags as key}
 					<div class="">
 						<span>
 							{#if key === 'price_min'}
-								{#if formatPriceRange(displayedData.price_min, displayedData.price_max)}
-									Price: {formatPriceRange(displayedData.price_min, displayedData.price_max)}
+								{#if formatPriceRange(String(displayedData.price_min), String(displayedData.price_max))}
+									Price: {formatPriceRange(
+										String(displayedData.price_min),
+										String(displayedData.price_max)
+									)}
 								{/if}
 							{:else if displayedData[key]}
 								{key.charAt(0).toUpperCase() + key.slice(1)}: {displayedData[key]}
@@ -432,13 +538,7 @@
 					</span>
 				</div>
 			{/each}
-		</div>
-
-		<ProjectList
-			gridView={DisplaySettings.gridView}
-			sortBy={DisplaySettings.sortBy}
-			projects={data.projects}
-		/>
+		</div> -->
 	</div>
 </div>
 
@@ -496,5 +596,34 @@
 		width: 100%;
 		height: 100%;
 		object-fit: contain;
+	}
+
+	/* New styles for filter data display */
+	.filter-data-display {
+		margin: 1rem 0;
+		padding: 1rem;
+		background-color: #f8f9fa;
+		border-radius: 0.5rem;
+		border: 1px solid #e9ecef;
+	}
+
+	.filter-data-display h3 {
+		margin-top: 0;
+		margin-bottom: 0.5rem;
+		font-size: 1.1rem;
+		color: #343a40;
+	}
+
+	.filter-data-display pre {
+		margin: 0;
+		white-space: pre-wrap;
+		font-family: monospace;
+		font-size: 0.9rem;
+		background-color: #ffffff;
+		padding: 0.75rem;
+		border-radius: 0.25rem;
+		border: 1px solid #ced4da;
+		overflow: auto;
+		max-height: 300px;
 	}
 </style>

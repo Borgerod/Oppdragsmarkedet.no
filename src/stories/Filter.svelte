@@ -37,18 +37,74 @@
 	import Button from './Button.svelte';
 	import { Drawer } from 'vaul-svelte';
 	import './forms/form.css';
-
 	/**
-   * @typedef {Object} Props
-   * @property {Object} [filterData] the data object containing all filter values.
-   * @property {function} [onApply] the apply buttons functionality, handled in parent. 
-   * @property {boolean} [drawer] integrated vaul-svelte drawer component.
-   * @property {function} [resetAll] function to reset all filter values.
-	
-   */
-
+	 * @typedef {Object} Props
+	 * @property {Object} [filterData] the data object containing all filter values.
+	 * @property {function} [onApply] the apply buttons functionality, handled in parent.
+	 * @property {boolean} [drawer] integrated vaul-svelte drawer component.
+	 * @property {function} [resetAll] function to reset all filter values.
+	 */
 	/** @type {Props} */
-	const { filterData = {}, onApply, drawer = false, resetAll } = $props();
+	let { filterData = {}, onApply, drawer = false, resetAll } = $props();
+
+	// Parse the location string into parts
+	function parseLocation(locationString: string) {
+		if (!locationString || locationString === ',,') {
+			return { countyValue: '', cityValue: '', cityAreaValue: '' };
+		}
+		const parts = locationString.split(',');
+		return {
+			cityAreaValue: parts[0] || '',
+			cityValue: parts[1] || '',
+			countyValue: parts[2] || ''
+		};
+	}
+
+	// Initialize location state variables
+	let countyValue = $state('');
+	let cityValue = $state('');
+	let cityAreaValue = $state('');
+
+	// Initialize location values on load and update when filterData.location changes (e.g., on reset)
+	$effect(() => {
+		const parts = parseLocation(filterData.location);
+		countyValue = parts.countyValue;
+		cityValue = parts.cityValue;
+		cityAreaValue = parts.cityAreaValue;
+	});
+
+	// Update filterData.location when individual parts change
+	function updateLocation() {
+		const newLocation = `${cityAreaValue},${cityValue},${countyValue}`;
+		if (newLocation === ',,') {
+			filterData.location = ',,';
+		} else {
+			filterData.location = newLocation;
+		}
+	}
+
+	// Reset dependent dropdowns when parent selection changes
+	$effect(() => {
+		// When county changes, reset city and city-area
+		if (countyValue === '') {
+			cityValue = '';
+			cityAreaValue = '';
+		}
+		updateLocation();
+	});
+
+	$effect(() => {
+		// When city changes, reset city-area
+		if (cityValue === '') {
+			cityAreaValue = '';
+		}
+		updateLocation();
+	});
+
+	$effect(() => {
+		// Update location when city area changes
+		updateLocation();
+	});
 
 	// Function to handle apply action (avoids reference to potentially undefined handleApply)
 	function handleApplyAction() {
@@ -58,20 +114,31 @@
 
 {#snippet Filter()}
 	<div class="filter-form">
-		<TextField bind:value={filterData.name} />
+		<TextField bind:value={filterData.textSearch} placeholder="Søk på oppdrag" icon="search" />
+		<div class="location-container">
+			<h3>Sted</h3>
+			<div class="location-dropdowns">
+				<DropDown bind:value={countyValue} type="county" label="Fylke" />
+				<div class="dropdown-wrapper" class:hidden={!countyValue}>
+					<DropDown bind:value={cityValue} type="city" parent={countyValue} label="Kommune" />
+				</div>
+				<div class="dropdown-wrapper" class:hidden={!cityValue}>
+					<DropDown bind:value={cityAreaValue} type="city-area" parent={cityValue} label="Område" />
+				</div>
+			</div>
+		</div>
 
-		<DropDown bind:value={filterData.county} type="county" />
-		<DropDown bind:value={filterData.workfield} type="workfield" />
+		<DropDown bind:value={filterData.category} type="category" />
 
-		<PriceRange bind:min={filterData.price_min} bind:max={filterData.price_max} />
+		<PriceRange bind:min={filterData.budget_min} bind:max={filterData.budget_max} />
 		<div>
 			<h3>Oppdragsgiver</h3>
 
 			<Tags
 				tagIntent="grey"
-				tagType="job_poster"
-				selectedTags={filterData.job_poster}
-				onTagChange={(tags: string[]) => (filterData.job_poster = tags)}
+				tagType="clientRole"
+				selectedTags={filterData.clientRole}
+				onTagChange={(tags: string[]) => (filterData.clientRole = tags)}
 				showSearch={false}
 				size="s"
 				row={true}
@@ -82,10 +149,10 @@
 			tooltip_content="Velg hvilke erfaringer som skal inkluderes eller ekskluderes"
 		>
 			<Tabs
-				includeTags={filterData.field_include}
-				excludeTags={filterData.field_exclude}
-				onIncludeTagsChange={(tags: string[]) => (filterData.field_include = tags)}
-				onExcludeTagsChange={(tags: string[]) => (filterData.field_exclude = tags)}
+				includeTags={filterData.experienceRequirements_include}
+				excludeTags={filterData.experienceRequirements_exclude}
+				onIncludeTagsChange={(tags: string[]) => (filterData.experienceRequirements_include = tags)}
+				onExcludeTagsChange={(tags: string[]) => (filterData.experienceRequirements_exclude = tags)}
 			>
 				<div slot="inkluder" let:includeTags let:onIncludeTagsChange>
 					<Tags
@@ -111,10 +178,10 @@
 			tooltip_content="inkluder eller ekskluder oppdrag som inneholder disse taggene"
 		>
 			<Tabs
-				includeTags={filterData.job_attributes_include}
-				excludeTags={filterData.job_attributes_exclude}
-				onIncludeTagsChange={(tags: string[]) => (filterData.job_attributes_include = tags)}
-				onExcludeTagsChange={(tags: string[]) => (filterData.job_attributes_exclude = tags)}
+				includeTags={filterData.jobAttributes_include}
+				excludeTags={filterData.jobAttributes_exclude}
+				onIncludeTagsChange={(tags: string[]) => (filterData.jobAttributes_include = tags)}
+				onExcludeTagsChange={(tags: string[]) => (filterData.jobAttributes_exclude = tags)}
 			>
 				<div slot="inkluder" let:includeTags let:onIncludeTagsChange>
 					<Tags
@@ -150,7 +217,7 @@
 {#if drawer}
 	<!-- filter-drawer controls if drawer is displayed based on window size -->
 
-	<!-- <div class="filter-button-container"> -->
+	<!-- <div class="filter-button-console"> -->
 	<div class="filter-button">
 		<Drawer.Root>
 			<Drawer.Trigger
@@ -171,7 +238,7 @@
 					"
 				>
 					<div class="flex flex-1 flex-col rounded-t-[10px] p-4">
-						<div class="mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-zinc-300" />
+						<div class="mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-zinc-300"></div>
 						<Drawer.Title class="mb-4 font-medium"
 							><div class="filter-header-drawer">
 								<div></div>
@@ -264,12 +331,36 @@
 		justify-content: center;
 		height: 100%;
 	}
-
 	.reset-container {
 		height: 100%;
 		display: flex;
 		align-items: end;
 		align-items: center;
 		justify-content: end;
+	}
+
+	.location-container {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	.location-dropdowns {
+		display: grid;
+		gap: 0.5rem;
+	}
+
+	.dropdown-wrapper {
+		transition:
+			opacity 0.2s ease-in-out,
+			max-height 0.2s ease-in-out;
+		overflow: hidden;
+	}
+
+	.dropdown-wrapper.hidden {
+		opacity: 0;
+		max-height: 0;
+		margin: 0;
+		padding: 0;
+		pointer-events: none;
 	}
 </style>

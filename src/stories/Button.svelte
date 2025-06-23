@@ -26,6 +26,7 @@
    * @property {string} label Button contents
    * @property {string} icon Button contents
    * @property {() => void} [onclick] The onclick event handler
+   * 
    * @property {string} [style] potentially be the replacement for primary switches between: [primary, secondary, hollow, neomorphic]
    * @property {boolean} [wide] potentially be the replacement for primary switches between: [primary, secondary, hollow, neomorphic]
    * @property {boolean} [rounded] potentially be the replacement for primary switches between: [primary, secondary, hollow, neomorphic]
@@ -47,7 +48,7 @@
 		size = 'medium',
 		label = undefined,
 		icon = undefined,
-		onclick,
+		onclick = undefined,
 		style = 'secondary',
 		type = 'button' as 'button' | 'submit' | 'reset'
 	} = $props();
