@@ -33,4 +33,10 @@
 		display: flex;
 		justify-content: center;
 	}
+
+	@media (max-width: 530px) {
+		.content {
+			padding: 0;
+		}
+	}
 </style>
