@@ -27,7 +27,10 @@
 .tag {
 	padding: 1px 10px;
 	border-radius: 1rem;
-	background-color: var(--shadow-inv);
+	/* background-color: var(--shadow-inv); */
+	/* background-color: var(--secondary-dark-very-translucent); */
+	background-color: var(--secondary-very-translucent);
+	
 	display: flex;
 	flex-wrap: nowrap;
 	font-size: small;

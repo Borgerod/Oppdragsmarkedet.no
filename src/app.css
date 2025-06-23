@@ -1,11 +1,7 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 @import 'tailwindcss';
 @import './color_scheme.css';
-
-
-h1 {
-
-}
 
 :root{
 	font-family: Manrope, sans-serif;
@@ -23,6 +19,34 @@ h1 {
 	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 	
 }
+
+.icon{
+	/* default icons */
+	color:var(--secondary)
+}
+.icon.dark-accent{
+/* icons in dark-accent color */
+color:var(--accent-dark)
+}
+
+/* Material Symbols font variation settings */
+.material-symbols-outlined {
+	font-variation-settings:
+		'FILL' 0,
+		'wght' 400,
+		'GRAD' 0,
+		'opsz' 24;
+}
+
+/* Icon color variations - use higher specificity to override */
+/* .material-symbols-outlined.icon {
+	color: var(--secondary) !important;
+}
+
+.material-symbols-outlined.icon.dark-accent {
+	color: var(--accent-dark) !important;
+} */
+
 
 :root{
 	background-color: var(--primary-bg);
@@ -105,7 +129,10 @@ title{
 	  background: #3793fd !important;
 	}
   } */
-
+:root{
+	--w-font-size-xs: 1.2rem;
+	--w-font-size-s:1.4rem;
+}
 
 span{
 	color: var(--primary);
