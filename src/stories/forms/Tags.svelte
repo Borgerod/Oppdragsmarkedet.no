@@ -4,6 +4,12 @@
 	import './form.css';
 	let searchQuery = $state('');
 	let showAllTags = $state(false);
+	import {
+		// fieldTags,
+		experienceRequirementsTags,
+		jobAttributesTags,
+		clientRoleTags
+	} from '$lib/data/TagData';
 
 	const {
 		tagIntent = 'include',
@@ -24,68 +30,34 @@
 		}
 	}
 	let row_or_grid = rowOrGrid();
-	const fieldTags = [
-		'asfaltering',
-		'brønnboring',
-		'drenering',
-		'radon',
-		'sprenging',
-		'graving',
-		'gulv',
-		'glassarbeid',
-		'termografering',
-		'betong',
-		'vanntetting',
-		'taktekking',
-		'steinlegger',
-		'snørydding',
-		'hagestell'
-	];
-
-	const jobAttributesTags = [
-		'stort_prosjekt',
-		'lite_prosjekt',
-		'enmannsjobb',
-		'flermannsjobb',
-		'haster',
-		'innejobb',
-		'utejobb',
-		'trapp',
-		'kjøretøy_tilgang'
-	];
-
-	const jobPosterTags = ['privat', 'bedrift', 'statlig'];
 
 	const allTags = $derived(() => {
 		switch (tagType) {
 			case 'field':
-				return fieldTags;
+				return experienceRequirementsTags;
 			case 'job_attributes':
 				return jobAttributesTags;
-			case 'job_poster':
-				return jobPosterTags;
+			case 'clientRole':
+				return clientRoleTags;
 			default:
-				return []; // Ensure to return an empty array for unsupported tag types
+				return [];
 		}
 	});
 
 	const filteredTags = $derived(
-		allTags().filter((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+		allTags().filter((tag) => tag.label.toLowerCase().includes(searchQuery.toLowerCase()))
 	);
 
-	function toggleTag(tag: string) {
-		const updatedTags = selectedTags.includes(tag)
-			? selectedTags.filter((t) => t !== tag)
-			: [...selectedTags, tag];
+	function toggleTag(tagValue: string) {
+		const updatedTags = selectedTags.includes(tagValue)
+			? selectedTags.filter((t) => t !== tagValue)
+			: [...selectedTags, tagValue];
 		onTagChange(updatedTags);
 	}
 
-	function handleTagClick(tag: string) {
-		// TEMP Placeholder
-		// TODO [ ]: add functionality
-		// Navigating to search with tag
+	function handleTagClick(tagValue: string) {
 		if (display === 'true') {
-			// console.log(`Navigating to search with tag: ${tag}`);
+			// Placeholder for navigation or other logic
 		}
 	}
 </script>
@@ -98,13 +70,13 @@
 		{#each filteredTags as tag}
 			<button
 				class="tag {display === 'true' ? 'profile' : ''} 
-				 {selectedTags.includes(tag) && display !== 'true' ? 'selected' : ''}
+				 {selectedTags.includes(tag.value) && display !== 'true' ? 'selected' : ''}
 				 {tagIntent} size-{size}"
-				onclick={() => (display === 'true' ? handleTagClick(tag) : toggleTag(tag))}
+				onclick={() => (display === 'true' ? handleTagClick(tag.value) : toggleTag(tag.value))}
 				disabled={display === 'true'}
 			>
 				<span class="label">
-					{tag.replace(/_/g, ' ')}
+					{tag.label}
 				</span>
 			</button>
 		{/each}
@@ -184,13 +156,51 @@
 		display: flex;
 		justify-content: center;
 	}
+
+	.tag.grey {
+		/* background-color: var(--secondary-very-translucent); */
+		/* background-color: var(--secondary-dark-very-translucent); */
+		/* background-color: #dedee3; */
+		color: #1b1b1f;
+		color: black;
+		border-color: transparent;
+		filter: opacity(80%);
+	}
+
 	.tag.grey:hover,
 	.tag.grey.selected:hover {
-		border-color: var(--secondary);
+		/* border-color: var(--secondary); */
+		background-color: #cacad1;
+		--secondary-very-translucent: color-mix(
+			in srgb,
+			var(--secondary) 20%,
+			transparent
+		); /* Dynamically derived translucent color */
+
+		background-color: color-mix(
+			in srgb,
+			var(--secondary) 20%,
+			transparent
+		); /* Dynamically derived translucent color */
+
+		filter: opacity(100%);
+		color: #1b1b1f;
+		/* background-color: #cacad1; */
+		/* filter: opacity(80%); */
 	}
+
 	.tag.grey.selected {
-		background-color: color-mix(in srgb, var(--secondary) 20%, transparent) !important;
+		/* background-color: var(--shadow-inv); */
+		/* background-color: color-mix(in srgb, var(--secondary) 20%, transparent) !important; */
+		background-color: color-mix(in srgb, var(--secondary-dark) 15%, transparent);
+		/* background-color: var(--secondary-very-translucent); */
+		background-color: #dedee3;
+		/* color: #1b1b1f; */
+		/* background-color: #cacad1; */
+		border-color: var(--secondary);
 		cursor: pointer;
+		color: black;
+		filter: opacity(100%);
 	}
 
 	.tag.size-m {
@@ -203,27 +213,62 @@
 	.tag.size-s {
 		padding: 0;
 	}
-
+	.tag.include,
+	.tag.exclude {
+		/* border-color: transparent; */
+		filter: opacity(85%);
+	}
 	.tag.include.selected {
 		background: #e8f5e9;
 		border-color: #4caf50;
 		color: black;
+		color: #2c4b2e;
+		background: #dcefdd;
+		filter: opacity(100%);
 	}
 
 	.tag.exclude.selected {
 		background: #ffebee;
+		background: #ffebee8f;
 		border-color: #f44336;
+		/* border-color: #832121; */
+		background: #ffdbe1b2;
 		color: black;
+		filter: opacity(100%);
 	}
 
 	.tag.include:hover {
-		border-color: #4caf50;
-		color: black;
-	}
+		/* color: black; */
+		/* border-color: #2c4b2e; */
+		/* border-color: transparent; */
+		/* filter: opacity(100%); */
+		/* border-color: #4caf50; */
+		/* color: #2c4b2e; */
+		/* background-color: #c4dac6; */
+		/* filter: opacity(80%); */
+		/* background: #e8f5e9; */
+		/* border-color: #337536; */
+		/* background-color: #cacad1; */
+		/* border-color: var(--secondary); */
+		/* border-color: #4caf50; */
+		filter: opacity(100%);
+		/* border-color: #4caf50; */
 
+		/* color: #2c4b2e;
+		background-color: #d3ebd5;
+		color: #2c4b2e;
+		background-color: #c4dac6; */
+	}
+	.tag.exclude.selected:hover,
+	.tag.include.selected:hover {
+		/* border-color: var(--secondary); */
+		/* border-color: #337435; */
+		filter: opacity(80%);
+	}
 	.tag.exclude:hover {
-		border-color: #f44336;
-		color: black;
+		/* border-color: #f44336; */
+		/* color: black; */
+		filter: opacity(100%);
 	}
 
 	.toggle-tags {

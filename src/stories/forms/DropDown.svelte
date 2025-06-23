@@ -2,44 +2,39 @@
 
 <script lang="ts">
 	import './form.css';
+	import {
+		counties,
+		getCitiesForCounty,
+		getCityAreasForCity,
+		workfields,
+		categories,
+		sortby
+	} from '$lib/data/DropDownOptions';
 
-	let { value = $bindable(''), type = 'county', options = [], ...props } = $props();
+	let {
+		value = $bindable(''),
+		type = 'county',
+		options = [],
+		label = '',
+		parent = '', // Parent value (county for city, city for city-area)
+		...props
+	} = $props();
+
 	let isOpen = $state(false); // Track dropdown open state
-
-	const staticWorkfields = [
-		'Blikkenslager',
-		'Elektriker',
-		'Entreprenør',
-		'Maler',
-		'Maskinentreprenør',
-		'Murer',
-		'Rengjøring',
-		'Rørlegger',
-		'Snekker',
-		'Metallarbeider',
-		'Anleggsgartner',
-		'River',
-		'Skadedyr',
-		'Sveiser',
-		'Transport',
-		'Store prosjekter'
-	];
-	const sortby = [
-		'Mest relevant',
-		'Nærmest',
-		'Publisert (ny til gammel)',
-		'Publisert (gammel til ny)',
-		'Pris (høy til lav)',
-		'Pris (lav til høy)',
-		'Mest populær',
-		'Minst oopulær'
-	];
 
 	$effect(() => {
 		if (type === 'county') {
-			options = ['Oslo', 'Viken', 'Vestland', 'Trøndelag'];
+			options = counties;
+		} else if (type === 'city') {
+			// Filter cities based on selected county
+			options = parent ? getCitiesForCounty(parent) : [];
+		} else if (type === 'city-area') {
+			// Filter city areas based on selected city
+			options = parent ? getCityAreasForCity(parent) : [];
 		} else if (type === 'workfield') {
-			options = staticWorkfields;
+			options = workfields;
+		} else if (type === 'category') {
+			options = categories;
 		} else if (type === 'sortby') {
 			options = sortby;
 		}
@@ -62,7 +57,17 @@
 <div class="select-wrapper">
 	<select bind:value class="field dropdown" onclick={handleClick} onblur={handleBlur}>
 		<option value="" disabled selected hidden>
-			{type === 'county' ? 'Velg fylke' : 'Velg fagfelt'}
+			{#if type === 'county'}
+				{label || 'Velg fylke'}
+			{:else if type === 'city'}
+				{label || 'Velg by'}
+			{:else if type === 'city-area'}
+				{label || 'Velg område'}
+			{:else if type === 'workfield'}
+				{label || 'Velg fagfelt'}
+			{:else}
+				{label || 'Velg'}
+			{/if}
 		</option>
 		{#each options as option}
 			<option value={option}>{option}</option>

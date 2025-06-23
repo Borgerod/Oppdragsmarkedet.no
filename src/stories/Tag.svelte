@@ -26,7 +26,7 @@
 	const {
 		label = undefined,
 		color = 'button' as 'green' | 'red' | 'grey' | 'accent' | 'darkgrey',
-		textColor = 'button' as 'black' | 'white',
+		textColor = 'button' as 'black' | 'white' | 'grey',
 		shadow = false,
 		size = 'medium'
 	} = $props();

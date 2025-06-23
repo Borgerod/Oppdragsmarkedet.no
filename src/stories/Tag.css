@@ -7,7 +7,7 @@
 	font-size: small;
 	align-items: center;
 	justify-content: center;
-
+font-weight: 100;
 
 }
 	.tag.medium {
@@ -21,6 +21,7 @@
 	min-width: 50px;
 	max-width: 200px;
 	height: 20px;
+
 	}
 
 .tag.shadow {
@@ -44,21 +45,24 @@
 
 
 .tag.green{
-	background-color: var(--accent-very-translucent);
-	background-color: var(--accent-translucent);
+	/* background-color: var(--accent-very-translucent); */
+	/* background-color: var(--accent-translucent); */
+	background-color: var(--accent-little-translucent);
 }
 .tag.red{
 	background-color: var(--negative-accent-translucent);
 }
 .tag.grey{
 	background-color: var(--secondary-very-translucent);	
-	background-color: var(--secondary-translucent);	
-	background-color: var(--secondary-medium-translucent);	
+	/* background-color: var(--secondary-translucent);	 */
+	/* background-color: var(--secondary-medium-translucent);	 */
+	/* background-color: var(--shadow-inv); */
+	
 }
 
 .tag.accent{
-	background-color: var(--accent-medium);
-	font-weight: 100;
+	background-color: var(--accent-translucent);
+	background-color: var(--accent-little-translucent);	
 }
  .tag.darkgrey{
 	background-color: var(--shadow-darkest);	
@@ -70,3 +74,37 @@
 .tag.text-black{
 	color: var(--primary);
 }
+
+.tag.text-grey{
+	color: var(--primary-brighter);
+}
+
+
+
+@media (max-width: 530px) {
+	.tag, .tag.small  {
+		font-size: smaller;
+			height: 18px;
+	/* min-height: 15px !important;
+	max-height: 20px !important; */
+	}
+}
+
+
+
+
+
+/* XXXXXXXXXXXXXXXXXXXXXXXXXXXX */
+	/* .tag {
+		padding: 1px 10px;
+		border-radius: 1rem;
+		background-color: var(--shadow-inv);
+		display: flex;
+		flex-wrap: nowrap;
+		font-size: small;
+		align-items: center;
+	}
+
+	.tag.green {
+		background: rgba(from var(--accent) r g b / 50%);
+	} */
