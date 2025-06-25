@@ -101,11 +101,10 @@
 </footer>
 
 <style>
-	.options {
+	/* .options {
 		color: var(--primary);
 	}
 
-	/* Add hover effect for select options */
 	option:hover,
 	select option:hover,
 	select option:focus,
@@ -114,7 +113,6 @@
 		color: white !important;
 	}
 
-	/* Fix for some browsers that don't support :hover on options */
 	select:focus option:checked {
 		background-color: var(--accent-bright) !important;
 		color: white !important;
@@ -136,7 +134,6 @@
 		color: var(--secondary-bg);
 	}
 
-	/* Add hover effect for the icon in the select dropdown */
 	.pointer-events-none {
 		transition: color 0.2s ease;
 	}
@@ -158,11 +155,9 @@
 		font-size: 1rem;
 		justify-content: space-around;
 		padding: 2vw 0;
-		/* margin-top: 10px; */
 	}
 
 	footer div {
-		/* padding: 1rem; */
 		text-align: center;
 	}
 	.language-dark-mode-container div {
@@ -174,7 +169,7 @@
 		flex-direction: row;
 		column-gap: 2rem;
 		width: 100%;
-		justify-content: space-between;
+		justify-content: center;
 	}
 
 	.col {
@@ -202,7 +197,6 @@
 		align-items: center;
 	}
 
-	/* Responsive adjustments */
 	@media (max-width: 768px) {
 		footer .row {
 			flex-direction: column;
@@ -236,13 +230,13 @@
 	footer {
 		padding: 2rem 3rem 1rem 3rem;
 		width: 100%;
-		margin-top: auto; /* This helps push the footer to the bottom */
+		margin-top: auto; 
 		justify-content: space-around;
 		justify-content: space-evenly;
 		background: var(--third-bg);
 		color: #efefef;
 		display: flex;
-		position: relative; /* Add this to make absolute positioning work correctly */
+		position: relative;
 	}
 
 	@media (max-width: 768px) {
@@ -257,7 +251,7 @@
 	}
 
 	.col a {
-		/* padding: 0.25rem; */
+	
 		height: 20px;
 		width: 20px;
 		display: block;
@@ -276,7 +270,6 @@
 
 	.url-list a:hover {
 		color: var(--accent-bright);
-		/* background-color: var(--accent-bright); */
 	}
 
 	form input {
@@ -308,7 +301,6 @@
 	}
 
 	div.social-icons {
-		/* padding-top: 1vw; */
 		display: flex;
 		justify-content: space-around;
 		justify-content: center;
@@ -319,5 +311,5 @@
 	.language-select:hover {
 		color: var(--accent-bright);
 		border-color: var(--accent-bright);
-	}
+	} */
 </style>
