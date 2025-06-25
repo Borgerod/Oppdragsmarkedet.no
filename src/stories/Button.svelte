@@ -20,6 +20,7 @@
    * @property {boolean} [dark_bg] Is this the principal call to action on the page?
    * @property {boolean} [osl] Is this the principal call to action on the page?
    * @property {boolean} [osloff] Is this the principal call to action on the page?
+   * @property {boolean} [iconLeft] Is this the principal call to action on the page?
    * @property {string} [backgroundColor] What background color to use
    * @property {string} [parentColor] What background color the parent has
    * @property {'small' | 'medium' | 'large'} [size] How large should the button be?
@@ -42,6 +43,7 @@
 		// inverted = false,
 		// osloff = false,
 		osl = false,
+		iconLeft = false,
 		dark_bg = false,
 		primary = false,
 		backgroundColor = '',
@@ -59,6 +61,7 @@
 	class={['storybook-button', `storybook-button--${size}`].join(' ')}
 	id={wide ? 'wide' : ''}
 	class:storybook-button--primary={primary}
+	class:storybook-button--iconLeft={iconLeft}
 	class:storybook-button--hollow={!primary && hollow}
 	class:storybook-button--secondary={!primary && !hollow}
 	class:storybook-button--dark_bg={!primary && !hollow && dark_bg}
@@ -69,6 +72,9 @@
 >
 	{#if icon}
 		<i class={`fa ${icon}`} aria-hidden="true"></i>
+	{/if}
+	{#if $$slots.icon}
+		<slot name="icon"></slot>
 	{/if}
 	{label}
 </button>

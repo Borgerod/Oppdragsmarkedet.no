@@ -331,6 +331,12 @@
 	/* margin:0 4rem; */
   }
   
+  .storybook-button--iconLeft {
+padding-left: 0;
+display: flex;
+justify-content: space-around
+  }
+  
   .storybook-button .wide{
 	width: 100%;
   }
