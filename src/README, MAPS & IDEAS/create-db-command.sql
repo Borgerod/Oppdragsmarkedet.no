@@ -17,7 +17,7 @@ ALTER TABLE vendor_profiles ADD COLUMN org_validated_at TIMESTAMPTZ;
 -- Create tables
 -- Users table - core user information
 
-CREATE TABLE users (
+CREATE TABLE user (
     id TEXT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE CHECK (LENGTH(username) >= 3 AND username ~ '^[a-zA-Z0-9_]+$'),
     password_hash VARCHAR(255) NOT NULL,
@@ -39,14 +39,14 @@ CREATE TABLE users (
 -- Sessions table
 CREATE TABLE sessions (
     id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL REFERENCES users(id),
+    user_id TEXT NOT NULL REFERENCES user(id),
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
 -- User profile data - personal information
 CREATE TABLE user_profiles (
     id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL REFERENCES users(id),
+    user_id TEXT NOT NULL REFERENCES user(id),
     first_name TEXT,
     last_name TEXT,
      first_name VARCHAR(100) NOT NULL CHECK (
@@ -91,8 +91,8 @@ CREATE TABLE user_profiles (
 -- Projects table
 CREATE TABLE projects (
     id TEXT PRIMARY KEY,
-    client_id TEXT NOT NULL REFERENCES users(id),
-    vendor_id TEXT REFERENCES users(id),
+    client_id TEXT NOT NULL REFERENCES user(id),
+    vendor_id TEXT REFERENCES user(id),
     
     -- Project details
     title TEXT NOT NULL,
@@ -137,7 +137,7 @@ CREATE TABLE projects (
 -- Vendor profile extensions
 CREATE TABLE vendor_profiles (
     id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL REFERENCES users(id),
+    user_id TEXT NOT NULL REFERENCES user(id),
     org_number org_number NOT NULL UNIQUE,
     company_name TEXT,
     fields_of_work JSON,
@@ -153,7 +153,7 @@ CREATE TABLE vendor_profiles (
 -- Social media links
 CREATE TABLE social_media (
     id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL REFERENCES users(id),
+    user_id TEXT NOT NULL REFERENCES user(id),
     facebook VARCHAR(2048) CHECK (
         facebook ~* '^https?://(www\.)?facebook\.com(/.*)?$'
         ),
@@ -182,7 +182,7 @@ CREATE TABLE social_media (
 -- CREATE TABLE project_favorites (
 CREATE TABLE favorite_projects (
     id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL REFERENCES users(id),
+    user_id TEXT NOT NULL REFERENCES user(id),
     project_id TEXT NOT NULL REFERENCES projects(id),
     date_saved TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
@@ -195,7 +195,7 @@ url VARCHAR(2048) CHECK (
 -- Saved search filters
 CREATE TABLE saved_filters (
     id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL REFERENCES users(id),
+    user_id TEXT NOT NULL REFERENCES user(id),
     save_name TEXT,
     url VARCHAR(2048) CHECK (
     url ~* '^https?://(www\.)?oppdragsmarkedet\.no(/.*)?$'
@@ -206,15 +206,15 @@ CREATE TABLE saved_filters (
 -- Followed clients
 CREATE TABLE followed_clients (
     id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL REFERENCES users(id),
-    client_id TEXT NOT NULL REFERENCES users(id),
+    user_id TEXT NOT NULL REFERENCES user(id),
+    client_id TEXT NOT NULL REFERENCES user(id),
     date_saved TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Wallet information
 CREATE TABLE wallets (
     id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL REFERENCES users(id),
+    user_id TEXT NOT NULL REFERENCES user(id),
     balance INTEGER DEFAULT 0,
     currency TEXT DEFAULT 'NOK',
     is_balance_valid BOOLEAN DEFAULT TRUE
@@ -224,7 +224,7 @@ CREATE TABLE wallets (
 CREATE TABLE financial_transactions (
     id TEXT PRIMARY KEY,
     wallet_id TEXT NOT NULL REFERENCES wallets(id),
-    user_id TEXT NOT NULL REFERENCES users(id),
+    user_id TEXT NOT NULL REFERENCES user(id),
     transaction_type TEXT NOT NULL,
     amount INTEGER NOT NULL,
     currency TEXT DEFAULT 'NOK',
@@ -239,8 +239,8 @@ CREATE TABLE wallet_transactions (
     id TEXT PRIMARY KEY,
     sender_wallet_id TEXT NOT NULL REFERENCES wallets(id),
     receiver_wallet_id TEXT NOT NULL REFERENCES wallets(id),
-    sender_id TEXT NOT NULL REFERENCES users(id),
-    receiver_id TEXT NOT NULL REFERENCES users(id),
+    sender_id TEXT NOT NULL REFERENCES user(id),
+    receiver_id TEXT NOT NULL REFERENCES user(id),
     amount INTEGER NOT NULL,
     currency TEXT DEFAULT 'NOK',
     status TEXT NOT NULL,
@@ -253,7 +253,7 @@ CREATE TABLE wallet_transactions (
 -- Financial statistics
 CREATE TABLE financial_stats (
     id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL REFERENCES users(id),
+    user_id TEXT NOT NULL REFERENCES user(id),
     total_earned INTEGER DEFAULT 0,
     total_spent INTEGER DEFAULT 0,
     average_project_value INTEGER,
