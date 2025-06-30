@@ -32,7 +32,8 @@ admin_info.txt
 # Folders
 **/deprecated/
 **/_deprecated/
-**/demo
+**/demo/
+**/lucia/
 
 # src
 test.svelte
