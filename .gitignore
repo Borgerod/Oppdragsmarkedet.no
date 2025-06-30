@@ -28,13 +28,18 @@ vite.config.ts.timestamp-*
 
 admin_info.txt
 
+
+# Folders
+**/deprecated/
+**/_deprecated/
+
 # src
 test.svelte
-deprecated/
-src/routes/deprecated/
-src/routes/depricated/home.svelte
-src/routes/depricated/TestComponent.svelte
-src/routes/depricated/userList.svelte
 src/routes/db-test/commands db structure.txt
-src/lib/server/db/ignore/fixed-relations.js
-fixed-relations.js
+# deprecated/
+# src/routes/deprecated/
+# src/routes/depricated/home.svelte
+# src/routes/depricated/TestComponent.svelte
+# src/routes/depricated/userList.svelte
+# src/lib/server/db/ignore/fixed-relations.js
+# fixed-relations.js
