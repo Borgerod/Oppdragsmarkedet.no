@@ -7,12 +7,12 @@
 
 <div class="db-management">
 	<h2>Database Management</h2>
-	<div class="users">
-		<p>{$inspect(data.users)}</p>
-		{#if data.users}
+	<div class="user">
+		<p>{$inspect(data.user)}</p>
+		{#if data.user}
 			<div class="result-section">
 				<h4>Users</h4>
-				<pre>{JSON.stringify(data.users, null, 2)}</pre>
+				<pre>{JSON.stringify(data.user, null, 2)}</pre>
 			</div>
 		{/if}
 
@@ -71,7 +71,7 @@
 		margin: 0 auto;
 		padding: 2rem;
 	}
-	.users,
+	.user,
 	.user-profiles,
 	.projects {
 		margin-bottom: 3rem;

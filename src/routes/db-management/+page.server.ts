@@ -9,11 +9,11 @@ import type { Actions } from './$types';
 import { fail as kitFail } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
-	const users = await db.select().from(schema.users);
+	const user = await db.select().from(schema.user);
 	const userProfiles = await db.select().from(schema.userProfiles);
 	const projects = await db.select().from(schema.projects);
 	return {
-		users: users || null,
+		user: user || null,
 		userProfiles: userProfiles || null,
 		projects: projects || null
 	};
@@ -23,10 +23,10 @@ function fail(status: number, data: Record<string, any>): ReturnType<typeof kitF
 	return kitFail(status, data);
 }
 
-type NewUser = typeof schema.users.$inferInsert;
+type NewUser = typeof schema.user.$inferInsert;
 
 const insertUser = async (user: NewUser) => {
-	return db.insert(schema.users).values(user);
+	return db.insert(schema.user).values(user);
 };
 
 type NewUserProfile = typeof schema.userProfiles.$inferInsert;
@@ -132,7 +132,7 @@ export const actions = {
 			await db.transaction(async (tx) => {
 				const results = [];
 				for (const data of cleanedData) {
-					const inserted = await tx.insert(schema.users).values(data).returning();
+					const inserted = await tx.insert(schema.user).values(data).returning();
 					results.push(inserted[0]);
 				}
 				// console.log('Results', cleanedData);
@@ -156,9 +156,9 @@ export const actions = {
 
 			// Get valid userIds that don't already have profiles
 			const existingUsers = await db
-				.select({ id: schema.users.id })
-				.from(schema.users)
-				.leftJoin(schema.userProfiles, eq(schema.users.id, schema.userProfiles.userId))
+				.select({ id: schema.user.id })
+				.from(schema.user)
+				.leftJoin(schema.userProfiles, eq(schema.user.id, schema.userProfiles.userId))
 				.where(isNull(schema.userProfiles.userId))
 				.limit(10);
 
@@ -259,7 +259,7 @@ export const actions = {
 		// 		? existingProjects[Math.floor(Math.random() * existingProjects.length)].id
 		// 		: `pro${Math.floor(Math.random() * 99999999999)}`; // Fallback
 		const randomUser =
-			(await db.select().from(schema.users).where(eq(schema.users.userType, 'client'))).sort(
+			(await db.select().from(schema.user).where(eq(schema.user.userType, 'client'))).sort(
 				() => 0.5 - Math.random()
 			)[0] ?? null;
 		const randomUserProfile =
@@ -290,18 +290,18 @@ export const actions = {
 							clientId: randomUser.id,
 							// (
 							// 	await db
-							// 		.select({ id: schema.users.id })
-							// 		.from(schema.users)
-							// 		.where(eq(schema.users.userType, 'client'))
+							// 		.select({ id: schema.user.id })
+							// 		.from(schema.user)
+							// 		.where(eq(schema.user.userType, 'client'))
 							// )
 							// 	.map((u) => u.id)
 							// 	.sort(() => 0.5 - Math.random())[0] ?? null,
 							vendorId:
 								(
 									await db
-										.select({ id: schema.users.id })
-										.from(schema.users)
-										.where(eq(schema.users.userType, 'vendor'))
+										.select({ id: schema.user.id })
+										.from(schema.user)
+										.where(eq(schema.user.userType, 'vendor'))
 								)
 									.map((u) => u.id)
 									.sort(() => 0.5 - Math.random())[0] ?? null,
