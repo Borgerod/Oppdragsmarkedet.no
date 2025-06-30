@@ -3,7 +3,7 @@ import { encodeBase32LowerCase } from '@oslojs/encoding';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import * as auth from '$lib/server/auth';
-import { db } from '$lib/server/db';
+import { db } from '@src/lib/server/db/ignore';
 import * as table from '$lib/server/db/ignore/schema';
 
 export const load = async (event) => {
