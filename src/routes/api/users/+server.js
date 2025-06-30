@@ -4,36 +4,36 @@
 
 // export async function GET() {
 // 	try {
-// 		const users = await db.select().from(user);
-// 		return json(users);
+// 		const user = await db.select().from(user);
+// 		return json(user);
 // 	} catch (error) {
-// 		console.error('Error fetching users:', error);
-// 		return json({ error: 'Failed to fetch users' }, { status: 500 });
+// 		console.error('Error fetching user:', error);
+// 		return json({ error: 'Failed to fetch user' }, { status: 500 });
 // 	}
 // }
-import { db } from '$lib/server/db'; // Assuming db is set up in src/lib/server/db/index.js
+import { db } from '@src/lib/server/db/ignore'; // Assuming db is set up in src/lib/server/db/index.js
 import { user } from '$lib/server/db/ignore/schema'; // Your user schema
 
-// Handle fetching users
+// Handle fetching user
 export async function GET() {
 	try {
-		// Fetch all users from the database
-		const users = await db.select().from(user);
+		// Fetch all user from the database
+		const user = await db.select().from(user);
 
-		return new Response(JSON.stringify(users), {
+		return new Response(JSON.stringify(user), {
 			status: 200,
 			headers: {
 				'Content-Type': 'application/json'
 			}
 		});
 	} catch (error) {
-		console.error('Error fetching users:', error);
-		return new Response('Error fetching users', { status: 500 });
+		console.error('Error fetching user:', error);
+		return new Response('Error fetching user', { status: 500 });
 	}
 }
 
 import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index.js';
+import { db } from '@src/lib/server/db/ignore/index.js';
 import { user } from '$lib/server/db/ignore/schema.js';
 
 export async function POST() {
