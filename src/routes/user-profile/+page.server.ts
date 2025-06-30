@@ -6,7 +6,7 @@ import { eq, and, inArray, or, isNotNull, sql } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-	const placeholder_state_user_id = 'u10869961796'; // a standin state for the users id which will be fetched on login
+	const placeholder_state_user_id = 'u10869961796'; // a standin state for the user id which will be fetched on login
 
 	// Get the specific user profile that matches the user ID
 	const userProfile = await db
@@ -18,8 +18,8 @@ export const load: PageServerLoad = async () => {
 	// Optionally get the user data as well
 	const user = await db
 		.select()
-		.from(schema.users)
-		.where(eq(schema.users.id, placeholder_state_user_id))
+		.from(schema.user)
+		.where(eq(schema.user.id, placeholder_state_user_id))
 		.limit(1);
 	let profileStructure = user[0].userType; // > can be removed
 
