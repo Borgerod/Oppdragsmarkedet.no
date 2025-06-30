@@ -1,9 +1,9 @@
 import { eq } from 'drizzle-orm';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
-import { db } from '$lib/server/db';
+// import { db } from '@src/lib/server/db/ignore';
 // import * as table from '$lib/server/db/ignore/schema';
-import * as table from '$lib/server/db/optimized_schema_v2';
+import * as table from '@src/db/schema';
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
@@ -36,22 +36,22 @@ export async function validateSessionToken(token) {
 	const [result] = await db
 		.select({
 			// Adjust users table here to tweak returned data
-			users: { id: table.users.id, username: table.users.username },
+			user: { id: table.user.id, username: table.user.username },
 			session: table.session
 		})
 		.from(table.session)
-		.innerJoin(table.users, eq(table.session.userId, table.users.id))
+		.innerJoin(table.user, eq(table.session.userId, table.user.id))
 		.where(eq(table.session.id, sessionId));
 
 	if (!result) {
-		return { session: null, users: null };
+		return { session: null, user: null };
 	}
-	const { session, users } = result;
+	const { session, user } = result;
 
 	const sessionExpired = Date.now() >= session.expiresAt.getTime();
 	if (sessionExpired) {
 		await db.delete(table.session).where(eq(table.session.id, session.id));
-		return { session: null, users: null };
+		return { session: null, user: null };
 	}
 
 	const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
@@ -63,7 +63,7 @@ export async function validateSessionToken(token) {
 			.where(eq(table.session.id, session.id));
 	}
 
-	return { session, users };
+	return { session, user };
 }
 
 /** @param {string} sessionId */
@@ -77,14 +77,22 @@ export async function invalidateSession(sessionId) {
  * @param {Date} expiresAt
  */
 export function setSessionTokenCookie(event, token, expiresAt) {
+	console.log('[auth][debug]: setSessionTokenCookie', {
+		name: sessionCookieName,
+		token,
+		expiresAt
+	});
 	event.cookies.set(sessionCookieName, token, {
 		expires: expiresAt,
-		path: '/'
+		path: '/',
+		sameSite: 'lax',
+		secure: false // set to true in production
 	});
 }
 
 /** @param {import("@sveltejs/kit").RequestEvent} event */
 export function deleteSessionTokenCookie(event) {
+	console.log('[auth][debug]: deleteSessionTokenCookie', { name: sessionCookieName });
 	event.cookies.delete(sessionCookieName, {
 		path: '/'
 	});

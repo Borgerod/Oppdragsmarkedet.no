@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
 import {
-	users
+	user
 	// user_profiles,
 	// projects,
 	// vendorProfiles,
@@ -23,7 +23,7 @@ const db = drizzle(process.env.DATABASE_URL!);
 // console.log(process.env.DATABASE_URL);
 
 async function main() {
-	const user: typeof users.$inferInsert = {
+	const user: typeof user.$inferInsert = {
 		id: 'u10000001cp',
 		username: 'JohnIsColl420',
 		passwordHash: '$2a$12$HFY5.rBoXtYxad4KsP.9V.KgkbubJEgMtfFznNnPXJblSZMKB5Vw.',
@@ -41,14 +41,14 @@ async function main() {
 	};
 
 	// CREATE USER
-	await db.insert(users).values(user);
+	await db.insert(user).values(user);
 	// console.log('New user created.');
 
 	// GET USER
-	const results = await db.select().from(users);
+	const results = await db.select().from(user);
 	// console.log('Getting all results from the database: ', results);
 	/*
-  const users: {
+  const user: {
 	id: number;
 	name: string;
 	age: number;
@@ -58,15 +58,15 @@ async function main() {
 
 	// UPDATING USER
 	await db
-		.update(users)
+		.update(user)
 		.set({
 			username: 'JohnIsColl69'
 		})
-		.where(eq(users.id, user.id));
+		.where(eq(user.id, user.id));
 	// console.log('User info updated.');
 
 	// DELETE USER
-	await db.delete(users).where(eq(users.id, user.id));
+	await db.delete(user).where(eq(user.id, user.id));
 	// console.log('User deleted.');
 }
 main();
@@ -81,7 +81,7 @@ export async function GET(tableName: PgTable<any>) {
 		return json({
 			success: true,
 			message: `${tableName} was retrieved`,
-			users
+			user
 		});
 	} catch (error) {
 		console.error('Error:', error);

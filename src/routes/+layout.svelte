@@ -8,14 +8,28 @@
 	import '@stories/footer.css';
 	import Header from '@stories/Header.svelte';
 	import Footer from '@stories/Footer.svelte';
-	let { children } = $props();
+	import { goto } from '$app/navigation';
 
-	// import home from './home.svelte'
+	let { children, data } = $props();
+
+	async function handleLogout() {
+		// Create a form and submit it to the logout endpoint
+		const form = document.createElement('form');
+		form.method = 'POST';
+		form.action = '/auth/signout';
+		document.body.appendChild(form);
+		form.submit();
+	}
 </script>
 
 <!-- <header>
 </header> -->
-<Header user={null} onLogin={() => {}} onLogout={() => {}} onCreateAccount={() => {}} />
+<Header
+	user={data?.user}
+	onLogin={() => goto('/login')}
+	onLogout={handleLogout}
+	onCreateAccount={() => goto('/register')}
+/>
 <div class="content">
 	{@render children()}
 </div>
