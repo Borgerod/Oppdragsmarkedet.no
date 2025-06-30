@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
+import { db } from '@src/lib/server/db/ignore';
 import * as table from '$lib/server/db/ignore/schema';
 import postgres from 'postgres';
 import { env } from '$env/dynamic/private';
@@ -52,15 +52,15 @@ export async function GET() {
 		// Check database structure to debug schema issues
 		const schemaInfo = {};
 
-		// Get column details for users table
+		// Get column details for user table
 		try {
 			const userColumns = await client`
 				SELECT column_name, data_type, is_nullable
 				FROM information_schema.columns
-				WHERE table_name = 'users' 
+				WHERE table_name = 'user' 
 			`;
 
-			schemaInfo.users = {
+			schemaInfo.user = {
 				columns: userColumns.map((col) => ({
 					name: col.column_name,
 					type: col.data_type,
@@ -68,17 +68,17 @@ export async function GET() {
 				}))
 			};
 
-			// console.log('Users table structure:', schemaInfo.users);
+			// console.log('Users table structure:', schemaInfo.user);
 
 			// Try to get sample data
-			if (tableResults.users && tableResults.users.count > 0) {
-				const sampleUsers = await client.unsafe(`SELECT * FROM "users" LIMIT 1`);
+			if (tableResults.user && tableResults.user.count > 0) {
+				const sampleUsers = await client.unsafe(`SELECT * FROM "user" LIMIT 1`);
 				schemaInfo.userSample = sampleUsers[0];
 				// console.log('Sample user data:', sampleUsers[0]);
 			}
 		} catch (error) {
 			schemaInfo.usersError = error instanceof Error ? error.message : String(error);
-			console.error('Error getting users table structure:', error);
+			console.error('Error getting user table structure:', error);
 		}
 
 		// Get column details for sessions table if it exists
