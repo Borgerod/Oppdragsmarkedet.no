@@ -25,7 +25,7 @@
 	// 		- Poster-rating / Oppdragsgiver-score: (radio buttons or a slider+checkbox for "hide")["⭐ 4.5+", "⭐ 4.0+", "⭐ 3.0+", "❌ Hide unrated clients"]
 	// 		- Proof of Payment / betalingsbevis: (checkbox or radio) will describe jobs from posters who have previasly payed for a job without complications or are in other ways have *'payment-insurance',fetched from "achievement-tags" assigned profiles.  (*for more information ragarding 'payment-insurance' see "IDEAS & overall TODOS.txt:business ideas:1" )
 	// 		- Verified posters / verifiserte brukere: (radio) describes jobs from posters that have a complete profile and verified by us.
-	// 			- (ALT) Choise/Reputable Poster/ Annerkjente oppdragsgivere: (radio) describes users who have earned the reputable achievement tag or are in other way trusted/hand picked by us and are more likely to provide a pleasant transaction. (possible payed listings, job posters with premuim membership, and/or people we personally know)
+	// 			- (ALT) Choise/Reputable Poster/ Annerkjente oppdragsgivere: (radio) describes user who have earned the reputable achievement tag or are in other way trusted/hand picked by us and are more likely to provide a pleasant transaction. (possible payed listings, job posters with premuim membership, and/or people we personally know)
 
 	import TextField from './forms/TextField.svelte';
 	import PriceRange from './forms/PriceRange.svelte';
