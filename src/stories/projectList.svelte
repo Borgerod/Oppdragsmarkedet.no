@@ -128,7 +128,7 @@
 				//         break;
 				// complete this
 
-				// make sure it uses the users gps-location (locationData: point('location_data'))
+				// make sure it uses the user gps-location (locationData: point('location_data'))
 				// and for the projects, it should use the address (		address: text('address'),)
 
 				case 'Frist (minst til størst)':
