@@ -32,6 +32,7 @@ admin_info.txt
 # Folders
 **/deprecated/
 **/_deprecated/
+**/demo
 
 # src
 test.svelte
