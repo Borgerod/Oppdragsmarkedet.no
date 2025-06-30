@@ -73,7 +73,7 @@
 
 
 {
-  table: 'users',
+  table: 'user',
   count: 1,
   dataSet: [{
     id: 'u100003311cp',
