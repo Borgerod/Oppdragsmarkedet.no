@@ -38,13 +38,17 @@ export const userType = pgEnum('user_type', ['vendor', 'client', 'employee', 'ad
 // export const userRole = pgEnum('user_role', ['business', 'private', 'government']);
 // export const userType = pgEnum('user_type', ['vendor', 'client']);
 
-export const users = pgTable(
-	'users',
+export const user = pgTable(
+	'user',
 	{
 		id: text().primaryKey().notNull(),
-		username: varchar({ length: 50 }).notNull(),
-		passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+		name: text(),
 		email: varchar({ length: 319 }).notNull(),
+		emailVerified: timestamp('emailVerified'),
+		image: text(),
+		// Additional fields for your application
+		username: varchar({ length: 50 }).notNull(),
+		passwordHash: varchar('password_hash', { length: 255 }),
 		userType: userType('user_type').notNull(),
 		userRole: userRole('user_role').notNull(),
 		dateJoined: timestamp('date_joined', { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
@@ -53,6 +57,7 @@ export const users = pgTable(
 		isOnline: boolean('is_online').default(false),
 		isEmailVerified: boolean('is_email_verified').default(false),
 		isPhoneVerified: boolean('is_phone_verified').default(false),
+		isThirdPartyVerified: boolean('is_third_party_verified').default(false), //for when login with google/facebook/vipps etc is used.
 		location: text('location'),
 		locationData: point('location_data')
 	},
@@ -101,7 +106,7 @@ export const userProfiles = pgTable(
 		index('idx_profiles_user_id').using('btree', table.userId.asc().nullsLast().op('text_ops')),
 		foreignKey({
 			columns: [table.userId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'user_profiles_user_id_fkey'
 		})
 	]
@@ -149,12 +154,12 @@ export const projects = pgTable(
 		index('idx_projects_vendor_id').using('btree', table.vendorId.asc().nullsLast().op('text_ops')),
 		foreignKey({
 			columns: [table.clientId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'projects_client_id_fkey'
 		}),
 		foreignKey({
 			columns: [table.vendorId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'projects_vendor_id_fkey'
 		})
 	]
@@ -183,7 +188,7 @@ export const vendorProfiles = pgTable(
 		index('org_number_idx').using('btree', table.orgNumber.asc().nullsLast().op('text_ops')),
 		foreignKey({
 			columns: [table.userId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'vendor_profiles_user_id_fkey'
 		}),
 		unique('vendor_profiles_org_number_key').on(table.orgNumber),
@@ -206,7 +211,7 @@ export const favoriteProjects = pgTable(
 	(table) => [
 		foreignKey({
 			columns: [table.userId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'favorite_projects_user_id_fkey'
 		}),
 		foreignKey({
@@ -233,7 +238,7 @@ export const savedFilters = pgTable(
 	(table) => [
 		foreignKey({
 			columns: [table.userId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'saved_filters_user_id_fkey'
 		}),
 		check(
@@ -254,12 +259,12 @@ export const followedClients = pgTable(
 	(table) => [
 		foreignKey({
 			columns: [table.userId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'followed_clients_user_id_fkey'
 		}),
 		foreignKey({
 			columns: [table.clientId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'followed_clients_client_id_fkey'
 		})
 	]
@@ -278,7 +283,7 @@ export const wallets = pgTable(
 		index('idx_wallets_user_id').using('btree', table.userId.asc().nullsLast().op('text_ops')),
 		foreignKey({
 			columns: [table.userId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'wallets_user_id_fkey'
 		})
 	]
@@ -306,7 +311,7 @@ export const financialTransactions = pgTable(
 		}),
 		foreignKey({
 			columns: [table.userId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'financial_transactions_user_id_fkey'
 		})
 	]
@@ -341,12 +346,12 @@ export const walletTransactions = pgTable(
 		}),
 		foreignKey({
 			columns: [table.senderId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'wallet_transactions_sender_id_fkey'
 		}),
 		foreignKey({
 			columns: [table.receiverId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'wallet_transactions_receiver_id_fkey'
 		}),
 		foreignKey({
@@ -357,23 +362,29 @@ export const walletTransactions = pgTable(
 	]
 );
 
-export const sessions = pgTable(
-	'sessions',
+export const accounts = pgTable(
+	'accounts',
 	{
-		id: text().primaryKey().notNull(),
-		userId: text('user_id').notNull(),
-		expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string' }).notNull()
+		userId: text('userId').notNull(),
+		type: text().notNull(),
+		provider: text().notNull(),
+		providerAccountId: text('providerAccountId').notNull(),
+		refresh_token: text('refresh_token'),
+		access_token: text('access_token'),
+		expires_at: integer('expires_at'),
+		token_type: text('token_type'),
+		scope: text(),
+		id_token: text('id_token'),
+		session_state: text('session_state')
 	},
 	(table) => [
-		index('idx_sessions_user_id').using('btree', table.userId.asc().nullsLast().op('text_ops')),
 		foreignKey({
 			columns: [table.userId],
-			foreignColumns: [users.id],
-			name: 'sessions_user_id_fkey'
+			foreignColumns: [user.id],
+			name: 'accounts_userId_fkey'
 		})
 	]
 );
-
 export const socialMedia = pgTable(
 	'social_media',
 	{
@@ -390,7 +401,7 @@ export const socialMedia = pgTable(
 	(table) => [
 		foreignKey({
 			columns: [table.userId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'social_media_user_id_fkey'
 		}),
 		check(
@@ -424,6 +435,32 @@ export const socialMedia = pgTable(
 	]
 );
 
+export const oauthSessions = pgTable(
+	'oauth_sessions',
+	{
+		sessionToken: text('sessionToken').primaryKey(),
+		userId: text('userId').notNull(),
+		expires: timestamp('expires').notNull()
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.userId],
+			foreignColumns: [user.id],
+			name: 'oauth_sessions_userId_fkey'
+		})
+	]
+);
+
+export const verificationTokens = pgTable(
+	'verificationtokens',
+	{
+		identifier: text().notNull(),
+		token: text().notNull(),
+		expires: timestamp('expires').notNull()
+	},
+	(table) => [unique('verification_tokens_identifier_token_key').on(table.identifier, table.token)]
+);
+
 export const financialStats = pgTable(
 	'financial_stats',
 	{
@@ -439,7 +476,7 @@ export const financialStats = pgTable(
 	(table) => [
 		foreignKey({
 			columns: [table.userId],
-			foreignColumns: [users.id],
+			foreignColumns: [user.id],
 			name: 'financial_stats_user_id_fkey'
 		})
 	]

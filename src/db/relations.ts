@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm/relations';
 import {
-	users,
+	user,
 	favoriteProjects,
 	projects,
 	savedFilters,
@@ -16,9 +16,9 @@ import {
 } from './schema';
 
 export const favoriteProjectsRelations = relations(favoriteProjects, ({ one }) => ({
-	user: one(users, {
+	user: one(user, {
 		fields: [favoriteProjects.userId],
-		references: [users.id]
+		references: [user.id]
 	}),
 	project: one(projects, {
 		fields: [favoriteProjects.projectId],
@@ -26,7 +26,7 @@ export const favoriteProjectsRelations = relations(favoriteProjects, ({ one }) =
 	})
 }));
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(user, ({ many }) => ({
 	favoriteProjects: many(favoriteProjects),
 	savedFilters: many(savedFilters),
 	followedClients_userId: many(followedClients, {
@@ -59,42 +59,42 @@ export const usersRelations = relations(users, ({ many }) => ({
 export const projectsRelations = relations(projects, ({ one, many }) => ({
 	favoriteProjects: many(favoriteProjects),
 	walletTransactions: many(walletTransactions),
-	user_clientId: one(users, {
+	user_clientId: one(user, {
 		fields: [projects.clientId],
-		references: [users.id],
+		references: [user.id],
 		relationName: 'projects_clientId_users_id'
 	}),
-	user_vendorId: one(users, {
+	user_vendorId: one(user, {
 		fields: [projects.vendorId],
-		references: [users.id],
+		references: [user.id],
 		relationName: 'projects_vendorId_users_id'
 	})
 }));
 
 export const savedFiltersRelations = relations(savedFilters, ({ one }) => ({
-	user: one(users, {
+	user: one(user, {
 		fields: [savedFilters.userId],
-		references: [users.id]
+		references: [user.id]
 	})
 }));
 
 export const followedClientsRelations = relations(followedClients, ({ one }) => ({
-	user_userId: one(users, {
+	user_userId: one(user, {
 		fields: [followedClients.userId],
-		references: [users.id],
+		references: [user.id],
 		relationName: 'followedClients_userId_users_id'
 	}),
-	user_clientId: one(users, {
+	user_clientId: one(user, {
 		fields: [followedClients.clientId],
-		references: [users.id],
+		references: [user.id],
 		relationName: 'followedClients_clientId_users_id'
 	})
 }));
 
 export const walletsRelations = relations(wallets, ({ one, many }) => ({
-	user: one(users, {
+	user: one(user, {
 		fields: [wallets.userId],
-		references: [users.id]
+		references: [user.id]
 	}),
 	financialTransactions: many(financialTransactions),
 	walletTransactions_senderWalletId: many(walletTransactions, {
@@ -110,9 +110,9 @@ export const financialTransactionsRelations = relations(financialTransactions, (
 		fields: [financialTransactions.walletId],
 		references: [wallets.id]
 	}),
-	user: one(users, {
+	user: one(user, {
 		fields: [financialTransactions.userId],
-		references: [users.id]
+		references: [user.id]
 	})
 }));
 
@@ -127,14 +127,14 @@ export const walletTransactionsRelations = relations(walletTransactions, ({ one 
 		references: [wallets.id],
 		relationName: 'walletTransactions_receiverWalletId_wallets_id'
 	}),
-	user_senderId: one(users, {
+	user_senderId: one(user, {
 		fields: [walletTransactions.senderId],
-		references: [users.id],
+		references: [user.id],
 		relationName: 'walletTransactions_senderId_users_id'
 	}),
-	user_receiverId: one(users, {
+	user_receiverId: one(user, {
 		fields: [walletTransactions.receiverId],
-		references: [users.id],
+		references: [user.id],
 		relationName: 'walletTransactions_receiverId_users_id'
 	}),
 	project: one(projects, {
@@ -144,41 +144,41 @@ export const walletTransactionsRelations = relations(walletTransactions, ({ one 
 }));
 
 export const userProfilesRelations = relations(userProfiles, ({ one }) => ({
-	user: one(users, {
+	user: one(user, {
 		fields: [userProfiles.userId],
-		references: [users.id]
+		references: [user.id]
 	}),
 
-	email: one(users, {
+	email: one(user, {
 		fields: [userProfiles.email],
-		references: [users.email]
+		references: [user.email]
 	})
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
-	user: one(users, {
+	user: one(user, {
 		fields: [sessions.userId],
-		references: [users.id]
+		references: [user.id]
 	})
 }));
 
 export const vendorProfilesRelations = relations(vendorProfiles, ({ one }) => ({
-	user: one(users, {
+	user: one(user, {
 		fields: [vendorProfiles.userId],
-		references: [users.id]
+		references: [user.id]
 	})
 }));
 
 export const socialMediaRelations = relations(socialMedia, ({ one }) => ({
-	user: one(users, {
+	user: one(user, {
 		fields: [socialMedia.userId],
-		references: [users.id]
+		references: [user.id]
 	})
 }));
 
 export const financialStatsRelations = relations(financialStats, ({ one }) => ({
-	user: one(users, {
+	user: one(user, {
 		fields: [financialStats.userId],
-		references: [users.id]
+		references: [user.id]
 	})
 }));
