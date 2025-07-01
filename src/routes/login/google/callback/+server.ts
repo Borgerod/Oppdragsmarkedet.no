@@ -1,11 +1,19 @@
-// routes/login/google/callback/+server.ts
+// // routes/login/google/callback/+server.ts
+// import { generateSessionToken, createSession, setSessionTokenCookie } from '@lib/server/session';
+// import { google } from '$lib/server/oauth';
+// import { decodeIdToken } from 'arctic';
+// import { db } from '@db/index';
+// import * as schema from '@db/schema';
+// import { eq } from 'drizzle-orm';
+// // import { createUser } from '@lib/server/user';
+// import type { RequestEvent } from '@sveltejs/kit';
+// import type { OAuth2Tokens } from 'arctic';
 import { generateSessionToken, createSession, setSessionTokenCookie } from '@lib/server/session';
 import { google } from '$lib/server/oauth';
 import { decodeIdToken } from 'arctic';
 import { db } from '@db/index';
 import * as schema from '@db/schema';
 import { eq } from 'drizzle-orm';
-// import { createUser } from '@lib/server/user';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { OAuth2Tokens } from 'arctic';
 
@@ -63,6 +71,12 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		const sessionToken = generateSessionToken();
 		const session = await createSession(sessionToken, existingUser.id);
 		setSessionTokenCookie(event, sessionToken, session.expiresAt);
+
+		console.log('Session created:', {
+			sessionToken: sessionToken.substring(0, 10) + '...',
+			userId: existingUser.id
+		});
+
 		return new Response(null, {
 			status: 302,
 			headers: {

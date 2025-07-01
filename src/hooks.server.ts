@@ -25,19 +25,27 @@
 
 // 	return resolve(event);
 // };
+import { validateSessionToken } from '@lib/server/session';
 import type { Handle } from '@sveltejs/kit';
-import { validateSessionToken } from '$lib/server/session';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const sessionToken = event.cookies.get('session_token');
 
+	console.log(
+		'Hook - sessionToken:',
+		sessionToken ? sessionToken.substring(0, 10) + '...' : 'none'
+	);
+
 	if (sessionToken) {
 		const { session, user } = await validateSessionToken(sessionToken);
-		if (session && user) {
-			event.locals.user = user;
+		console.log('Hook - validation result:', { session: !!session, user: !!user });
+		if (session) {
 			event.locals.session = session;
+			event.locals.user = user;
 		}
 	}
+
+	console.log('Hook - locals.user:', event.locals.user ? 'SET' : 'undefined');
 
 	return resolve(event);
 };

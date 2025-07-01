@@ -3,7 +3,7 @@
 <script lang="ts">
 	import './header.css';
 	import Button from './Button.svelte';
-	// import NeumorphicButton from '../stories/NeumorphicButton.svelte';
+	import { enhance } from '$app/forms';
 
 	/**
 	 * @typedef {Object} Props
@@ -27,7 +27,6 @@
 				<Button hollow osl size="small" onclick={onLogout} label="Logg ut" style="neomorphic" />
 			{:else}
 				<Button hollow osl size="small" onclick={onLogin} label="Logg inn" />
-				<!-- <Button hollow osl size="small" onclick={onCreateAccount} label="Sign up" /> -->
 				<div class="register-button-container">
 					<Button hollow osl size="small" onclick={onCreateAccount} label="Registrer konto" />
 				</div>

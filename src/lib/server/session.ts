@@ -41,21 +41,60 @@ export async function createSession(token: string, userId: string): Promise<Sess
 	return sessionData;
 }
 
+// export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
+// 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+// 	const result = await db
+// 		.select({ user: user, session: session })
+// 		.from(session)
+// 		.innerJoin(user, eq(session.userId, user.id))
+// 		.where(eq(session.id, sessionId));
+// 	if (result.length < 1) {
+// 		return { session: null, user: null };
+// 	}
+// 	const { user: userData, session: sessionData } = result[0];
+// 	if (Date.now() >= sessionData.expiresAt.getTime()) {
+// 		await db.delete(session).where(eq(session.id, sessionData.id));
+// 		return { session: null, user: null };
+// 	}
+// 	if (Date.now() >= sessionData.expiresAt.getTime() - (sessionExpiresInSeconds * 1000) / 2) {
+// 		sessionData.expiresAt = new Date(Date.now() + sessionExpiresInSeconds * 1000);
+// 		await db
+// 			.update(session)
+// 			.set({
+// 				expiresAt: sessionData.expiresAt
+// 			})
+// 			.where(eq(session.id, sessionData.id));
+// 	}
+// 	return { session: sessionData, user: userData };
+// }
 export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
+	console.log('validateSessionToken - input token:', token?.substring(0, 10) + '...');
+
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	console.log('validateSessionToken - computed sessionId:', sessionId?.substring(0, 10) + '...');
+
 	const result = await db
 		.select({ user: user, session: session })
 		.from(session)
 		.innerJoin(user, eq(session.userId, user.id))
 		.where(eq(session.id, sessionId));
+
+	console.log('validateSessionToken - query result count:', result.length);
+
 	if (result.length < 1) {
+		console.log('validateSessionToken - no session found');
 		return { session: null, user: null };
 	}
+
 	const { user: userData, session: sessionData } = result[0];
+	console.log('validateSessionToken - found user:', userData.username);
+
 	if (Date.now() >= sessionData.expiresAt.getTime()) {
+		console.log('validateSessionToken - session expired');
 		await db.delete(session).where(eq(session.id, sessionData.id));
 		return { session: null, user: null };
 	}
+
 	if (Date.now() >= sessionData.expiresAt.getTime() - (sessionExpiresInSeconds * 1000) / 2) {
 		sessionData.expiresAt = new Date(Date.now() + sessionExpiresInSeconds * 1000);
 		await db
@@ -65,6 +104,8 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 			})
 			.where(eq(session.id, sessionData.id));
 	}
+
+	console.log('validateSessionToken - returning valid session');
 	return { session: sessionData, user: userData };
 }
 
@@ -83,11 +124,11 @@ export async function invalidateSession(sessionId: string): Promise<void> {
 // }
 export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date): void {
 	event.cookies.set('session_token', token, {
-		expires: expiresAt,
-		httpOnly: true,
-		secure: true,
 		path: '/',
-		sameSite: 'lax'
+		httpOnly: true,
+		secure: process.env.NODE_ENV === 'production',
+		sameSite: 'lax',
+		expires: expiresAt
 	});
 }
 export function deleteSessionTokenCookie(event: RequestEvent): void {

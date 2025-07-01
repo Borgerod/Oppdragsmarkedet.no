@@ -1,10 +1,11 @@
 <svelte:options runes />
 
-<!-- * HOME PAGE -->
 <script lang="ts">
-	// import Header from '@stories/Header.svelte';
-	// import Footer from '@stories/Footer.svelte';
 	import { enhance } from '$app/forms';
+
+	let { data } = $props();
+
+	console.log('User from layout:', data.user);
 </script>
 
 <svelte:head>
@@ -17,16 +18,9 @@
 		}
 	</style>
 </svelte:head>
-<!-- 
-<form method="post" use:enhance>
-	<button>Sign out</button>
-</form> -->
 
 <div class="page-wrapper">
-	<div class="content">
-		<!-- EMPTY -->
-		<!-- <slot /> -->
-	</div>
+	<div class="content"></div>
 </div>
 
 <style>
@@ -39,6 +33,8 @@
 	.content {
 		padding: 2rem;
 		display: flex;
+		flex-direction: column;
 		justify-content: center;
+		align-items: center;
 	}
 </style>
