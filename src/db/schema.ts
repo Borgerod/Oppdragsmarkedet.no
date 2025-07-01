@@ -15,6 +15,7 @@ import {
 	json,
 	pgEnum
 } from 'drizzle-orm/pg-core';
+
 import { sql } from 'drizzle-orm';
 
 export const projectState = pgEnum('project_status', [
@@ -27,6 +28,7 @@ export const projectState = pgEnum('project_status', [
 
 export const transactionSource = pgEnum('transaction_source', ['wallets', 'direct']);
 export const transactionType = pgEnum('transaction_type', ['incoming', 'outgoing']);
+
 export const userRole = pgEnum('user_role', [
 	'private',
 	'business',
@@ -34,21 +36,24 @@ export const userRole = pgEnum('user_role', [
 	'employee',
 	'admin'
 ]);
+
 export const userType = pgEnum('user_type', ['vendor', 'client', 'employee', 'admin']);
+
 // export const userRole = pgEnum('user_role', ['business', 'private', 'government']);
 // export const userType = pgEnum('user_type', ['vendor', 'client']);
-
 export const user = pgTable(
 	'user',
 	{
-		id: text().primaryKey().notNull(),
+		id: text('id').primaryKey(),
 		name: text(),
 		email: varchar({ length: 319 }).notNull(),
 		emailVerified: timestamp('emailVerified'),
 		image: text(),
+		googleId: text('google_id').unique(),
+
 		// Additional fields for your application
-		username: varchar({ length: 50 }).notNull(),
-		passwordHash: varchar('password_hash', { length: 255 }),
+		username: text('username').notNull().unique(),
+		passwordHash: text('password_hash').notNull(),
 		userType: userType('user_type').notNull(),
 		userRole: userRole('user_role').notNull(),
 		dateJoined: timestamp('date_joined', { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
@@ -385,6 +390,7 @@ export const accounts = pgTable(
 		})
 	]
 );
+
 export const socialMedia = pgTable(
 	'social_media',
 	{
@@ -435,21 +441,21 @@ export const socialMedia = pgTable(
 	]
 );
 
-export const oauthSessions = pgTable(
-	'oauth_sessions',
-	{
-		sessionToken: text('sessionToken').primaryKey(),
-		userId: text('userId').notNull(),
-		expires: timestamp('expires').notNull()
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.userId],
-			foreignColumns: [user.id],
-			name: 'oauth_sessions_userId_fkey'
-		})
-	]
-);
+// export const oauthSessions = pgTable(
+// 	'oauth_sessions',
+// 	{
+// 		sessionToken: text('sessionToken').primaryKey(),
+// 		userId: text('userId').notNull(),
+// 		expires: timestamp('expires').notNull()
+// 	},
+// 	(table) => [
+// 		foreignKey({
+// 			columns: [table.userId],
+// 			foreignColumns: [user.id],
+// 			name: 'oauth_sessions_userId_fkey'
+// 		})
+// 	]
+// );
 
 export const verificationTokens = pgTable(
 	'verificationtokens',
@@ -481,3 +487,19 @@ export const financialStats = pgTable(
 		})
 	]
 );
+
+// export const session = pgTable('session', {
+// 	id: text('id').primaryKey(),
+// 	userId: text('user_id')
+// 		.notNull()
+// 		.references(() => user.id),
+// 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
+// });
+export const session = pgTable('session', {
+	id: text('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => user.id),
+	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
+	secretHash: text('secret_hash').notNull()
+});

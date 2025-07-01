@@ -5,6 +5,7 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			'@src': 'src',
+			'@lib': 'src/lib',
 			'@db': 'src/db',
 			'@components': 'src/components',
 			'@stories': 'src/stories',

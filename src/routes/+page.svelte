@@ -4,6 +4,7 @@
 <script lang="ts">
 	// import Header from '@stories/Header.svelte';
 	// import Footer from '@stories/Footer.svelte';
+	import { enhance } from '$app/forms';
 </script>
 
 <svelte:head>
@@ -16,6 +17,10 @@
 		}
 	</style>
 </svelte:head>
+<!-- 
+<form method="post" use:enhance>
+	<button>Sign out</button>
+</form> -->
 
 <div class="page-wrapper">
 	<div class="content">

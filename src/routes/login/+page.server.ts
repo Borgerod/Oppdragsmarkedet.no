@@ -89,7 +89,7 @@ export const actions = {
  * @param {string} password
  * @returns {Promise<boolean>}
  */
-async function authenticateUser(email, password) {
+async function authenticateUser(email: string, password: string) {
 	// This is a placeholder - replace with your actual authentication
 	// For example, check against your database using Drizzle ORM
 

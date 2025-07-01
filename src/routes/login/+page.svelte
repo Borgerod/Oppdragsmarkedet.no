@@ -99,7 +99,9 @@
 			<span>or</span>
 		</div>
 		<div class="oauth-buttons">
-			<form action="/auth/signin/google" method="post">
+			<!-- <form action="/auth/signin/google" method="post"> -->
+			<a href="/login/google">
+				<!-- <form action="/auth/signin/google" method="post"> -->
 				<Button type="submit" label="Sign in with Google" primary={false} wide={true} iconLeft>
 					<img
 						src="https://www.gstatic.com/marketing-cms/assets/images/d5/dc/cfe9ce8b4425b410b49b7f2dd3f3/g.webp=s48-fcrop64=1,00000000ffffffff-rw"
@@ -108,7 +110,8 @@
 						slot="icon"
 					/>
 				</Button>
-			</form>
+				<!-- </form> -->
+			</a>
 		</div>
 		<div class="login-footer">
 			<p>Don't have an account? <a href="/register" class="link">Sign up</a></p>
