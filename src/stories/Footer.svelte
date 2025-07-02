@@ -1,5 +1,6 @@
 <script lang="ts">
 	import './Footer.css';
+	import '@src/app.css';
 	import './forms/form.css';
 	import Button from './Button.svelte';
 	// Import our new DarkModeToggle component
@@ -26,6 +27,8 @@
 		// todo [] make this
 	}
 </script>
+
+<link href="https://fonts.googleapis.com/css?family=Material+Icons+Outlined" rel="stylesheet" />
 
 <footer class="footer">
 	<div class="row">
@@ -83,7 +86,7 @@
 	<div class="language-dark-mode-container">
 		<div class="relative inline-block w-30">
 			<select
-				class="language-select appearance-none rounded border border-gray-300 pr-10 focus:outline-none"
+				class="decorated language-select appearance-none rounded border pr-10 focus:outline-none"
 			>
 				{#each languages as lang}
 					<option class="options" value={lang}>{lang}</option>
@@ -92,7 +95,9 @@
 
 			<!-- Custom icon -->
 			<div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-				<Fa icon={faEarthAmerica} class="icon" />
+				<!-- <Fa icon={faEarthAmerica} class="icon" /> -->
+				<span class="material-icons-outlined"> public </span>
+				<!-- <span class="material-icons-outlined"> language </span> -->
 			</div>
 		</div>
 		<!-- Replace the old button with our new component -->
@@ -101,6 +106,36 @@
 </footer>
 
 <style>
+	/* select option:hover
+	select:focus option:hover {
+		box-shadow: 0 0 10px 100px #1882a8 inset !important;
+	}
+	select:focus option:checked {
+		background-color: var(--accent-bright) !important;
+		color: white !important;
+	} */
+
+	/* option:hover,
+	select option:hover,
+	select option:focus,
+	select option:active {
+		background-color: var(--accent-bright) !important;
+		color: white !important;
+	} */
+
+	/* select:focus option:checked {
+		background-color: var(--accent-bright) !important;
+		color: white !important;
+	} */
+
+	/* select:focus option:hover {
+		background-color: var(--accent-bright) !important;
+		color: white !important;
+	} */
+	/* .relative:hover .pointer-events-none {
+		color: var(--accent-bright);
+	} */
+
 	/* .options {
 		color: var(--primary);
 	}
