@@ -34,15 +34,4 @@
 <Footer />
 
 <style>
-	:root {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
-	.content {
-		padding: 1rem;
-		padding-top: 2rem;
-		display: flex;
-		justify-content: center;
-	}
 </style>
