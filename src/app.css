@@ -11,6 +11,19 @@
 	/* font-size: x-small !important; */
 }
 
+	:root {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+	}
+	.content {
+		padding: 1rem;
+		padding-top: 2rem;
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+	}
+
 @font-face {
 	font-family: 'Manrope';
 	font-style: normal;
@@ -92,6 +105,13 @@ title{
 :root select:focus{
 	outline:none;
 }
+.card {
+border-radius: 1rem;
+	box-shadow:
+		0 1px 6px var(--shadow-bright),
+		0 1px 1px var(--shadow);
+}
+
 /* 	
 :root   select > option:checked {
     background-color: #ff0000 !important;
@@ -191,3 +211,4 @@ p{
 	font-size: medium;
 	color:var(--secondary)
 }
+
