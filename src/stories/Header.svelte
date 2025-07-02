@@ -4,6 +4,7 @@
 	import './header.css';
 	import Button from './Button.svelte';
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
 
 	/**
 	 * @typedef {Object} Props
@@ -19,7 +20,7 @@
 
 <header>
 	<div class="storybook-header">
-		<a class="title-card" href="/">
+		<a class="title-card" href="/home" onclick={() => goto('/home')}>
 			<h1>OPPDRAGS<span>M</span>ARKEDET</h1>
 		</a>
 		<div class="button-container">
