@@ -332,9 +332,14 @@
   }
   
   .storybook-button--iconLeft {
+	min-width: 150px;
 padding-left: 0;
+/* padding-left:1rem; */
+padding-right:1rem;
+
 display: flex;
-justify-content: space-around
+justify-content: space-evenly;
+/* text-align: left; */
   }
   
   .storybook-button .wide{
