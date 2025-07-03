@@ -296,7 +296,7 @@
 			style: 'currency',
 			currency: currency
 		});
-		// TODO make it fetch this from language
+		// TODO [ ]:  make it fetch this from language
 		return budget.format(project.budget) || 'budsjett ikke oppgitt';
 	}
 	function getPosterType(project: any): string {

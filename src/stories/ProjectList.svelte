@@ -116,7 +116,7 @@
 					});
 					break;
 
-				// TODO [ ] make this when log-in, stores and gps functionality has been implemented.
+				// TODO [ ]: make this when log-in, stores and gps functionality has been implemented.
 				//   case 'Nærmest':
 				//         // sort by project closest to the user based on their current gps location. (gps location not yet added, will also make some filters obsoleete. )
 				//         sortedProjects.sort((a, b) => {
