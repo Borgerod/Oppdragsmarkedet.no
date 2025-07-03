@@ -22,7 +22,7 @@
 		loading = true;
 	}
 
-	// TODO [ ] add Vipps and facebook login functionality
+	// TODO[ ]: add Vipps and facebook login functionality
 </script>
 
 <svelte:head>

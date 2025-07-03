@@ -133,7 +133,7 @@ export const actions = {
 
 /**
  * Check if user exists
- * TODO: Replace with your actual database check using Drizzle ORM
+ * TODO [ ]: Replace with your actual database check using Drizzle ORM
  * @param {string} email
  * @returns {Promise<boolean>}
  */
@@ -148,7 +148,7 @@ async function checkUserExists(email) {
 
 /**
  * Create new user
- * TODO: Replace with your actual user creation logic using Drizzle ORM
+ * TODO [ ]: Replace with your actual user creation logic using Drizzle ORM
  * @param {Object} userData
  * @param {string} userData.email
  * @param {string} userData.password

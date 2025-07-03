@@ -36,7 +36,7 @@ export const actions = {
 		}
 
 		try {
-			// TODO: Replace this with your actual authentication logic
+			// TODO [ ]: Replace this with your actual authentication logic
 			// This is a placeholder implementation
 
 			// Example authentication check (replace with your actual auth system)
@@ -51,7 +51,7 @@ export const actions = {
 			}
 
 			// Set authentication cookie or session
-			// TODO: Replace with your actual session/auth token logic
+			// TODO [ ]: Replace with your actual session/auth token logic
 			cookies.set('session', 'authenticated', {
 				path: '/',
 				httpOnly: true,
@@ -84,7 +84,7 @@ export const actions = {
 
 /**
  * Placeholder authentication function
- * TODO: Replace with your actual authentication logic
+ * TODO [ ]: Replace with your actual authentication logic
  * @param {string} email
  * @param {string} password
  * @returns {Promise<boolean>}

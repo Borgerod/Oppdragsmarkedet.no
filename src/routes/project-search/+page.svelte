@@ -193,7 +193,7 @@
 
 	function saveSearch() {
 		// TEMP PLACEHOLDER
-		// todo make this, when profiles are in order.
+		// TODO [ ]: make this, when profiles are in order.
 	}
 	function handleGrid() {
 		grid = !grid;
@@ -310,7 +310,7 @@
 		<div class="filter-header">
 			<div class="category-path">
 				<span>
-					<!-- todo: make this path consist of links -->
+					<!-- TODO [ ]: make this path consist of links -->
 					{displayedData.category ? `Oppdrag / ${displayedData.category}` : 'Oppdrag / '}
 				</span>
 			</div>
@@ -332,7 +332,7 @@
 				<!-- RESET BUTTON -->
 				<Button rounded size="small" label="Nullstill" onclick={resetAll} />
 				<!-- FILTER TAGS -->
-				<!-- TODO: seperate into component -->
+				<!-- TODO [ ]: seperate into component -->
 				{#if showResults}
 					<div class="filter-tags">
 						<!-- Price Range -->

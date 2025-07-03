@@ -29,7 +29,7 @@
 
 	// ? IDEA
 	// ? this could be only the public profile, then the private profile can be called account
-	let isPublicProfile = $state(true); // TODO [ ] add functionality
+	let isPublicProfile = $state(true); // TODO [ ]: add functionality
 
 	const { data } = $props();
 	const profileData = data.userProfile;
@@ -115,7 +115,7 @@
 		// Handle save preferences action
 		// console.log('Saving Preferences');
 	}
-	// TODO [ ] phone number , db ; format phone numbers (make sure they're stored formated in db)
+	// TODOphone number , db ; format phone numbers (make sure they're stored formated in db)
 
 	function getProgression(state: string | null) {
 		switch (state) {
@@ -304,7 +304,7 @@
 											{project.state}
 										</span>
 
-										<!--TODO [] MAKE PROGRESS BAR -->
+										<!--TODO [ ]: MAKE PROGRESS BAR -->
 										<!-- <div class="progress-bar-container">
 											{#if project.state && getProgression(project.state) !== null}
 												{@const progressValue = getProgression(project.state) || 0}

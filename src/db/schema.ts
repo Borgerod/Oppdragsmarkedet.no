@@ -175,7 +175,7 @@ export const vendorProfiles = pgTable(
 	{
 		id: text().primaryKey().notNull(),
 		userId: text('user_id').notNull(),
-		// TODO: failed to parse database type 'org_number'
+		// TODO [ ]: failed to parse database type 'org_number'
 		orgNumber: varchar({ length: 9 }).notNull(),
 		companyName: text('company_name'),
 		fieldsOfWork: json('fields_of_work'),

@@ -20,7 +20,7 @@ import type { Actions } from './$types';
 import { fail as kitFail } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
-	// TODO [ ] make it automaticlly fetch user-location and workfield then apply that as a filter.
+	// TODO [ ]: make it automaticlly fetch user-location and workfield then apply that as a filter.
 
 	// Get the specific user profile that matches the user ID
 	const projects = await db.select().from(schema.projects);
@@ -85,7 +85,7 @@ export const actions = {
 
 			//* Category  - exact match on category field
 			if (filterData.category && filterData.category.length > 0) {
-				// ?todo: if category=empty: trigger saftey function that saves location, IP and other data. then notify admin and block user. Note: must add to cookie-accept
+				// ?TODO [ ]: if category=empty: trigger saftey function that saves location, IP and other data. then notify admin and block user. Note: must add to cookie-accept
 				workfieldConditions.push(
 					sql`LOWER(${schema.projects.category}) = LOWER(${filterData.category})`
 				);
@@ -111,7 +111,7 @@ export const actions = {
 
 			// * BudgetRange INCLUDE
 			filterData.currency;
-			//TODO add currency
+			//TODO [ ]: add currency
 			const budgetMin = filterData.budget_min ? Number(filterData.budget_min) : undefined;
 			const budgetMax = filterData.budget_max ? Number(filterData.budget_max) : undefined;
 

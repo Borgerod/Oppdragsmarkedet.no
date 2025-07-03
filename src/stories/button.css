@@ -145,7 +145,7 @@
 	color: var(--white);
 	color: #5b7051ee;
 	color: #78966ae7;
-	/* todo; change to var */
+	/* TODO [ ]: change to var */
 	color: #989b97be;
 	color: var(--secondary);
 	color: var(--accent-dark);
@@ -188,7 +188,7 @@
 	justify-content: center;
 	align-items: center; */
 	box-shadow: 1px 1px 1px var(--shadow),  -1px -1px 1px var(--white), 5px 5px 10px  var(--shadow), -5px -5px 10px var(--highlight);
-	/* todo; change to var */
+	/* TODO [ ]: ; change to var */
 }
 
 .storybook-button--neomorphic:hover {
@@ -213,10 +213,10 @@
 }
 
 .storybook-button--neomorphic-osl{
-	color: #ffffff;/* todo; change to var */
-	--osl-highlight:#f9f4db;/* todo; change to var */
-	--osl-highlight:#fbce66;/* todo; change to var */
-	--osl-shadow: #0000006c;/* todo; change to var */
+	color: #ffffff;/* TODO [ ]: ; change to var */
+	--osl-highlight:#f9f4db;/* TODO [ ]: ; change to var */
+	--osl-highlight:#fbce66;/* TODO [ ]: ; change to var */
+	--osl-shadow: #0000006c;/* TODO [ ]: ; change to var */
 
 	text-shadow:1px 1px 3px var(--osl-highlight), -0px -0px 3px  var(--osl-shadow);
 	text-shadow:1px 1px 3px var(--osl-highlight);
@@ -239,7 +239,7 @@
 	-moz-background-clip: text;
 	background-clip: text;
 	color: transparent;
-	text-shadow: rgba(255,255,255,0.5) 0px 0px .02rem; /* todo; change to var */
+	text-shadow: rgba(255,255,255,0.5) 0px 0px .02rem; /* TODO [ ]: ; change to var */
 	
 }
 

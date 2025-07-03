@@ -85,14 +85,14 @@
 			</div>
 			<div class="form-group">
 				<label for="number" class="label">number</label>
-				<!-- todo [ ]: make a date field -->
+				<!-- TODO [ ]: make a date field -->
 				<TextField bind:value={email} type="number" placeholder="Enter your number" icon="phone" />
 				<!-- <input type="hidden" name="number" value={number} /> -->
 			</div>
 
 			<div class="form-group">
 				<label for="birthdate" class="label">Birthdate</label>
-				<!-- todo [ ]: make a date field -->
+				<!-- TODO [ ]: make a date field -->
 				<TextField
 					bind:value={email}
 					type="birthdate"

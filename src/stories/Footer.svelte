@@ -23,8 +23,8 @@
 	const languages = ['en', 'no'];
 
 	function handleSubscribe() {
-		// > PLAVEHODLER
-		// todo [] make this
+		// > PLACEHODLER
+		// TODO [ ]: make this
 	}
 </script>
 
@@ -47,7 +47,7 @@
 			<form class="newsletter-form">
 				<input type="text" placeholder="Your Email Address" required class="field" />
 				<br />
-				todo: pick one
+				TODO [ ]: pick one
 				<Button
 					rounded
 					size="large"

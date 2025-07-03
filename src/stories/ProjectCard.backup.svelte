@@ -288,7 +288,7 @@
 
 	function getLocation(project: any): string {
 		// return project.location || project.area || 'Ikke oppgitt';
-		// ?todo: make this be based on the filter value
+		// ?TODO [ ]:  make this be based on the filter value
 		const location = project.location.split(',');
 
 		// return location.slice(0);
@@ -346,7 +346,7 @@
 			style: 'currency',
 			currency: currency
 		});
-		// TODO make it fetch this from language
+		// TODO [ ]:  make it fetch this from language
 		return budget.format(project.budget) || 'budsjett ikke oppgitt';
 	}
 
