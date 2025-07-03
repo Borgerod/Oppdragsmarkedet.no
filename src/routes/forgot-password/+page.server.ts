@@ -61,11 +61,21 @@ export const actions = {
 
 /**
  * Check if user exists
- * TODO: Replace with your actual database check using Drizzle ORM
+ * TODO [ ]:  Replace with your actual database check using Drizzle ORM
  * @param {string} email
  * @returns {Promise<boolean>}
  */
-async function checkUserExists(email) {
+interface UserExistsResult {
+	exists: boolean;
+}
+
+/**
+ * Check if user exists
+ * TODO [ ]:  Replace with your actual database check using Drizzle ORM
+ * @param {string} email
+ * @returns {Promise<boolean>}
+ */
+async function checkUserExists(email: string): Promise<boolean> {
 	// Add your actual database check here
 	// Example with Drizzle ORM:
 	// const user = await db.select().from(user).where(eq(user.email, email)).limit(1);
@@ -77,11 +87,11 @@ async function checkUserExists(email) {
 
 /**
  * Send password reset email
- * TODO: Replace with your actual email sending logic
+ * TODO [ ]:  Replace with your actual email sending logic
  * @param {string} email
  * @returns {Promise<void>}
  */
-async function sendPasswordResetEmail(email) {
+async function sendPasswordResetEmail(email: string) {
 	// Generate reset token and store it in database
 	// const resetToken = generateResetToken();
 	// const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
