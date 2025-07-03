@@ -1,12 +1,20 @@
 <svelte:options runes />
 
 <script lang="ts">
+	// Will refer back to /home folder containing the homepage content
+	import Home from './home/+page.svelte';
+</script>
+
+<Home />
+
+<!-- > OLD, keeping it in case i need some of the it. -->
+<!-- <script lang="ts">
 	import { enhance } from '$app/forms';
 
 	let { data } = $props();
 
 	console.log('User from layout:', data.user);
-</script>
+</script> 
 
 <svelte:head>
 	<style>
@@ -35,6 +43,7 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		align-items: center;
+		align-items: center; 
 	}
-</style>
+	
+</style> -->
