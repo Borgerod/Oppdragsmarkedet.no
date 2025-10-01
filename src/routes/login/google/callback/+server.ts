@@ -52,10 +52,43 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		});
 	}
 
+	const accessToken = tokens.accessToken(); // <-- call the function
+
+	const peopleRes = await fetch(
+		'https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,birthdays,addresses,locations,locales,occupations,organizations,sipAddresses,skills,urls',
+		{
+			headers: {
+				Authorization: `Bearer ${accessToken}`
+			}
+		}
+	);
+	const peopleInfo = await peopleRes.json();
+	console.log('Google People API info :', peopleInfo);
+
+	console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+	const userinfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+		headers: {
+			Authorization: `Bearer ${accessToken}`
+		}
+	});
+	const userinfo = await userinfoRes.json();
+	console.log('Google userinfo (ALL SCOPES):', userinfo);
+
+	// console.log('Google OAuth scopes:', userinfoRes);
+	console.log('Google OAuth scopes:', tokens.scopes());
+	// if ('scope' in tokens) {
+	// 	console.log('Google OAuth scopes:', tokens.scope);
+	// } else if (tokens && typeof tokens === 'object') {
+	// 	console.log('Google OAuth scopes (raw):', tokens);
+	// } else {
+	// 	console.log('No scopes returned from Google.');
+	// }
+
 	const claims = decodeIdToken(tokens.idToken()) as {
 		sub: string;
 		name: string;
 		email: string;
+		birthday: string;
 	};
 
 	console.log('Google ID token claims:', claims);

@@ -22,14 +22,24 @@
 	<div class="storybook-header">
 		<a class="title-card" href="/home" onclick={() => goto('/home')}>
 			<h1>OPPDRAGS<span>M</span>ARKEDET</h1>
+			<!-- <h1 style="color:var(--accent-darker)"> -->
+			<h1>
+				<!-- OPPDRAGS<span style="color:var(--accent-bright)">M</span>ARKEDET -->
+				<!-- OPPDRAGS<span style="color:var(--accent-darker)">M</span>ARKEDET -->
+			</h1>
 		</a>
 		<div class="button-container">
 			{#if user}
 				<Button hollow osl size="small" onclick={onLogout} label="Logg ut" style="neomorphic" />
 			{:else}
-				<Button hollow osl size="small" onclick={onLogin} label="Logg inn" />
+				<!-- <Button hollow size="small" onclick={onLogin} label="Logg inn" /> -->
+
+				<!-- <Button hollow osl size="small" onclick={onLogin} label="Logg inn" /> -->
+				<Button size="small" onclick={onLogin} label="Logg inn" />
 				<div class="register-button-container">
-					<Button hollow osl size="small" onclick={onCreateAccount} label="Registrer konto" />
+					<!-- <Button hollow osl size="small" onclick={onCreateAccount} label="Registrer konto" /> -->
+					<Button size="small" onclick={onCreateAccount} label="Registrer konto" />
+					<!-- <Button hollow size="small" onclick={onCreateAccount} label="Legg ut oppdrag" /> -->
 				</div>
 				<div class="menu-button-container">
 					<Button hollow osl size="small" onclick={onCreateAccount} icon="fa-bars" />

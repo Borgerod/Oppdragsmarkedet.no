@@ -1,4 +1,9 @@
 :root{
+	/* TODO [ ]: make all text a little transparent (0.8-0.9 alpha) */
+	/* TODO [ ]: make white text color its own color-var then update the project  */
+	/*  currently white text look like this: 
+		color: var(--secondary-bg)
+	 */
 
 	/* ACCENTS */
 	--accent-brightest: hsl(from var(--accent) calc(h + 0) calc(s * 3.33) calc(l * 1.27));
@@ -50,12 +55,12 @@
 	--primary:#292929;
 	--primary-brighter:hsl(from var(--primary) h s calc(l * 1.80)); 
 	--primary-darker: hsl(from var(--primary) h s calc(l * 0.80));  /* Slightly darker */
-	--primary-invert:#ededed;
+	--primary-inv:#ededed;
 
 	--primary-darkmode: #dae6d4d5;
 	
 	/* --secondary:#666; */
-	--secondary-inverted:#f6f6f6;
+	--secondary-inv:#f6f6f6;
 	--secondary-brighter:hsl(from var(--secondary) h s calc(l * 1.20)); 
 	--secondary:#808080;
 	--secondary-darker: hsl(from var(--secondary) h s calc(l * 0.80));  /* Slightly darker */

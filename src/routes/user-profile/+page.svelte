@@ -18,37 +18,36 @@
 	import { faLinkedinIn, faFacebookF, faInstagram } from '@fortawesome/free-brands-svg-icons';
 	import Button from '@stories/Button.svelte';
 	import Tags from '@stories/forms/Tags.svelte';
-	// import Tabs from '@stories/forms/Tabs.svelte';
 	import '@src/app.css';
 	import '@stories/button.css';
 	import '@stories/forms/form.css';
 	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
 	import '@stories/theme.css';
-	// import '@src/../app.css';
-
-	// ? IDEA
-	// ? this could be only the public profile, then the private profile can be called account
-	let isPublicProfile = $state(true); // TODO [ ]: add functionality
-
 	const { data } = $props();
-	const profileData = data.userProfile;
-	const userData = data.user;
 
-	const profileStructure = data.profileStructure;
 	const ownedProjects = data.ownedProjects;
 	const vendoredProjects = data.vendoredProjects;
 	const favoriteProjects = data.favoriteProjects;
-	// const following = data.followedClients;
-	// const Wallet = data.wallets;
-	// const socialMedia = data.socialMedia;
 
-	// Merge the objects
+	const user = data.user;
+	const userProfile = data.userProfile ?? {};
+	const vendorProfile = data.vendorProfile ?? {};
+	const employeeProfile = data.employeeProfile ?? {};
+
+	const isVendor = user?.userType === 'vendor';
+	const isEmployee = user?.userType === 'employee';
+
 	const profile = {
-		...userData,
-		...profileData
+		...userProfile,
+		...(user ?? {}),
+		...(isVendor ? vendorProfile : {}),
+		...(isEmployee ? employeeProfile : {})
 	};
-	const ratingStars = getRatingStars(profile.clientReviewsRating ?? 0.0);
+
+	// console.log('profile: ', profile);
+
+	const ratingStars = getRatingStars((profile as any).clientReviewsRating ?? 0.0);
 
 	let activeTab = $state('profile');
 	let availableTabs = [
@@ -57,14 +56,11 @@
 		{ id: 'saved', name: 'Favoritter' },
 		{ id: 'settings', name: 'Innstillinger' }
 	];
-	// No need for client-side project fetching since project data is included from the server
-	// The server has already loaded project data for each favorite project using "with: { project: true }"
 
 	function getRatingStars(rating: number) {
 		const fullStars = Math.floor(rating);
 		const hasHalfStar = rating % 1 >= 0.5;
 		const stars = [];
-
 		for (let i = 0; i < 5; i++) {
 			if (i < fullStars) {
 				stars.push('full');
@@ -74,48 +70,16 @@
 				stars.push('empty');
 			}
 		}
-
 		return stars;
 	}
-
 	function handleTabChange(event: { detail: string }) {
 		activeTab = event.detail;
 	}
-	function handleEditProfile() {
-		// Handle edit profile action
-		// TEMP placeholder
-		// TODO [ ]: add functionality
-		// console.log('Edit profile clicked');
-	}
-
-	function handleLogout() {
-		// TEMP placeholder
-		// TODO [ ]: add functionality
-		// Handle logout action
-		// console.log('Logout clicked');
-	}
-
-	function saveChanges() {
-		// TEMP placeholder
-		// TODO [ ]: add functionality
-		// Handle save changes action
-		// console.log('Saving profile changes');
-	}
-
-	function SavePassword() {
-		// TEMP placeholder
-		// TODO [ ]: add functionality
-		// Handle password action
-		// console.log('Saving Password');
-	}
-
-	function SavePreferences() {
-		// TEMP placeholder
-		// TODO [ ]: add functionality
-		// Handle save preferences action
-		// console.log('Saving Preferences');
-	}
-	// TODOphone number , db ; format phone numbers (make sure they're stored formated in db)
+	function handleEditProfile() {}
+	function handleLogout() {}
+	function saveChanges() {}
+	function SavePassword() {}
+	function SavePreferences() {}
 
 	function getProgression(state: string | null) {
 		switch (state) {
@@ -131,21 +95,6 @@
 				return null;
 		}
 	}
-	let isVendor = $state(false);
-	let isEmployee = $state(false);
-
-	// if (userData.userRole)
-	switch (userData.userType) {
-		case 'client':
-			isVendor = false;
-			break;
-		case 'vendor':
-			isVendor = true;
-			break;
-		case 'employee':
-			isEmployee = true;
-			break;
-	}
 </script>
 
 <!--* New profile -->
@@ -155,8 +104,8 @@
 	<div class="profile-header">
 		<div class="profile-header-content">
 			<div class="profile-avatar">
-				{#if profile.profileImage}
-					<img src={profile.profileImage} alt="{profile.firstName} {profile.lastName}" />
+				{#if profile.image}
+					<img src={profile.image} alt={profile.name || 'User'} />
 				{:else}
 					<div class="avatar-placeholder">
 						<Fa icon={faUserCircle} size="12x" />
@@ -255,27 +204,31 @@
 					<div class="profile-section">
 						<h2>Ferdigheter og spesialiseringer</h2>
 						<div class="skills-container">
-							{#each profile.field as skill}
-								<div class="skill-tag">{skill}</div>
-							{/each}
+							{#if Array.isArray(profile.fieldsOfWork)}
+								{#each profile.fieldsOfWork as skill}
+									<div class="skill-tag">{skill}</div>
+								{/each}
+							{:else}
+								<span>Ingen ferdigheter registrert</span>
+							{/if}
 						</div>
 					</div>
 
 					<div class="profile-section">
 						<h2>Sosiale Media</h2>
 						<div class="social-links">
-							{#if profile.social?.linkedin}
-								<a href={profile.social.linkedin} target="_blank" class="social-link">
+							{#if profile.linkedin}
+								<a href={profile.linkedin} target="_blank" class="social-link">
 									<Fa icon={faLinkedinIn} />
 								</a>
 							{/if}
-							{#if profile.social?.facebook}
-								<a href={profile.social.facebook} target="_blank" class="social-link">
+							{#if profile.facebook}
+								<a href={profile.facebook} target="_blank" class="social-link">
 									<Fa icon={faFacebookF} />
 								</a>
 							{/if}
-							{#if profile.social?.instagram}
-								<a href={profile.social.instagram} target="_blank" class="social-link">
+							{#if profile.instagram}
+								<a href={profile.instagram} target="_blank" class="social-link">
 									<Fa icon={faInstagram} />
 								</a>
 							{/if}

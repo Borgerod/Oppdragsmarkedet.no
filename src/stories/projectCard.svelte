@@ -246,7 +246,12 @@
 		return project.title || project.job_title || 'Tittel ikke oppgitt';
 	}
 
+	// function getLocation(project: any): string {
+	// 	const location = project.location.split(',');
+	// 	return location[0];
+	// }
 	function getLocation(project: any): string {
+		if (!project.location || typeof project.location !== 'string') return 'Ikke oppgitt';
 		const location = project.location.split(',');
 		return location[0];
 	}
@@ -483,4 +488,17 @@
 </div>
 
 <style>
+	.upper-layer span {
+		color: var(--accent-medium);
+	}
+	.upper-layer button {
+		box-shadow: var(--secondary-bg-darkmode-bright) 0px 0px 0px 1px inset;
+	}
+	.upper-layer .icon {
+		color: #9292929c !important;
+	}
+	.upper-layer .fa-heart {
+		/* color: #ffffff75 !important; */
+		color: #ffffff75 !important;
+	}
 </style>

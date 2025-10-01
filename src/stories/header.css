@@ -7,16 +7,56 @@
 	align-items: center;
 }
 .storybook-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 15px 20px;
-  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	/* temp */
+	/* visibility: hidden;  */
+	/* temp */
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 15px 20px;
+	font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	background-color: var(--third-bg);
-	/* background-color: transparent; */
-column-gap: 1rem;
-/* row-gap: 1rem; */
+	column-gap: 1rem;
+	/* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
+	/* row-gap: 1rem; */
+}
+
+.storybook-header {
+	/*> transparent test */
+	
+	background-color: transparent;
+	width: 100%;
+	position: absolute;
+	top: 1;
+	z-index: 1;
+}
+
+.storybook-header {
+	/*> glass test */
+	
+	/* border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	z-index: 1;
+	backdrop-filter: blur(30px);
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	border:none;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+	
+	backdrop-filter: blur(15px); */
+}
+.storybook-header{
+	/* >glass color */
+	/* ? make a function that does this: 
+	? if page != "/home" or "/": make header visible. else transparent. 
+	*/
+	/* background: var(--third-bg); */
+	/* background: color-mix(in srgb, var(--third-bg) 60%, transparent); */
+	/* background: color-mix(in srgb, var(--third-bg) 40%, transparent); */
+
+	/* background: rgba(255, 255, 255, 0.15); */
+	/* background: rgba(0, 0, 0, 0.123); */
+	/* background: rgba(130, 146, 95, 0.15); */
+	/* background: rgba(78, 88, 57, 0.229); */
 }
 
 .title-card{

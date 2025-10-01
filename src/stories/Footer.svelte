@@ -30,7 +30,8 @@
 
 <link href="https://fonts.googleapis.com/css?family=Material+Icons+Outlined" rel="stylesheet" />
 
-<footer class="footer">
+<!-- <footer class="footer"> -->
+<footer class="storybook-footer">
 	<div class="row">
 		<div class="col">
 			<h3>USEFUL LINKS</h3>
@@ -322,8 +323,8 @@
 		background-color: transparent;
 		border: 1vw;
 		outline: var(--secondary-darker) solid 1px;
-		outline: var(--primary-invert) solid 1px;
-		color: var(--primary-invert);
+		outline: var(--primary-inv) solid 1px;
+		color: var(--primary-inv);
 		text-align: center;
 		text-decoration: none;
 		display: inline-block;

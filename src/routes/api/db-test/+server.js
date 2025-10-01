@@ -1,9 +1,14 @@
+// import { json } from '@sveltejs/kit';
+// import { db } from '@src/lib/server/db/ignore';
+// import * as table from '$lib/server/db/ignore/schema';
+// import postgres from 'postgres';
+// import { env } from '$env/dynamic/private';
+
 import { json } from '@sveltejs/kit';
-import { db } from '@src/lib/server/db/ignore';
-import * as table from '$lib/server/db/ignore/schema';
+import { db } from '@db/index'; // Correct import
+import * as table from '@db/schema'; // Correct import
 import postgres from 'postgres';
 import { env } from '$env/dynamic/private';
-
 export async function GET() {
 	try {
 		// Test raw database connection to list tables

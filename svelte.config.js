@@ -4,6 +4,7 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		alias: {
+			'@images': 'static/images',
 			'@src': 'src',
 			'@lib': 'src/lib',
 			'@db': 'src/db',

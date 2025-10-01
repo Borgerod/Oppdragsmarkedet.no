@@ -1,14 +1,25 @@
 /* @import 'color_scheme.css'; */
 
-.storybook-footer {
-	color: var(--primary-invert);
+/* .storybook-footer { */
+footer {
+	color: var(--primary-inv);
 	background-color: var(--third-bg);
     display: flex;
     align-items: flex-start;
     padding: 15px 20px;
     justify-content: space-between;
 }
-
+footer {
+	padding: 2rem 3rem 1rem 3rem;
+	width: 100%;
+	margin-top: auto; 
+	justify-content: space-around;
+	justify-content: space-evenly;
+	background-color: var(--third-bg);
+	color: #efefef;
+	display: flex;
+	position: relative;
+}
 
   .storybook-footer svg {
 	display: inline-block;
@@ -171,29 +182,19 @@
 		align-items: center;
 		height: 0.9rem;
 		width: 0.9rem;
-		background: #efefef;
+		background-color: #efefef;
 		color: var(--third-bg);
 		border-radius: 2px;
 	}
-	footer {
-		padding: 2rem 3rem 1rem 3rem;
-		width: 100%;
-		margin-top: auto; 
-		justify-content: space-around;
-		justify-content: space-evenly;
-		background: var(--third-bg);
-		color: #efefef;
-		display: flex;
-		position: relative;
-	}
+
 
 	@media (max-width: 768px) {
-		.footer {
+		footer {
 			flex-direction: column;
 		}
 	}
 
-	.footer div h3 {
+	footer div h3 {
 		font-weight: 300;
 		letter-spacing: 1px;
 	}
@@ -235,8 +236,8 @@
 		background-color: transparent;
 		border: 1vw;
 		outline: var(--secondary-darker) solid 1px;
-		outline: var(--primary-invert) solid 1px;
-		color: var(--primary-invert);
+		outline: var(--primary-inv) solid 1px;
+		color: var(--primary-inv);
 		text-align: center;
 		text-decoration: none;
 		display: inline-block;
@@ -260,3 +261,31 @@
 		color: var(--accent-bright);
 		border-color: var(--accent-bright);
 	}
+
+
+
+
+
+footer.storybook-footer {
+	/*> glass test */
+
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	z-index: 1;
+	backdrop-filter: blur(30px);
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	border:none;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+	
+}
+
+footer.storybook-footer{
+	/* > glass color */
+	background-color: var(--third-bg);
+	background-color: color-mix(in srgb, var(--third-bg) 60%, transparent);
+	background-color: color-mix(in srgb, var(--third-bg) 60%, transparent);
+
+	/* background-color: rgba(255, 255, 255, 0.15); */
+	/* background-color: rgba(0, 0, 0, 0.123); */
+	/* background-color: rgba(130, 146, 95, 0.15); */
+	/* background-color: rgba(78, 88, 57, 0.229); */
+}

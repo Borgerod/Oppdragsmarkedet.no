@@ -69,7 +69,7 @@ font-weight: 100;
  }
 
 .tag.text-white{
-	color: var(--secondary-inverted);
+	color: var(--secondary-inv);
 }
 .tag.text-black{
 	color: var(--primary);

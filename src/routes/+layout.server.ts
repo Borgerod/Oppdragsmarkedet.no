@@ -25,7 +25,9 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 
 	try {
 		const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(sessionToken)));
-		console.log('Computed session ID:', sessionId.substring(0, 10) + '...');
+		// console.log('Computed session ID:', sessionId.substring(0, 10) + '...');
+		console.log('Computed session ID:', sessionId);
+		// console.log('Full session token:', session);
 
 		const result = await db
 			.select({

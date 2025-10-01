@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 .storybook-button {	
     display: flex !important;
     column-gap: .5rem;
@@ -16,6 +18,7 @@
     white-space: nowrap;
     align-content: center;
     align-items: center;
+	--initial-color: none;
     /* display: flex !important; */
     /* display: inline-block; */
 	/* column-gap: .5rem; */
@@ -30,6 +33,15 @@
     /* align-content: center; */
     /* white-space: nowrap; */
 	/* gap: 10px; */
+}
+
+
+.storybook-button.gray{
+	/* --initial-color: rgba(from var(--accent) r g b / 50%); */
+	/* --initial-color	: var(--accent);	 */
+	/* --initial-color: var(--negative-accent-translucent); */
+	/* --initial-color: var(--secondary-very-translucent);	 */
+	--initial-color: var(--secondary);	
 }
 
 .storybook-button {	
@@ -81,12 +93,16 @@
 
 
 .storybook-button--primary:hover {
-	background-color: var(--accent-dark);
+	--initial-color: var(--accent-dark);
+	background-color: var(--initial-color);
+	/* background-color: var(--accent-dark); */
 }
 .storybook-button--primary {
+	--initial-color: var(--accent-medium);
 	display: flex;
 	flex-wrap: nowrap;
-  background-color: var(--accent-medium);
+  /* background-color: var(--accent-medium); */
+  background-color: var(--initial-color);
   color: var(--primary-bg);
   text-shadow: 0px 0px 3px var(--shadow);
 }
@@ -96,11 +112,11 @@
 	background-color: transparent;
 	border-color: var(--secondary) !important;
 	border-color: var(--secondary-brighter) !important;
-	color: var(--secondary-inverted)!important;
-	/* border-color: var(--primary-invert) !important; */
+	color: var(--secondary-inv)!important;
+	/* border-color: var(--primary-inv) !important; */
 	box-shadow: none;
 	/* box-shadow: 0px 0px 2px #fbce66 !important; */
-	/* box-shadow: 0px 0px 2px var(--secondary-inverted)!important; */
+	/* box-shadow: 0px 0px 2px var(--secondary-inv)!important; */
 
 	/* color: #ffffff; */
 	/* --osl-highlight:#f9f4db; */
@@ -135,6 +151,10 @@
 .storybook-button--secondary {
 	/* box-shadow:var(--shadow) 0px 0px 0px 1px inset;  */
 	box-shadow:var(--accent-medium) 0px 0px 0px .5px inset; 
+	/* > TEST */
+	box-shadow:var(--accent-dark) 0px 0px 0px .8px inset;
+	/* font-size: medium; */
+	/* font-weight: 100;  */
 	
 	/* border: .1px solid var(--accent-dark); */
 	/* border-color: var(--accent-dark); */
@@ -180,6 +200,7 @@
 	box-shadow:var(--shadow) 0px 0px 0px 1px inset; 
 	box-shadow:var(--accent) 0px 0px 0px 1px inset; 
 } */
+
 
 
 .storybook-button--neomorphic {
@@ -330,6 +351,42 @@
 	/* font-size: 1.2rem; */
 	/* margin:0 4rem; */
   }
+
+    .storybook-button--larger {
+	padding: 1.2rem 2.4rem;
+	padding: 1.2vw 2.4vw;
+	padding: 1vw 2vw;
+	/* padding: 1.5vw 0; */
+	/* padding: .6rem 1.2rem; */
+	/* width: 15rem; */
+
+	font-weight: 500;
+	font-size: 16px;
+	font-size: 1.2vw;
+	font-size: 1vw;
+	font-size:calc(8px + .5vw);
+
+	padding: calc(.5vw + .5vw) calc(1vw + .5vw);
+	/* padding: 1rem; */
+	max-height:4rem;
+	min-width: 10rem;
+	min-height: 2.5rem;
+	font-size:calc(8px + .5vw);
+	
+
+	/* font-weight: 200 !important; */
+	/* line-height: 1.5rem; */
+	/* border-radius: 0.5rem; */
+	/* font-size: 1.2rem; */
+	/* margin:0 4rem; */
+  }
+@media (min-width: 1200px) {
+	    .storybook-button--larger {
+			font-size: 1.1rem;
+			font-size: 14px;
+			/* font-size: 12px; */
+		}
+  }
   
   .storybook-button--iconLeft {
 	min-width: 150px;
@@ -352,3 +409,32 @@ justify-content: space-evenly;
 	width: 100%;
   }
   
+.storybook-button--primary.glass{
+	/* --negative-accent-brightest: hsl(from var(--negative-accent) calc(h + 5) calc(s * 0.8) calc(l * 2.1)); */
+    /* --initial-color: inherit; */
+	/* --initial-color: ; */
+    /* --initial-color: color-mix(in srgb, var(--inherited-glass, transparent) 100%, transparent 0%); */
+    /* background: var(--initial-color); */
+    /* background:color-mix(in srgb, var(--inherited-glass, transparent) 95%, transparent 90%); */
+
+
+
+
+
+	/* --initial-color: :hsla(from initial calc(a + .1) );
+	background: var(--inherited-glass); */
+
+	/* background: rgba(255, 255, 255, 0.15); */
+	/* border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	z-index: 1;
+	backdrop-filter: blur(30px);
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	border:none;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); */
+
+
+
+		background: color-mix(in srgb, var(--initial-color) 40%, transparent);
+	background: color-mix(in srgb, var(--initial-color) 80%, transparent);
+	
+}

@@ -106,7 +106,10 @@ export const actions = {
 							locationData: [10.7522, 59.9139]
 						}
 					];
-
+			function getLocation(location) {
+				if (typeof location !== 'string' || !location) return '';
+				return location.split(',')[0];
+			}
 			const dataArray = Array.isArray(parsedJson) ? parsedJson : [parsedJson];
 
 			const cleanedData = dataArray.map((RawData) => ({
@@ -231,6 +234,7 @@ export const actions = {
 
 			// const insertedData =
 			await db.transaction(async (tx) => {
+				æ;
 				const results = [];
 				for (const data of cleanedData) {
 					const inserted = await tx.insert(schema.userProfiles).values(data).returning();

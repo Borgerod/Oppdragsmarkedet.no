@@ -101,7 +101,7 @@ export const userProfiles = pgTable(
 		fastReplyer: boolean('fast_replyer').default(false),
 		slowReplyer: boolean('slow_replyer').default(false),
 		givenComplaints: boolean('given_complaints').default(false),
-		receivedComplaints: boolean('received_complaints').default(false),
+		receivedComplaints: boolean('received_complaints').default(false), //not to be confused by complaints in employee profile. this is strictly for a user standpoint.
 		insurance: boolean().default(false),
 		paymentInsurance: boolean('payment_insurance').default(false),
 		fastWorker: boolean('fast_worker').default(false),
@@ -201,6 +201,62 @@ export const vendorProfiles = pgTable(
 			'vendor_profiles_logo_check',
 			sql`((logo)::text ~* '^https?://[^\s/$.?#].[^\s]*$'::text) AND ((logo)::text ~* '\.(jpe?g|png|gif|webp|avif|svg)$'::text)`
 		)
+	]
+);
+
+// > PLACEHOLDER TABLE
+// TODO [ ]: properly make this table
+export const employeeProfiles = pgTable(
+	'employee_profiles',
+	{
+		id: text().primaryKey().notNull(),
+		userId: text('user_id').notNull(),
+		employeeNumber: varchar({ length: 9 }).notNull(),
+		title: varchar('title', { length: 100 }),
+		rank: varchar('rank', { length: 50 }),
+		branch: varchar('branch', { length: 100 }),
+		securityLevel: varchar('security_level', { length: 50 }),
+		location: varchar('location', { length: 250 }),
+		employmentStart: timestamp('employment_start', { mode: 'string' }),
+		employmentTime: varchar('employment_time', { length: 50 }),
+		isEmployee: boolean('is_employee').default(true), //keeps track of old employees who does no longer work here.
+		isWorking: boolean('is_working').default(false), // is currenly checked in for work.
+		isOnLeave: boolean('is_on_leave').default(false), // is on leave for some undisclosed reason; paternity, sickness, punishment, etc.
+		leaveReason: varchar('leave_reason', { length: 250 }), // if on leave, what is the reason (tags)
+		employmentLog: json('employment_log'), // keeps track og the employment history, every checkin, activity, leaves, etc.
+		salesLog: json('sales_log'), // if salesman
+		salaryType: varchar('salary_type', { length: 50 }), // hourly, yearly, commission (provisjon), commission+base
+		commissionRate: real('commission_rate'), // if commission.
+		salaryRate: integer('salary_rate'), //if hourly salary; salary per hour in NOK
+		salaryPerAnnum: integer('salary_per_annum'), //full yearly salary in NOK
+		totalSalary: integer('total_salary'), //cumulative all payed out salary to this employee
+		totalIncomeEarned: integer('total_income_earned'), // if measurable, e.g. salesman. checks how much money the employee has earned in total.
+		monthlyIncomeEarned: integer('monthly_income_earned'), // same as above but resets every month
+		yearlyIncomeEarned: integer('yearly_income_earned'), // same as above but resets every month
+		salaryRank: varchar('salary_rank', { length: 50 }), //a salary tier to simplify evaluation
+		nationality: varchar('nationality', { length: 50 }),
+		citizenship: varchar('citizenship', { length: 50 }),
+		relatedToPublicFigure: boolean('related_to_public_figure').default(false),
+		needVisa: boolean('need_visa').default(false),
+		workVisa: varchar('work_visa', { length: 100 }),
+		PID: varchar('pid', { length: 32 }), //National identity number (needs to be maluable due to different nationalites.)
+		bankAccount: varchar('bank_account', { length: 34 }),
+		notableBehaviour: json('notable_behaviour'), //a short log of notable behaviour and achievements, both good, bad and greyareas. for easy evaluation of employee. Like; filed 2 complaints (orange), recieved one complaint(red), is often sick(red), but is also top salesmen(green).
+		resume: text('resume'),
+		employmentContract: text('employment_contract'),
+		employmentContractType: varchar('employment_contract_type', { length: 50 }), // B2E, B2B, Independent Contractor Agreement, partnership agreement, franchise  etc
+		employmentType: varchar('employment_type', { length: 50 }), // out sorcersed, assignment, Permanent, trainee, graduate trainee / intern, seasonal, project-based, Temp/substitute
+		nonDisclosureAgreement: text('non_disclosure_agreement'),
+		equityAgreement: text('equity_agreement'),
+		otherContractsAndDocuments: json('other_contracts_and_documents'),
+		assignedEquipment: json('assigned_equipment'),
+		equityHolding: integer('equity_holding') // how many shares the employees owns.
+	},
+	(table) => [
+		// index('idx_vendor_profiles_user_id').using(
+		// 	'btree',
+		// 	table.userId.asc().nullsLast().op('text_ops')
+		// ),
 	]
 );
 
